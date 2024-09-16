@@ -1,22 +1,97 @@
-html {
-  font-size: 14px;
+html, body {
+    height: 100%;
+    margin: 0;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+.wrapper {
+    min-height: 100vh; /* Ensure wrapper takes at least the full viewport height */
+    display: flex;
+    flex-direction: column;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+.home-page-bg {
+    background-image: url('/images/sf.jpg'); /* Path to your local image */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat; /* Prevent repeating the image */
+    height: 100vh; /* Full viewport height */
+    display: flex; /* Enable flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    position: relative;
+    z-index: 1; /* Ensure it's above the animated background */
+    animation: animateImage 30s infinite alternate; /* Animation for the image */
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+@keyframes animateImage {
+    0% {
+        transform: scale(1) rotate(0deg);
+    }
+
+    50% {
+        transform: scale(1.05) rotate(2deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
 }
 
-body {
-  margin-bottom: 60px;
+.home-page-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Dark overlay for text readability */
+    z-index: 2; /* Ensure overlay is above the animated background */
+}
+
+.animated-background {
+    position: fixed; /* Fixed to cover the entire viewport */
+    top: 0;
+    left: 0;
+    height: 100vh; /* Full viewport height */
+    width: 100vw; /* Full viewport width */
+    background: rgba(0, 0, 0, 0.5); /* Base color for animation */
+    z-index: 0; /* Ensure it's behind the content */
+    animation: iridescent 10s infinite alternate; /* Iridescent effect animation */
+}
+
+@keyframes iridescent {
+    0% {
+        background: rgba(0, 0, 0, 0.3); /* Start with a lighter color */
+    }
+
+    50% {
+        background: rgba(0, 0, 0, 0.6); /* Slightly darker color */
+    }
+
+    100% {
+        background: rgba(0, 0, 0, 0.3); /* Return to lighter color */
+    }
+}
+
+.text-white {
+    color: #fff;
+    z-index: 3; /* Ensure text is above both overlays */
+}
+
+.text-center {
+    z-index: 3; /* Ensure text is above both overlays */
+}
+
+/* Navbar styles */
+.navbar {
+    background-color: #002F6C; /* Deep Navy Blue for the navbar */
+    z-index: 10; /* Ensure navbar is above everything else */
+}
+
+/* Footer styles */
+.footer {
+    background-color: #1F1F1F; /* Charcoal for the footer */
+    color: #ffffff;
+    padding: 0.8em 0;
+    z-index: 5; /* Ensure footer is above the main content but below the navbar */
 }
