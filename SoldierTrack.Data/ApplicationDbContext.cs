@@ -1,6 +1,8 @@
 ﻿namespace SoldierTrack.Data
 {
     using System.Linq.Expressions;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
@@ -27,6 +29,19 @@
         public DbSet<Exercise> Exercises { get; set; }
 
         public DbSet<Category> Categories { get; set; }
+
+
+        public override int SaveChanges()
+        {
+            this.UpdateAuditInfo();
+            return base.SaveChanges();
+        }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            this.UpdateAuditInfo();
+            return await base.SaveChangesAsync(cancellationToken);
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -75,6 +90,29 @@
             entry.State = EntityState.Modified;
             entity.IsDeleted = isDeleted;
             entity.DeletedOn = deletedOn;
+        }
+
+        private void UpdateAuditInfo()
+        {
+            var changedEntries = this.ChangeTracker
+                .Entries()
+                .Where(e =>
+                    e.Entity is IAuditInfo &&
+                    (e.State == EntityState.Added || e.State == EntityState.Modified));
+
+            foreach (var entry in changedEntries)
+            {
+                var entity = (IAuditInfo)entry.Entity;
+
+                if (entry.State == EntityState.Added && entity.CreatedOn == default)
+                {
+                    entity.CreatedOn = DateTime.UtcNow;
+                }
+                else
+                {
+                    entity.ModifiedOn = DateTime.UtcNow;
+                }
+            }
         }
     }
 }

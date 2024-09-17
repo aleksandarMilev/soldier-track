@@ -1,0 +1,126 @@
+﻿@using SoldierTrack.Services.Workout.Models
+
+@using static SoldierTrack.Web.Common.Constants.WebConstants;
+
+@model WorkoutPageServiceModel
+
+@{
+    this.ViewData["Title"] = "Workouts";
+}
+
+@{
+    var workouts = Model.Workouts;
+    var pageIndex = Model.PageIndex;
+    var totalPages = Model.TotalPages;
+    var pageSize = Model.PageSize;
+}
+
+
+@if (this.TempData["Message"] != null)
+{
+    <div class="alert alert-success">
+        <p>@this.TempData["Message"]</p>
+    </div>
+}
+
+<div class="container h-100">
+    <div class="row h-100 justify-content-center align-items-center">
+        <div class="col-md-6">
+            <h1>Workouts</h1>
+            <form method="get" asp-area="Workout" asp-controller="Workout" asp-action="GetAll" style="margin-bottom: 1em">
+                <div class="form-group row">
+                    <div class="col-md-8">
+                        <label for="date">Select Date:</label>
+                        <input type="date" id="date" name="date" class="form-control" />
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary" style="margin-left:-1em">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="container h-100">
+    <div class="row h-100 justify-content-center align-items-center">
+        <div class="col-md-11">
+            @if (workouts.Count() == 0)
+            {
+                <p class="text text-danger text-center">No workouts found!</p>
+            }
+            else
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Category</th>
+                            <th>Participants</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var workout in workouts)
+                        {
+                            <tr>
+                                <td>@workout.Title</td>
+                                <td>@workout.Date.ToString("dd MMM yyyy")</td>
+                                <td>@workout.Time.ToString(@"hh\:mm")</td>
+                                <td>@workout.CategoryName</td>
+                                <td>@workout.CurrentParticipants / @workout.MaxParticipants</td>
+                                <td>
+                                    <a asp-area="Workout" asp-controller="Workout" asp-action="Details" asp-route-id="@workout.Id" class="btn btn-info">Details</a>
+                                    @if (this.User.IsInRole(AdminRoleName))
+                                    {
+                                        <a asp-area="Workout" asp-controller="Workout" asp-action="Edit" asp-route-id="@workout.Id" class="btn btn-warning">Edit</a>
+                                        <a asp-area="Workout" asp-controller="Workout" asp-action="Delete" asp-route-id="@workout.Id" class="btn btn-danger">Delete</a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        @if (pageIndex > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@(pageIndex - 1)" asp-route-pageSize="@pageSize">Previous</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link">Previous</span>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            <li class="page-item @(i == pageIndex ? "active" : "")">
+                                <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@i" asp-route-pageSize="@pageSize">@i</a>
+                            </li>
+                        }
+
+                        @if (pageIndex < totalPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@(pageIndex + 1)" asp-route-pageSize="@pageSize">Next</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link">Next</span>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            }
+        </div>
+    </div>
+</div>

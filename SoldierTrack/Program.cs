@@ -39,8 +39,8 @@ namespace SoldierTrack
                 .UseAuthentication()
                 .UseAuthorization();
 
+            app.MapDefaultAreaRoute();
             app.MapDefaultControllerRoute();
-            app.MapAreaDefaultControllerRoute();
             app.MapRazorPages();
 
             await app.CreateAdminRoleAsync();

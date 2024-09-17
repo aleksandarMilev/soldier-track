@@ -3,11 +3,15 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using SoldierTrack.Data;
+    using SoldierTrack.Services.Category;
+    using SoldierTrack.Services.Workout;
 
     public static class ServiceCollection
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<IWorkoutService, WorkoutService>();
             return services;
         }
 
