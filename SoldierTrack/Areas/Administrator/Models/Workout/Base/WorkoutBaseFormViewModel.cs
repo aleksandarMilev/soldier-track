@@ -1,4 +1,4 @@
-﻿namespace SoldierTrack.Web.Areas.Administrator.Models.Workout
+﻿namespace SoldierTrack.Web.Areas.Administrator.Models.Workout.Base
 {
     using System.ComponentModel.DataAnnotations;
 
@@ -9,13 +9,13 @@
     using static SoldierTrack.Web.Common.Constants.ModelValidationConstants.WorkoutConstants;
     using static SoldierTrack.Web.Common.Constants.WebConstants;
 
-    public class FormWorkoutViewModel
+    public class WorkoutBaseFormViewModel
     {
         [Required(ErrorMessage = RequiredError)]
         [StringLength(
-            TitleMaxLength,
-            MinimumLength = TitleMinLength,
-            ErrorMessage = LengthError)]
+           TitleMaxLength,
+           MinimumLength = TitleMinLength,
+           ErrorMessage = LengthError)]
         public string Title { get; init; } = null!;
 
         [Required(ErrorMessage = RequiredError)]

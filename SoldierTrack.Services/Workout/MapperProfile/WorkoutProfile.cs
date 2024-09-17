@@ -10,7 +10,8 @@
         {
             this.CreateMap<WorkoutServiceModel, Workout>();
             this.CreateMap<Workout, WorkoutIdServiceModel>()
-                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.CategoryName.Name));
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.CategoryName.Name))
+                .ReverseMap();
         }
     }
 }

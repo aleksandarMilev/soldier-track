@@ -10,8 +10,18 @@
     {
         public WorkoutProfile()
         {
-            this.CreateMap<FormWorkoutViewModel, WorkoutServiceModel>()
+            this.CreateMap<CreateWorkoutViewModel, WorkoutServiceModel>()
                .ForMember(
+                   dest => dest.Time,
+                   opt => opt.MapFrom(
+                       src => TimeSpan.ParseExact(
+                           src.Time,
+                           "hh\\:mm",
+                           CultureInfo.InvariantCulture)));
+
+            this.CreateMap<WorkoutIdServiceModel, EditWorkoutViewModel>()
+                .ReverseMap()
+                .ForMember(
                    dest => dest.Time,
                    opt => opt.MapFrom(
                        src => TimeSpan.ParseExact(

@@ -7,12 +7,14 @@
     using SoldierTrack.Services.Category;
     using SoldierTrack.Services.Workout;
     using SoldierTrack.Services.Workout.Models;
+    using SoldierTrack.Web.Areas.Administrator.Models.Workout;
+    using SoldierTrack.Web.Areas.Administrator.Models.Workout.Base;
 
     using static SoldierTrack.Web.Common.Constants.WebConstants;
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
-    using SoldierTrack.Web.Areas.Administrator.Models.Workout;
+    using Microsoft.CodeAnalysis.Scripting.Hosting;
 
-    [Area("Administrator")]
+    [Area(AdminRoleName)]
     [Authorize(Roles = AdminRoleName)]
     public class WorkoutController : Controller
     {
@@ -31,14 +33,14 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> CreateWorkout()
+        public async Task<IActionResult> Create()
         {
-            var viewModel = new FormWorkoutViewModel() { Date = DateTime.Now };
+            var viewModel = new CreateWorkoutViewModel() { Date = DateTime.Now };
             return await this.ReturnWorkoutViewWithCategoriesLoaded(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateWorkout(FormWorkoutViewModel viewModel)
+        public async Task<IActionResult> Create(CreateWorkoutViewModel viewModel)
         {
             if (!this.ModelState.IsValid)
             {
@@ -47,7 +49,7 @@
 
             var serviceModel = this.mapper.Map<WorkoutServiceModel>(viewModel);
 
-            if (await this.workoutService.IsAnotherWorkoutScheduledAtThisDateAndTimeAsync(serviceModel))
+            if (await this.workoutService.IsAnotherWorkoutScheduledAtThisDateAndTimeAsync(serviceModel.Date, serviceModel.Time))
             {
                 this.ModelState.AddModelError("Time", string.Format(WorkoutAlreadyListed, serviceModel.Time.ToString("hh\\:mm")));
                 return await this.ReturnWorkoutViewWithCategoriesLoaded(viewModel);
@@ -57,7 +59,48 @@
             return this.RedirectToAction("Index", "Home", new { area = "" });
         }
 
-        private async Task<IActionResult> ReturnWorkoutViewWithCategoriesLoaded(FormWorkoutViewModel viewModel)
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var serviceModel = await this.workoutService.GetByIdAsync(id);
+
+            if (serviceModel == null)
+            {
+                return this.NotFound();
+            }
+
+            var viewModel = this.mapper.Map<EditWorkoutViewModel>(serviceModel);
+            return await this.ReturnWorkoutViewWithCategoriesLoaded(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditWorkoutViewModel viewModel)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return await this.ReturnWorkoutViewWithCategoriesLoaded(viewModel);
+            }
+
+            var serviceModel = this.mapper.Map<WorkoutIdServiceModel>(viewModel);
+
+            if (await this.workoutService.IsAnotherWorkoutScheduledAtThisDateAndTimeAsync(serviceModel.Date, serviceModel.Time, serviceModel.Id))
+            {
+                this.ModelState.AddModelError("Time", string.Format(WorkoutAlreadyListed, serviceModel.Time.ToString("hh\\:mm")));
+                return await this.ReturnWorkoutViewWithCategoriesLoaded(viewModel);
+            }
+
+            await this.workoutService.EditAsync(serviceModel);
+            return this.RedirectToAction("Index", "Home", new { area = "" });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await this.workoutService.DeleteAsync(id);
+            return this.RedirectToAction("Index", "Home", new { area = "" });
+        }
+
+        private async Task<IActionResult> ReturnWorkoutViewWithCategoriesLoaded(WorkoutBaseFormViewModel viewModel)
         {
             var categories = await this.categoryService.GetAllAsync();
 

@@ -55,24 +55,88 @@
             return pageModels;
         }
 
+        public async Task<bool> IsAnotherWorkoutScheduledAtThisDateAndTimeAsync(DateTime date, TimeSpan time, int? id = null)
+        {
+            var entity = await this.data
+                .Workouts
+                .AsNoTracking()
+                .Select(w => new
+                {
+                    w.Id,
+                    w.Time,
+                    w.Date,
+                })
+                .FirstOrDefaultAsync(w =>
+                            w.Time == time &&
+                            w.Date == date &&
+                            w.Date >= DateTime.Now.Date);
+
+            if (entity != null && id == null)
+            {
+                return true;
+            }
+
+            if (entity != null && id.HasValue && id.Value != entity.Id)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+
+        public async Task<WorkoutIdServiceModel?> GetByIdAsync(int id)
+        {
+            return await this.data
+                .Workouts
+                .AsNoTracking()
+                .ProjectTo<WorkoutIdServiceModel>(this.mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(w => w.Id == id);
+        }
+
+
         public async Task CreateAsync(WorkoutServiceModel model)
         {
-            var category = await this.data.Categories.FirstOrDefaultAsync(c => c.Id == model.CategoryId) ?? throw new InvalidOperationException("Category not found!");
+            var category = await this.data
+                .Categories
+                .FirstOrDefaultAsync(c => c.Id == model.CategoryId) 
+                ?? throw new InvalidOperationException("Category not found!");
+
             var entity = this.mapper.Map<Workout>(model);
             entity.CategoryName = category;
             this.data.Workouts.Add(entity);
             await this.data.SaveChangesAsync();
         }
 
-        public async Task<bool> IsAnotherWorkoutScheduledAtThisDateAndTimeAsync(WorkoutServiceModel model)
+
+        public async Task EditAsync(WorkoutIdServiceModel model)
         {
-            return await this.data
+            var category = await this.data
+               .Categories
+               .FirstOrDefaultAsync(c => c.Id == model.CategoryId)
+               ?? throw new InvalidOperationException("Category not found!");
+
+            var entity = await this.data
                 .Workouts
-                .AsNoTracking()
-                .AnyAsync(w =>
-                            w.Time == model.Time &&
-                            w.Date == model.Date &&
-                            w.Date >= DateTime.Now.Date);
+                .FirstOrDefaultAsync(w => w.Id == model.Id)
+                ?? throw new InvalidOperationException("Workout not found!");
+
+            this.mapper.Map(model, entity);
+            entity.CategoryName = category;
+
+            await this.data.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var entity = await this
+                .data
+                .Workouts
+                .FirstOrDefaultAsync(w => w.Id == id)
+                ?? throw new InvalidOperationException("Workout not found!");
+
+            this.data.SoftDelete(entity);
+            await this.data.SaveChangesAsync();
         }
 
         private IQueryable<Workout> GetUpcomingsAsNoTracking()
