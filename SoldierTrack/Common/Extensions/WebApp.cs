@@ -46,5 +46,13 @@
                 }
             }
         }
+
+        public static void MapAreaDefaultControllerRoute(this IEndpointRouteBuilder builder) 
+        {
+            builder.MapAreaControllerRoute(
+                 name: "Administrator", 
+                 areaName: "Administrator", 
+                 pattern: "{area}/{controller=Admin}/{action=Index}/{id?}");
+        }
     }
 }

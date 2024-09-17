@@ -40,6 +40,7 @@ namespace SoldierTrack
                 .UseAuthorization();
 
             app.MapDefaultControllerRoute();
+            app.MapAreaDefaultControllerRoute();
             app.MapRazorPages();
 
             await app.CreateAdminRoleAsync();
