@@ -1,27 +1,45 @@
 html, body {
     height: 100%;
     margin: 0;
-}
-
-.wrapper {
-    min-height: 100vh; /* Ensure wrapper takes at least the full viewport height */
     display: flex;
     flex-direction: column;
 }
 
+body {
+    background-color: #f8f9fa;
+}
+
+main {
+    flex: 1;
+}
+
+.wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-between;
+}
+
 .home-page-bg {
-    background-image: url('/images/sf.jpg'); /* Path to your local image */
     background-size: cover;
     background-position: center;
-    background-repeat: no-repeat; /* Prevent repeating the image */
-    height: 100vh; /* Full viewport height */
-    display: flex; /* Enable flexbox */
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
+    background-repeat: no-repeat;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: relative;
-    z-index: 1; /* Ensure it's above the animated background */
-    animation: animateImage 30s infinite alternate; /* Animation for the image */
+    z-index: 1;
+    animation: animateImage 30s infinite alternate;
 }
+
+.card {
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+}
+
 
 @keyframes animateImage {
     0% {
@@ -37,6 +55,31 @@ html, body {
     }
 }
 
+.animated-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 0;
+    animation: iridescent 10s infinite alternate;
+}
+
+@keyframes iridescent {
+    0% {
+        background: rgba(0, 0, 0, 0.3);
+    }
+
+    50% {
+        background: rgba(0, 0, 0, 0.6);
+    }
+
+    100% {
+        background: rgba(0, 0, 0, 0.3);
+    }
+}
+
 .home-page-bg::before {
     content: '';
     position: absolute;
@@ -44,54 +87,71 @@ html, body {
     left: 0;
     height: 100%;
     width: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Dark overlay for text readability */
-    z-index: 2; /* Ensure overlay is above the animated background */
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2;
 }
 
-.animated-background {
-    position: fixed; /* Fixed to cover the entire viewport */
-    top: 0;
-    left: 0;
-    height: 100vh; /* Full viewport height */
-    width: 100vw; /* Full viewport width */
-    background: rgba(0, 0, 0, 0.5); /* Base color for animation */
-    z-index: 0; /* Ensure it's behind the content */
-    animation: iridescent 10s infinite alternate; /* Iridescent effect animation */
-}
-
-@keyframes iridescent {
-    0% {
-        background: rgba(0, 0, 0, 0.3); /* Start with a lighter color */
-    }
-
-    50% {
-        background: rgba(0, 0, 0, 0.6); /* Slightly darker color */
-    }
-
-    100% {
-        background: rgba(0, 0, 0, 0.3); /* Return to lighter color */
-    }
-}
-
-.text-white {
+.carousel-caption {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
     color: #fff;
-    z-index: 3; /* Ensure text is above both overlays */
+    text-align: center;
 }
 
-.text-center {
-    z-index: 3; /* Ensure text is above both overlays */
+/*#full-info {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    padding: 0;
+    transition: opacity 10s ease, max-height 10s ease, padding 10s ease;
+    will-change: opacity, max-height, padding;
 }
 
-/* Navbar styles */
+    #full-info.visible {
+        opacity: 1;
+        max-height: 500px;*/ /* Adjust as needed */
+        /*padding: 1rem;*/ /* Adjust as needed */
+    /*}*/
+
 .navbar {
-    background-color: #002F6C; /* Deep Navy Blue for the navbar */
-    z-index: 10; /* Ensure navbar is above everything else */
+    background-color: #002F6C;
+    padding: 1.25em;
+    z-index: 10;
 }
 
-/* Footer styles */
+.navbar-brand, .nav-link {
+    color: #ffffff !important;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #dcdcdc !important;
+}
+
 .footer {
-    background-color: #1F1F1F; /* Charcoal for the footer */
+    background-color: #1F1F1F;
     color: #ffffff;
     padding: 0.8em 0;
-    z-index: 5; /* Ensure footer is above the main content but below the navbar */
+    z-index: 5;
+}
+
+.carousel-control-prev-icon, .carousel-control-next-icon {
+    filter: invert(100%);
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    width: 3.5rem;
+    height: 3.5rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.carousel-control-prev-icon:hover, .carousel-control-next-icon:hover {
+    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+}
+
+.carousel-control-prev, .carousel-control-next {
+    padding: 1.5rem;
 }

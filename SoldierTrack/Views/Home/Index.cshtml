@@ -3,13 +3,90 @@
 }
 
 <div class="wrapper">
-    <div class="animated-background"></div> <!-- Iridescent background effect -->
+    <div class="animated-background"></div>
 
-    <div class="home-page-bg text-white">
-        <div class="text-center">
-            <h1 class="display-4">Welcome to SoldierFit</h1>
-            <p class="lead">Where strength meets endurance!</p>
-            <a href="/About" class="btn btn-primary btn-lg mt-4">Learn More</a>
+    <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
         </div>
+
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="home-page-bg" style="background-image: url('/images/sf.jpg');">
+                    <div id="home" class="carousel-caption d-flex flex-column justify-content-center align-items-center text-center">
+                        <div id="brief-info-1">
+                            <h5>Welcome to SoldierFit</h5>
+                            <p>Where strength meets endurance!</p>
+                            <a href="#" class="btn btn-primary" onclick="viewMore(event, 'full-info-1')">View More</a>
+                        </div>
+                        <div id="full-info-1" class="d-none">
+                            <p>More info here: SoldierFit offers personalized training programs, nutrition guidance, and a supportive community to help you achieve your fitness goals.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="home-page-bg" style="background-image: url('/images/sf2.jpg');">
+                    <div class="carousel-caption d-flex flex-column justify-content-center align-items-center text-center">
+                        <div id="brief-info-2">
+                            <h5>About Us</h5>
+                            <p>Learn more about our mission and vision. We are dedicated to helping you build a stronger, healthier you.</p>
+                            <a href="#" class="btn btn-primary" onclick="viewMore(event, 'full-info-2')">Learn More</a>
+                        </div>
+                        <div id="full-info-2" class="d-none">
+                            <p>Detailed information about our mission, values, and goals. Join us to be a part of something great!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="home-page-bg" style="background-image: url('/images/sf3.jpg');">
+                    <div class="carousel-caption d-flex flex-column justify-content-center align-items-center text-center">
+                        <div id="brief-info-3">
+                            <h5>Contact Us</h5>
+                            <p>Get in touch and start your SoldierFit journey. Our team is here to support you every step of the way.</p>
+                            <a href="#" class="btn btn-primary" onclick="viewMore(event, 'full-info-3')">Get in Touch</a>
+                        </div>
+                        <div id="full-info-3" class="d-none">
+                            <p>Contact details and how to get started with SoldierFit. We're excited to hear from you!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
     </div>
 </div>
+
+
+<script>
+    function viewMore(e, fullInfoId) {
+        e.preventDefault();
+
+        let fullInfo = document.getElementById(fullInfoId);
+        let isHidden = fullInfo.classList.contains('d-none');
+
+        if (isHidden) {
+            fullInfo.classList.remove('d-none');
+            fullInfo.classList.add('visible');
+            e.target.textContent = 'View Less';
+        } else {
+            fullInfo.classList.remove('visible');
+            fullInfo.classList.add('d-none');
+            e.target.textContent = 'View More';
+        }
+    }
+</script>
+
