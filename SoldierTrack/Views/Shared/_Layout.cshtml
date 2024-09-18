@@ -45,13 +45,31 @@
 
                             @if (userIsLogged.GetValueOrDefault() && !userIsAdmin)
                             {
-                                var userIsAthlete = await this.athleteService.UserIsAthlete(userId!);
+                                var userIsAthlete = await this.athleteService.UserIsAthleteAsync(userId!);
 
                                 if (!userIsAthlete)
                                 {
                                     <li class="nav-item">
                                         <a class="nav-link" asp-area="" asp-controller="Athlete" asp-action="Create">Become Athlete</a>
                                     </li>
+                                }
+                                else
+                                {
+                                    var athleteId = await this.athleteService.GetIdByUserIdAsync(userId!);
+                                    var athleteHasMembership = await this.athleteService.AthleteHasMembershipAsync(athleteId);
+
+                                    if (!athleteHasMembership)
+                                    {
+                                        <li class="nav-item">
+                                            <a class="nav-link" asp-area="" asp-controller="Membership" asp-action="RequestMembership">Request Membership</a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li class="nav-item">
+                                            <a class="nav-link" asp-area="" asp-controller="Membership" asp-action="Details">My Membership</a>
+                                        </li>
+                                    }
                                 }
                             }
                         </ul>

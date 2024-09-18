@@ -5,6 +5,7 @@
     using SoldierTrack.Data;
     using SoldierTrack.Services.Athlete;
     using SoldierTrack.Services.Category;
+    using SoldierTrack.Services.Membership;
     using SoldierTrack.Services.Workout;
 
     public static class ServiceCollection
@@ -14,6 +15,8 @@
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IWorkoutService, WorkoutService>();
             services.AddTransient<IAthleteService, AthleteService>();
+            services.AddTransient<IMembershipService, MembershipService>();
+
             return services;
         }
 

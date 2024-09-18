@@ -18,6 +18,6 @@
 
         public int Price { get; set; }
 
-        required public Athlete Athlete { get; set; }
+        public Athlete Athlete { get; set; } = null!;
     }
 }

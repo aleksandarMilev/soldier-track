@@ -17,5 +17,8 @@
         public const string AthleteWithSameNumberExists = "An athlete with number {0} is already registered!";
 
         public const string AthleteSuccessRegister = "You have successfully registered as athlete!";
+
+        //membership
+        public const string MembershipRequested = "You have successfully requested yor membership!";
     }
 }

@@ -6,8 +6,12 @@
     {
         Task CreateAsync(AthleteServiceModel model);
 
-        Task<bool> IsAthleteWithSameNumberAlreadyRegistered(string phoneNumber, int? id = null);
+        Task<bool> IsAthleteWithSameNumberExistsAsync(string phoneNumber, int? id = null);
 
-        Task<bool> UserIsAthlete(string userId);
+        Task<bool> UserIsAthleteAsync(string userId);
+
+        Task<int> GetIdByUserIdAsync(string userId);
+
+        Task<bool> AthleteHasMembershipAsync(int id);
     }
 }

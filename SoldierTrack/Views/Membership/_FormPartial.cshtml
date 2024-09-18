@@ -1,0 +1,74 @@
+﻿@using SoldierTrack.Web.Models.Membership.Base
+
+@model MembershipBaseFormModel
+
+<input type="hidden" name="AthleteId" value="@Model.AthleteId" />
+
+<div class="form-group">
+    <label asp-for="StartDate" class="control-label"></label>
+    <input asp-for="StartDate" class="form-control" type="date" />
+</div>
+
+<div class="form-group">
+    <label asp-for="IsMonthly" class="control-label"></label>
+    <input asp-for="IsMonthly" class="form-check-input" type="checkbox" id="isMonthly" onclick="onMonthlyClick(event)" />
+</div>
+
+<div class="form-group" id="workoutsCountForm">
+    <label asp-for="TotalWorkoutsCount" class="control-label"></label>
+    <input asp-for="TotalWorkoutsCount" class="form-control" type="number" min="0" max="30" step="1" id="workoutsCount" oninput="onTotalCountInput(event)" />
+</div>
+
+<div class="form-group d-none" id="endDateDiv">
+    <label class="control-label">Membership End Date:</label>
+    <input class="form-control" type="date" id="endDate" readonly />
+</div>
+
+<div class="form-group">
+    <label class="control-label">Membership Price (in leva)</label>
+    <input class="form-control" type="number" id="price" readonly />
+</div>
+
+
+<script>
+    function onMonthlyClick(e) { 
+        let workoutsCountForm = document.getElementById('workoutsCountForm');
+        let endDateDiv = document.getElementById('endDateDiv');
+        let endDateValue = document.getElementById('endDate');
+        let isMonthly = document.getElementById('isMonthly');
+
+        let today = new Date();
+        today.setMonth(today.getMonth() + 1);
+        endDateValue.value = today.toISOString().split('T')[0];
+
+        if (workoutsCountForm.classList.contains('d-none')) {
+            workoutsCountForm.classList.remove('d-none');
+            endDateDiv.classList.add('d-none');
+            document.getElementById('price').value = '';
+        } else { 
+            workoutsCountForm.classList.add('d-none');
+            endDateDiv.classList.remove('d-none');
+            document.getElementById('price').value = 200;
+        }
+
+    }
+
+    function onTotalCountInput(e) {
+        let isMonthlyCheckbox = document.getElementById('isMonthly');
+        let workoutsCountElement = document.getElementById('workoutsCount');
+        let workoutsCountValue = parseInt(workoutsCountElement.value, 10);
+
+        if (isNaN(workoutsCountValue) || workoutsCountValue < 0) {
+            workoutsCountValue = 0;
+        } else if (workoutsCountValue > 30) {
+            workoutsCountValue = 30;
+        }
+
+        workoutsCountElement.value = workoutsCountValue;
+
+        let priceElement = document.getElementById('price');
+        let priceValue = isMonthlyCheckbox.checked ? (workoutsCountValue > 0 ? 8 * workoutsCountValue : 200) : 8 * workoutsCountValue;
+
+        priceElement.value = priceValue;
+    }
+</script>

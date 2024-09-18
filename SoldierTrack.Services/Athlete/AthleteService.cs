@@ -26,7 +26,17 @@
             await this.data.SaveChangesAsync();
         }
 
-        public async Task<bool> IsAthleteWithSameNumberAlreadyRegistered(string phoneNumber, int? id = null)
+        public async Task<int> GetIdByUserIdAsync(string userId)
+        {
+            return await this.data
+                .Athletes
+                .AsNoTracking()
+                .Where(a => a.UserId == userId)
+                .Select(a => a.Id)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> IsAthleteWithSameNumberExistsAsync(string phoneNumber, int? id = null)
         {
             var entityId = await this.data
                 .Athletes
@@ -48,13 +58,25 @@
             return false;
         }
 
-        public async Task<bool> UserIsAthlete(string userId) 
+        public async Task<bool> UserIsAthleteAsync(string userId) 
         {
             return await this.data
                .Athletes
                .AsNoTracking()
                .Select(a => a.UserId)
                .AnyAsync(id => id == userId);
+        }
+
+        public async Task<bool> AthleteHasMembershipAsync(int id)
+        {
+            var membershipId = await this.data
+                .Athletes
+                .AsNoTracking()
+                .Where(a => a.Id == id)
+                .Select(a => a.MembershipId)
+                .FirstOrDefaultAsync();
+
+            return membershipId != null;
         }
     }
 }

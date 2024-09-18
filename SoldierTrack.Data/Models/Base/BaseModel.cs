@@ -5,7 +5,7 @@
     public abstract class BaseModel<TKey> : IAuditInfo
     {
         [Key]
-        required public TKey Id { get; set; }
+        public TKey Id { get; set; } = default!;
 
         public DateTime CreatedOn { get; set; }
 

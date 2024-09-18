@@ -35,5 +35,14 @@
 
             public const int CurrentParticipantsMinValue = 0;
         }
+
+        public static class MembershipConstants
+        {
+            public const int TotalCountMinValue = 0;
+            public const int TotalCountMaxValue = 31;
+
+            public const int PriceMinValue = 0;
+            public const int PriceMaxValue = 300;
+        }
     }
 }

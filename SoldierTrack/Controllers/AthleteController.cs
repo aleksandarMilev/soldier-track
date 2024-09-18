@@ -40,7 +40,7 @@
             viewModel.UserId = this.User.GetId();
             var serviceModel = this.mapper.Map<AthleteServiceModel>(viewModel);
 
-            if (await this.athleteService.IsAthleteWithSameNumberAlreadyRegistered(serviceModel.PhoneNumber))
+            if (await this.athleteService.IsAthleteWithSameNumberExistsAsync(serviceModel.PhoneNumber))
             {
                 this.ModelState.AddModelError(nameof(serviceModel.PhoneNumber), string.Format(AthleteWithSameNumberExists, serviceModel.PhoneNumber));
                 return this.View(viewModel);
