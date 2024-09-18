@@ -5,5 +5,9 @@
     public interface IMembershipService
     {
         Task RequestAsync(CreateMembershipServiceModel model);
+
+        Task<IEnumerable<MembershipPendingServiceModel>> GetAllPendingAsync();
+
+        Task<int> GetPendingCountAsync();
     }
 }

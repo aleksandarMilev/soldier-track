@@ -1,6 +1,7 @@
 ﻿namespace SoldierTrack.Services.Membership
 {
     using AutoMapper;
+    using AutoMapper.QueryableExtensions;
     using Microsoft.EntityFrameworkCore;
     using SoldierTrack.Data;
     using SoldierTrack.Data.Models;
@@ -33,6 +34,26 @@
 
             this.data.Memberships.Add(membershipEntity);
             await this.data.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<MembershipPendingServiceModel>> GetAllPendingAsync()
+        {
+            return await this.data
+                .Memberships
+                .AsNoTracking()
+                .Where(m => m.IsPending)
+                .ProjectTo<MembershipPendingServiceModel>(this.mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
+        public async Task<int> GetPendingCountAsync()
+        {
+            return await this.data
+                .Memberships
+                .AsNoTracking()
+                .Select(w => w.IsPending)
+                .Where(sPending => true)
+                .CountAsync();
         }
     }
 }

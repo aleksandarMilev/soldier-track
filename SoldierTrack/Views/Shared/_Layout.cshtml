@@ -1,9 +1,11 @@
 ﻿@using SoldierTrack.Services.Athlete
+@using SoldierTrack.Services.Membership
 @using SoldierTrack.Web.Common.Extensions
 
 @using static SoldierTrack.Web.Common.Constants.WebConstants
 
 @inject IAthleteService athleteService
+@inject IMembershipService membershipService
 
 @{
     var userId = this.User.GetId();
@@ -33,14 +35,29 @@
                     </button>
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Workout" asp-action="GetAll">All Workouts</a>
+                            </li>
                             @if (userIsAdmin)
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Workout" asp-action="GetAll">All Workouts</a>
-                                </li>
-                                <li class="nav-item">
                                     <a class="nav-link" asp-area="Administrator" asp-controller="Workout" asp-action="Create">Create Workout</a>
                                 </li>
+
+                                var pendingCount = await this.membershipService.GetPendingCountAsync();
+
+                                if (pendingCount > 0)
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link position-relative d-inline-block" asp-area="" asp-controller="Membership" asp-action="GetAllPending">
+                                            Pending Memberships
+                                            <span class="badge bg-danger position-absolute top-0 end-0 translate-middle badge-rounded-pill" style="font-size: 0.75em; padding: 0.2em 0.5em;">
+                                                @pendingCount
+                                                <span class="visually-hidden">pending memberships</span>
+                                            </span>
+                                        </a>
+                                    </li>
+                                }
                             }
 
                             @if (userIsLogged.GetValueOrDefault() && !userIsAdmin)

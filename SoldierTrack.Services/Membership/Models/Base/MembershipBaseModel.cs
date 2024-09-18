@@ -8,7 +8,7 @@
 
         public int? TotalWorkoutsCount
         {
-            get => IsMonthly ? null : this.totalWorkoutsCount;
+            get => this.IsMonthly ? null : this.totalWorkoutsCount;
             init => this.totalWorkoutsCount = value;
         }
 
