@@ -19,13 +19,6 @@
             this.mapper = AutoMapperConfig<AthleteProfile>.CreateMapper();
         }
 
-        public async Task CreateAsync(AthleteServiceModel model)
-        {
-            var athleteEntity = this.mapper.Map<Athlete>(model);
-            this.data.Athletes.Add(athleteEntity);
-            await this.data.SaveChangesAsync();
-        }
-
         public async Task<int> GetIdByUserIdAsync(string userId)
         {
             return await this.data
@@ -36,7 +29,7 @@
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<bool> IsAthleteWithSameNumberExistsAsync(string phoneNumber, int? id = null)
+        public async Task<bool> AthleteWithSameNumberExistsAsync(string phoneNumber, int? id = null)
         {
             var entityId = await this.data
                 .Athletes
@@ -58,7 +51,7 @@
             return false;
         }
 
-        public async Task<bool> UserIsAthleteAsync(string userId) 
+        public async Task<bool> UserIsAthleteAsync(string userId)
         {
             return await this.data
                .Athletes
@@ -78,5 +71,15 @@
 
             return membershipId != null;
         }
+
+        public async Task CreateAsync(AthleteServiceModel model)
+        {
+            var athleteEntity = this.mapper.Map<Athlete>(model);
+
+            this.data.Athletes.Add(athleteEntity);
+            await this.data.SaveChangesAsync();
+        }
+
+       
     }
 }

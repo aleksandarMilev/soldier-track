@@ -1,5 +1,6 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using SoldierTrack.Services.Workout;
 
@@ -13,6 +14,7 @@
             => this.workoutService = service;
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll(DateTime? date = null, int pageIndex = 1, int pageSize = 5)
         {
             pageSize = Math.Min(pageSize, MaxPageSize);

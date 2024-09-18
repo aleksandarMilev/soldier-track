@@ -40,13 +40,14 @@
             viewModel.UserId = this.User.GetId();
             var serviceModel = this.mapper.Map<AthleteServiceModel>(viewModel);
 
-            if (await this.athleteService.IsAthleteWithSameNumberExistsAsync(serviceModel.PhoneNumber))
+            if (await this.athleteService.AthleteWithSameNumberExistsAsync(serviceModel.PhoneNumber))
             {
                 this.ModelState.AddModelError(nameof(serviceModel.PhoneNumber), string.Format(AthleteWithSameNumberExists, serviceModel.PhoneNumber));
                 return this.View(viewModel);
             }
 
             await this.athleteService.CreateAsync(serviceModel);
+
             this.TempData["SuccessMessage"] = AthleteSuccessRegister;
             return this.RedirectToAction("Index", "Home");
         }

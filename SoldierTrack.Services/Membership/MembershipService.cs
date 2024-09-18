@@ -30,6 +30,7 @@
 
             membershipEntity.Athlete = athleteEntity;
             athleteEntity.MembershipId = membershipEntity.Id;
+
             this.data.Memberships.Add(membershipEntity);
             await this.data.SaveChangesAsync();
         }

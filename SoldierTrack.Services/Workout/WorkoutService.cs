@@ -8,7 +8,6 @@
     using SoldierTrack.Services.Common;
     using SoldierTrack.Services.Workout.MapperProfile;
     using SoldierTrack.Services.Workout.Models;
-    using System;
 
     public class WorkoutService : IWorkoutService
     {
@@ -24,7 +23,7 @@
         public async Task<WorkoutPageServiceModel> GetAllAsync(DateTime? date, int pageIndex, int pageSize)
         {
             var query = this
-                .GetUpcomingsAsNoTracking()
+                .GetUpcomingsAsNoTrackingAsync()
                 .Include(w => w.CategoryName)
                 .OrderBy(w => w.Date)
                 .ThenBy(w => w.Time)
@@ -58,9 +57,8 @@
 
         public async Task<bool> IsAnotherWorkoutScheduledAtThisDateAndTimeAsync(DateTime date, TimeSpan time, int? id = null)
         {
-            var entityId = await this.data
-                .Workouts
-                .AsNoTracking()
+            var entityId = await this
+                .GetUpcomingsAsNoTrackingAsync()
                 .Where(w => w.Time == time && w.Date == date && w.Date >= DateTime.Now.Date)
                 .Select(w => w.Id) 
                 .FirstOrDefaultAsync();
@@ -80,13 +78,11 @@
 
         public async Task<WorkoutDetailsServiceModel?> GetByIdAsync(int id)
         {
-            return await this.data
-                .Workouts
-                .AsNoTracking()
+            return await this
+                .GetUpcomingsAsNoTrackingAsync()
                 .ProjectTo<WorkoutDetailsServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(w => w.Id == id);
         }
-
 
         public async Task CreateAsync(WorkoutServiceModel model)
         {
@@ -97,10 +93,10 @@
 
             var entity = this.mapper.Map<Workout>(model);
             entity.CategoryName = category;
+
             this.data.Workouts.Add(entity);
             await this.data.SaveChangesAsync();
         }
-
 
         public async Task EditAsync(WorkoutDetailsServiceModel model)
         {
@@ -122,8 +118,7 @@
 
         public async Task DeleteAsync(int id)
         {
-            var entity = await this
-                .data
+            var entity = await this.data
                 .Workouts
                 .FirstOrDefaultAsync(w => w.Id == id)
                 ?? throw new InvalidOperationException("Workout not found!");
@@ -132,7 +127,7 @@
             await this.data.SaveChangesAsync();
         }
 
-        private IQueryable<Workout> GetUpcomingsAsNoTracking()
+        private IQueryable<Workout> GetUpcomingsAsNoTrackingAsync()
         {
             var todayDate = DateTime.Now.Date;
             var todayTime = DateTime.Now.TimeOfDay;

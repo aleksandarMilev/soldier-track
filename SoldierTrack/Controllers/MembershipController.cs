@@ -53,6 +53,7 @@
 
             var serviceModel = new CreateMembershipServiceModel();
             this.mapper.Map(viewModel, serviceModel);
+
             await this.membershipService.RequestAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = MembershipRequested;

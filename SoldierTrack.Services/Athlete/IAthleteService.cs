@@ -6,7 +6,7 @@
     {
         Task CreateAsync(AthleteServiceModel model);
 
-        Task<bool> IsAthleteWithSameNumberExistsAsync(string phoneNumber, int? id = null);
+        Task<bool> AthleteWithSameNumberExistsAsync(string phoneNumber, int? id = null);
 
         Task<bool> UserIsAthleteAsync(string userId);
 
