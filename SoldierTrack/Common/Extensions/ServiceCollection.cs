@@ -3,6 +3,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using SoldierTrack.Data;
+    using SoldierTrack.Services.Athlete;
     using SoldierTrack.Services.Category;
     using SoldierTrack.Services.Workout;
 
@@ -12,6 +13,7 @@
         {
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IWorkoutService, WorkoutService>();
+            services.AddTransient<IAthleteService, AthleteService>();
             return services;
         }
 

@@ -12,7 +12,6 @@
 
     using static SoldierTrack.Web.Common.Constants.WebConstants;
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
-    using Microsoft.CodeAnalysis.Scripting.Hosting;
 
     [Area(AdminRoleName)]
     [Authorize(Roles = AdminRoleName)]
@@ -51,7 +50,7 @@
 
             if (await this.workoutService.IsAnotherWorkoutScheduledAtThisDateAndTimeAsync(serviceModel.Date, serviceModel.Time))
             {
-                this.ModelState.AddModelError("Time", string.Format(WorkoutAlreadyListed, serviceModel.Time.ToString("hh\\:mm")));
+                this.ModelState.AddModelError(nameof(serviceModel.Time), string.Format(WorkoutAlreadyListed, serviceModel.Time.ToString("hh\\:mm")));
                 return await this.ReturnWorkoutViewWithCategoriesLoaded(viewModel);
             }
 
@@ -69,6 +68,7 @@
                 return this.NotFound();
             }
 
+            //we should map it because the partial view we use for create/edit forms works with WorkoutBaseFormViewModel
             var viewModel = this.mapper.Map<EditWorkoutViewModel>(serviceModel);
             return await this.ReturnWorkoutViewWithCategoriesLoaded(viewModel);
         }
@@ -81,11 +81,11 @@
                 return await this.ReturnWorkoutViewWithCategoriesLoaded(viewModel);
             }
 
-            var serviceModel = this.mapper.Map<WorkoutIdServiceModel>(viewModel);
+            var serviceModel = this.mapper.Map<WorkoutDetailsServiceModel>(viewModel);
 
             if (await this.workoutService.IsAnotherWorkoutScheduledAtThisDateAndTimeAsync(serviceModel.Date, serviceModel.Time, serviceModel.Id))
             {
-                this.ModelState.AddModelError("Time", string.Format(WorkoutAlreadyListed, serviceModel.Time.ToString("hh\\:mm")));
+                this.ModelState.AddModelError(nameof(serviceModel.Time), string.Format(WorkoutAlreadyListed, serviceModel.Time.ToString("hh\\:mm")));
                 return await this.ReturnWorkoutViewWithCategoriesLoaded(viewModel);
             }
 
@@ -100,7 +100,7 @@
             return this.RedirectToAction("Index", "Home", new { area = "" });
         }
 
-        private async Task<IActionResult> ReturnWorkoutViewWithCategoriesLoaded(WorkoutBaseFormViewModel viewModel)
+        private async Task<IActionResult> ReturnWorkoutViewWithCategoriesLoaded(WorkoutBaseFormModel viewModel)
         {
             var categories = await this.categoryService.GetAllAsync();
 

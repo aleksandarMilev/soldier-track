@@ -2,6 +2,13 @@
     ViewData["Title"] = "Home Page";
 }
 
+@if (this.TempData["SuccessMessage"] != null)
+{
+    <div class="text text-success">
+        <p>@this.TempData["SuccessMessage"]</p>
+    </div>   
+}
+
 <div class="wrapper">
     <div class="animated-background"></div>
 

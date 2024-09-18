@@ -9,7 +9,7 @@
     using static SoldierTrack.Web.Common.Constants.ModelValidationConstants.WorkoutConstants;
     using static SoldierTrack.Web.Common.Constants.WebConstants;
 
-    public class WorkoutBaseFormViewModel
+    public abstract class WorkoutBaseFormModel
     {
         [Required(ErrorMessage = RequiredError)]
         [StringLength(

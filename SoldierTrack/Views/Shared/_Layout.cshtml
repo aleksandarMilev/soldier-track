@@ -1,7 +1,14 @@
-﻿@using static SoldierTrack.Web.Common.Constants.WebConstants
+﻿@using SoldierTrack.Services.Athlete
+@using SoldierTrack.Web.Common.Extensions
+
+@using static SoldierTrack.Web.Common.Constants.WebConstants
+
+@inject IAthleteService athleteService
 
 @{
+    var userId = this.User.GetId();
     var userIsAdmin = this.User.IsInRole(AdminRoleName);
+    var userIsLogged = this.User?.Identity?.IsAuthenticated;
 }
 
 <!DOCTYPE html>
@@ -34,6 +41,18 @@
                                 <li class="nav-item">
                                     <a class="nav-link" asp-area="Administrator" asp-controller="Workout" asp-action="Create">Create Workout</a>
                                 </li>
+                            }
+
+                            @if (userIsLogged.GetValueOrDefault() && !userIsAdmin)
+                            {
+                                var userIsAthlete = await this.athleteService.UserIsAthlete(userId!);
+
+                                if (!userIsAthlete)
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-area="" asp-controller="Athlete" asp-action="Create">Become Athlete</a>
+                                    </li>
+                                }
                             }
                         </ul>
                         <partial name="_LoginPartial" />

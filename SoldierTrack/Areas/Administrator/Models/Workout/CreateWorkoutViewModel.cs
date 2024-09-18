@@ -2,7 +2,7 @@
 {
     using SoldierTrack.Web.Areas.Administrator.Models.Workout.Base;
 
-    public class CreateWorkoutViewModel : WorkoutBaseFormViewModel
+    public class CreateWorkoutViewModel : WorkoutBaseFormModel
     {
     }
 }

@@ -7,6 +7,6 @@
         public int PageSize { get; set; }
         public int TotalCount { get; set; }
 
-        public IEnumerable<WorkoutIdServiceModel> Workouts { get; set; } = new List<WorkoutIdServiceModel>();
+        public IEnumerable<WorkoutDetailsServiceModel> Workouts { get; set; } = new List<WorkoutDetailsServiceModel>();
     }
 }

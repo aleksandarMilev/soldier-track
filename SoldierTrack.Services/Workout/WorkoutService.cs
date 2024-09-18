@@ -8,6 +8,7 @@
     using SoldierTrack.Services.Common;
     using SoldierTrack.Services.Workout.MapperProfile;
     using SoldierTrack.Services.Workout.Models;
+    using System;
 
     public class WorkoutService : IWorkoutService
     {
@@ -27,7 +28,7 @@
                 .Include(w => w.CategoryName)
                 .OrderBy(w => w.Date)
                 .ThenBy(w => w.Time)
-                .ProjectTo<WorkoutIdServiceModel>(this.mapper.ConfigurationProvider);
+                .ProjectTo<WorkoutDetailsServiceModel>(this.mapper.ConfigurationProvider);
 
             if (date != null)
             {
@@ -57,26 +58,19 @@
 
         public async Task<bool> IsAnotherWorkoutScheduledAtThisDateAndTimeAsync(DateTime date, TimeSpan time, int? id = null)
         {
-            var entity = await this.data
+            var entityId = await this.data
                 .Workouts
                 .AsNoTracking()
-                .Select(w => new
-                {
-                    w.Id,
-                    w.Time,
-                    w.Date,
-                })
-                .FirstOrDefaultAsync(w =>
-                            w.Time == time &&
-                            w.Date == date &&
-                            w.Date >= DateTime.Now.Date);
+                .Where(w => w.Time == time && w.Date == date && w.Date >= DateTime.Now.Date)
+                .Select(w => w.Id) 
+                .FirstOrDefaultAsync();
 
-            if (entity != null && id == null)
+            if (entityId != 0 && id == null)
             {
                 return true;
             }
 
-            if (entity != null && id.HasValue && id.Value != entity.Id)
+            if (entityId != 0 && id.HasValue && id.Value != entityId)
             {
                 return true;
             }
@@ -84,13 +78,12 @@
             return false;
         }
 
-
-        public async Task<WorkoutIdServiceModel?> GetByIdAsync(int id)
+        public async Task<WorkoutDetailsServiceModel?> GetByIdAsync(int id)
         {
             return await this.data
                 .Workouts
                 .AsNoTracking()
-                .ProjectTo<WorkoutIdServiceModel>(this.mapper.ConfigurationProvider)
+                .ProjectTo<WorkoutDetailsServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(w => w.Id == id);
         }
 
@@ -109,7 +102,7 @@
         }
 
 
-        public async Task EditAsync(WorkoutIdServiceModel model)
+        public async Task EditAsync(WorkoutDetailsServiceModel model)
         {
             var category = await this.data
                .Categories

@@ -2,7 +2,7 @@
 {
     using SoldierTrack.Services.Workout.Models.Base;
 
-    public class WorkoutIdServiceModel : WorkoutBaseServiceModel
+    public class WorkoutDetailsServiceModel : WorkoutBaseModel
     {
         public int Id { get; init; }
 

@@ -1,6 +1,6 @@
 ﻿namespace SoldierTrack.Services.Workout.Models.Base
 {
-    public class WorkoutBaseServiceModel
+    public abstract class WorkoutBaseModel
     {
         public string Title { get; init; } = null!;
 

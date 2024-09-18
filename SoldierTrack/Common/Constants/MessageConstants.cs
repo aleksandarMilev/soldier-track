@@ -12,5 +12,10 @@
 
         //workout
         public const string WorkoutAlreadyListed = "Workout is already listed at {0}!";
+
+        //athlete
+        public const string AthleteWithSameNumberExists = "An athlete with number {0} is already registered!";
+
+        public const string AthleteSuccessRegister = "You have successfully registered as athlete!";
     }
 }
