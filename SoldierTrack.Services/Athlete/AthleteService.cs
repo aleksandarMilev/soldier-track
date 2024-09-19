@@ -3,54 +3,44 @@
     using AutoMapper;
     using AutoMapper.QueryableExtensions;
     using Microsoft.EntityFrameworkCore;
+    using SoldierTrack.Data;
     using SoldierTrack.Data.Models;
-    using SoldierTrack.Data.Repositories.Base;
     using SoldierTrack.Services.Athlete.MapperProfile;
     using SoldierTrack.Services.Athlete.Models;
     using SoldierTrack.Services.Common;
-    using SoldierTrack.Services.Membership;
 
     public class AthleteService : IAthleteService
     {
-        private readonly IDeletableRepository<Athlete> repository;
-        private readonly Lazy<IMembershipService> membershipService;
         private readonly IMapper mapper;
+        private readonly ApplicationDbContext data;
 
-        public AthleteService(IDeletableRepository<Athlete> athleteRepository, Lazy<IMembershipService> membershipService)
+        public AthleteService(ApplicationDbContext data)
         {
-            this.repository = athleteRepository;
-            this.membershipService = membershipService;
+            this.data = data;
             this.mapper = AutoMapperConfig<AthleteProfile>.CreateMapper();
         }
 
         public async Task<int> GetIdByUserIdAsync(string userId)
         {
-            return await this.repository
-                .AllAsNoTracking()
+            return await this.data
+                .AllDeletableAsNoTracking<Athlete>()
                 .Where(a => a.UserId == userId)
                 .Select(a => a.Id)
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<Athlete?> GetByIdAsync(int id)
-        {
-            return await this.repository
-                .All()
-                .FirstOrDefaultAsync(a => a.Id == id);
-        }
-
         public async Task<AthleteDetailsServiceModel?> GetDetailsModelByIdAsync(int id)
         {
-            return await this.repository
-                .AllAsNoTracking()
+            return await this.data
+                .AllDeletableAsNoTracking<Athlete>()
                 .ProjectTo<AthleteDetailsServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<bool> AthleteWithSameNumberExistsAsync(string phoneNumber, int? id = null)
         {
-            var entityId = await this.repository
-                .AllAsNoTracking()
+            var entityId = await this.data
+                .AllDeletableAsNoTracking<Athlete>()
                 .Where(a => a.PhoneNumber == phoneNumber)
                 .Select(a => a.Id)
                 .FirstOrDefaultAsync();
@@ -70,16 +60,16 @@
 
         public async Task<bool> UserIsAthleteAsync(string userId)
         {
-            return await this.repository
-               .AllAsNoTracking()
+            return await this.data
+               .AllDeletableAsNoTracking<Athlete>()
                .Select(a => a.UserId)
                .AnyAsync(id => id == userId);
         }
 
         public async Task<bool> AthleteHasMembershipAsync(int id)
         {
-            var membershipId = await this.repository
-                .AllAsNoTracking()
+            var membershipId = await this.data
+                .AllDeletableAsNoTracking<Athlete>()
                 .Where(a => a.Id == id)
                 .Select(a => a.MembershipId)
                 .FirstOrDefaultAsync();
@@ -91,23 +81,22 @@
         {
             var athleteEntity = this.mapper.Map<Athlete>(model);
 
-            this.repository.Add(athleteEntity);
-            await this.repository.SaveChangesAsync();
+            this.data.Add(athleteEntity);
+            await this.data.SaveChangesAsync();
         }
 
-        public async Task<EditAthleteServiceModel> GetEditServiceModelByIdAsync(int id)
+        public async Task<EditAthleteServiceModel?> GetEditServiceModelByIdAsync(int id)
         {
-            return await this.repository
-                .AllAsNoTracking()
+            return await this.data
+                .AllDeletableAsNoTracking<Athlete>()
                 .ProjectTo<EditAthleteServiceModel>(this.mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(a => a.Id == id)
-                ?? throw new InvalidOperationException("Athlete is not found!");
+                .FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task EditAsync(EditAthleteServiceModel model)
         {
-            var athleteEntity = await this.repository
-                .All()
+            var athleteEntity = await this.data
+                .AllDeletable<Athlete>()
                 .Where(a => a.Id == model.Id)
                 .Include(a => a.Membership)
                 .FirstOrDefaultAsync() 
@@ -115,27 +104,27 @@
 
             this.mapper.Map(model, athleteEntity);
 
-            await this.repository.SaveChangesAsync();
+            await this.data.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
         {
-            var athleteEntity = await this.repository
-                .All()
+            var athleteEntity = await this.data
+                .AllDeletable<Athlete>()
                 .Include(a => a.Membership)
                 .FirstOrDefaultAsync(a => a.Id == id)
                 ?? throw new InvalidOperationException("Athlete not found!");
 
             var membershipEntity = athleteEntity.Membership;
 
-            this.repository.SoftDelete(athleteEntity);
+            this.data.SoftDelete(athleteEntity);
 
             if (membershipEntity != null)
             {
-                this.membershipService.Value.SoftDelete(membershipEntity.Id);
+                this.data.SoftDelete(membershipEntity);
             }
 
-            await this.repository.SaveChangesAsync();
+            await this.data.SaveChangesAsync();
         }
     }
 }

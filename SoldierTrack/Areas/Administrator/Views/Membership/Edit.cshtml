@@ -1,0 +1,59 @@
+﻿@using SoldierTrack.Web.Areas.Administrator.Models.Membership
+
+@model EditMembershipViewModel
+
+@{
+    this.ViewData["Title"] = "Edit Membership";
+}
+
+<div class="container h-100">
+    <div class="row h-100 justify-content-center align-items-center">
+        <div class="col-md-6">
+            <h2>Edit Membership</h2>
+            <div asp-validation-summary="All" class="text text-danger"></div>
+            <form asp-area="Administrator" asp-controller="Membership" asp-action="Edit" method="post" class="form-horizontal">
+                <input type="hidden" name="AthleteId" value="@this.Model.AthleteId" /> 
+                <div class="form-group">
+                    <label asp-for="StartDate" class="control-label"></label>
+                    <input asp-for="StartDate" class="form-control" type="date" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="IsMonthly" class="control-label">Is Monthly</label>
+                    <input asp-for="IsMonthly" class="form-check-input" type="checkbox"/>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="IsPending" class="control-label"></label>
+                    <input asp-for="IsPending" class="form-check-input" type="checkbox" />
+                </div>
+
+                <div class="form-group" id="workoutsCountForm">
+                    <label asp-for="TotalWorkoutsCount" class="control-label"></label>
+                    <input asp-for="TotalWorkoutsCount" class="form-control"/>
+                </div>
+
+                <div class="form-group" id="endDateDiv">
+                    <label asp-for="EndDate" class="control-label">Membership End Date:</label>
+                    <input asp-for="EndDate" class=" form-control" type="date"/>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Price" class="control-label">Membership Price (in leva)</label>
+                    <input asp-for="Price" class="form-control" type="number"/>
+                </div>
+                <div class="form-group" style="margin-top: 1em">
+                    <button type="submit" class="btn btn-primary">Edit</button>
+                    <a asp-route-id="@this.Model.AthleteId" asp-area="" asp-controller="Athlete" asp-action="Details" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

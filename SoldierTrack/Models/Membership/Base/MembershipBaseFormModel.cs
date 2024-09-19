@@ -24,6 +24,6 @@
         [Display(Name = "I Want Monthly Membership")]
         public bool IsMonthly { get; init; }
 
-        public int AthleteId { get; init; }
+        public int AthleteId { get; set; }
     }
 }

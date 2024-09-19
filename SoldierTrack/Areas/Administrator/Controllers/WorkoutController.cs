@@ -55,7 +55,9 @@
             }
 
             await this.workoutService.CreateAsync(serviceModel);
-            return this.RedirectToAction("Index", "Home", new { area = "" });
+
+            this.TempData["SuccessMessage"] = WorkoutCreated;
+            return this.RedirectToAction("GetAll", "Workout", new { area = "" });
         }
 
         [HttpGet]
@@ -97,6 +99,8 @@
         public async Task<IActionResult> Delete(int id)
         {
             await this.workoutService.DeleteAsync(id);
+
+            this.TempData["SuccessMessage"] = WorkoutDeletedSuccessfully;
             return this.RedirectToAction("Index", "Home", new { area = "" });
         }
 

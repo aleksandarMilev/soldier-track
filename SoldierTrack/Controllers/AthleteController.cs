@@ -28,6 +28,11 @@
         {
             var model = await this.athleteService.GetDetailsModelByIdAsync(id);
 
+            if (model == null)
+            {
+                return this.NotFound();
+            }
+
             if (!this.User.IsAdmin() && this.User.GetId() != model?.UserId)
             {
                 return this.Unauthorized();
@@ -71,6 +76,12 @@
         public async Task<IActionResult> Edit(int id)
         {
             var serviceModel = await this.athleteService.GetEditServiceModelByIdAsync(id);
+
+            if (serviceModel == null)
+            {
+                return this.NotFound();
+            }
+
             //we should map it because partial view requires class which is AthleteBaseFormModel or descendant 
             var viewModel = this.mapper.Map<EditAthleteViewModel>(serviceModel);
 

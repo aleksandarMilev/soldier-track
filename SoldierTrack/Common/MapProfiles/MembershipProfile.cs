@@ -3,6 +3,7 @@
     using AutoMapper;
     using SoldierTrack.Services.Membership.Models;
     using SoldierTrack.Services.Membership.Models.Base;
+    using SoldierTrack.Web.Areas.Administrator.Models.Membership;
     using SoldierTrack.Web.Models.Membership;
     using SoldierTrack.Web.Models.Membership.Base;
 
@@ -10,10 +11,13 @@
     {
         public MembershipProfile()
         {
-            CreateMap<CreateMembershipViewModel, CreateMembershipServiceModel>()
+            this.CreateMap<CreateMembershipViewModel, CreateMembershipServiceModel>()
             .IncludeBase<MembershipBaseFormModel, MembershipBaseModel>();
 
-            CreateMap<MembershipBaseFormModel, MembershipBaseModel>();
+            this.CreateMap<MembershipBaseFormModel, MembershipBaseModel>();
+
+            this.CreateMap<EditMembershipServiceModel, EditMembershipViewModel>()
+                .ReverseMap();
         }
     }
 }

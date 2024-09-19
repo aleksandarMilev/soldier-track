@@ -13,6 +13,10 @@
         //workout
         public const string WorkoutAlreadyListed = "Workout is already listed at {0}!";
 
+        public const string WorkoutDeletedSuccessfully = "You have successfully deleted the workout!";
+
+        public const string WorkoutCreated = "You have successfully added the workout!";
+
         //athlete
         public const string AthleteWithSameNumberExists = "An athlete with number {0} is already registered!";
 
@@ -28,6 +32,8 @@
         public const string MembershipApproved = "Membership successfully approved!";
 
         public const string MembershipRejected = "Membership successfully rejected!";
+
+        public const string MembershipEdited = "Membership successfully edited!";
 
         //admin
         public const string AdminEditAthlete = "Athlete edited successfully!";

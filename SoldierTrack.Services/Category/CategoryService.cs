@@ -3,36 +3,30 @@
     using AutoMapper;
     using AutoMapper.QueryableExtensions;
     using Microsoft.EntityFrameworkCore;
+    using SoldierTrack.Data;
     using SoldierTrack.Data.Models;
-    using SoldierTrack.Data.Repositories.Base;
     using SoldierTrack.Services.Category.MapperProfile;
     using SoldierTrack.Services.Category.Models;
     using SoldierTrack.Services.Common;
 
     public class CategoryService : ICategoryService
     {
-        private readonly IRepository<Category> repository;
+        private readonly ApplicationDbContext data;
         private readonly IMapper mapper;
 
-        public CategoryService(IRepository<Category> categoryRepository)
+        public CategoryService(ApplicationDbContext data)
         {
-            this.repository = categoryRepository;
+            this.data = data;
             this.mapper = AutoMapperConfig<CategoryProfile>.CreateMapper();
         }
 
         public async Task<IEnumerable<CategoryServiceModel>> GetAllAsync()
         {
-            return await this.repository
-                .AllAsNoTracking()
+            return await this.data
+                .Categories
+                .AsNoTracking()
                 .ProjectTo<CategoryServiceModel>(this.mapper.ConfigurationProvider)
                 .ToListAsync();
-        }
-
-        public async Task<Category?> GetByIdAsync(int id)
-        {
-            return await this.repository
-                .All()
-                .FirstOrDefaultAsync(c => c.Id == id);
         }
     }
 }

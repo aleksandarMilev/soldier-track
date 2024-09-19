@@ -7,6 +7,13 @@
     this.ViewData["Title"] = "Workouts";
 }
 
+@if (this.TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        <p>@this.TempData["SuccessMessage"]</p>
+    </div>
+}
+
 @{
     var workouts = this.Model.Workouts;
     var pageIndex = this.Model.PageIndex;

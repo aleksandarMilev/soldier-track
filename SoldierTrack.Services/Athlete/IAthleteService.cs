@@ -1,6 +1,5 @@
 ﻿namespace SoldierTrack.Services.Athlete
 {
-    using SoldierTrack.Data.Models;
     using SoldierTrack.Services.Athlete.Models;
 
     public interface IAthleteService
@@ -17,9 +16,7 @@
 
         Task<bool> AthleteHasMembershipAsync(int id);
 
-        Task<Athlete?> GetByIdAsync(int id);
-
-        Task<EditAthleteServiceModel> GetEditServiceModelByIdAsync(int id);
+        Task<EditAthleteServiceModel?> GetEditServiceModelByIdAsync(int id);
 
         Task EditAsync(EditAthleteServiceModel serviceModel);
 
