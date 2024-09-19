@@ -8,15 +8,18 @@
     using SoldierTrack.Services.Athlete.MapperProfile;
     using SoldierTrack.Services.Athlete.Models;
     using SoldierTrack.Services.Common;
+    using SoldierTrack.Services.Membership;
 
     public class AthleteService : IAthleteService
     {
         private readonly IDeletableRepository<Athlete> repository;
+        private readonly Lazy<IMembershipService> membershipService;
         private readonly IMapper mapper;
 
-        public AthleteService(IDeletableRepository<Athlete> athleteRepository)
+        public AthleteService(IDeletableRepository<Athlete> athleteRepository, Lazy<IMembershipService> membershipService)
         {
             this.repository = athleteRepository;
+            this.membershipService = membershipService;
             this.mapper = AutoMapperConfig<AthleteProfile>.CreateMapper();
         }
 
@@ -111,6 +114,26 @@
                 ?? throw new InvalidOperationException("Athlete not found!");
 
             this.mapper.Map(model, athleteEntity);
+
+            await this.repository.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var athleteEntity = await this.repository
+                .All()
+                .Include(a => a.Membership)
+                .FirstOrDefaultAsync(a => a.Id == id)
+                ?? throw new InvalidOperationException("Athlete not found!");
+
+            var membershipEntity = athleteEntity.Membership;
+
+            this.repository.SoftDelete(athleteEntity);
+
+            if (membershipEntity != null)
+            {
+                this.membershipService.Value.SoftDelete(membershipEntity.Id);
+            }
 
             await this.repository.SaveChangesAsync();
         }

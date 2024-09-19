@@ -20,6 +20,8 @@
 
         public const string AthleteEditHimself = "You have edited your profile successfully!";
 
+        public const string AthleteDeleteHimself = "Your profile was deleted successfully!";
+
         //membership
         public const string MembershipRequested = "You have successfully requested yor membership!";
 
@@ -29,5 +31,7 @@
 
         //admin
         public const string AdminEditAthlete = "Athlete edited successfully!";
+
+        public const string AdminDeleteAthlete = "Athlete deleted successfully!";
     }
 }

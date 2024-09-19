@@ -22,5 +22,7 @@
         Task<EditAthleteServiceModel> GetEditServiceModelByIdAsync(int id);
 
         Task EditAsync(EditAthleteServiceModel serviceModel);
+
+        Task DeleteAsync(int id);
     }
 }

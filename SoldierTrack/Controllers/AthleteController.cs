@@ -108,5 +108,20 @@
             this.TempData["SuccessMessage"] = this.User.IsAdmin() ? AdminEditAthlete : AthleteEditHimself;
             return this.RedirectToAction(nameof(Details), new { id = serviceModel.Id });
         }
+
+        [HttpPost]
+        [AthleteAuthorization]
+        public async Task<IActionResult> Delete(int id, string userId)
+        {
+            if (!this.User.IsAdmin() && this.User.GetId() != userId)
+            {
+                return this.Unauthorized();
+            }
+
+            await this.athleteService.DeleteAsync(id);
+
+            this.TempData["SuccessMessage"] = this.User.IsAdmin() ? AdminDeleteAthlete : AthleteDeleteHimself;
+            return this.RedirectToAction("Index", "Home", new { area = "" });
+        }
     }
 }

@@ -25,6 +25,18 @@
             services.AddScoped<IDeletableRepository<Athlete>, DeletableRepository<Athlete>>();
             services.AddScoped<IDeletableRepository<Membership>, DeletableRepository<Membership>>();
 
+            services
+                .AddTransient(provider =>
+                {
+                    return new Lazy<IAthleteService>(() => provider.GetRequiredService<IAthleteService>());
+                });
+
+            services
+                .AddTransient(provider =>
+                {
+                    return new Lazy<IMembershipService>(() => provider.GetRequiredService<IMembershipService>());
+                });
+
             return services;
         }
 

@@ -13,5 +13,7 @@
         Task ApproveAsync(int id);
 
         Task RejectAsync(int id);
+
+        void SoftDelete(int id);
     }
 }
