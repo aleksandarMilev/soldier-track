@@ -91,5 +91,28 @@
             this.repository.Add(athleteEntity);
             await this.repository.SaveChangesAsync();
         }
+
+        public async Task<EditAthleteServiceModel> GetEditServiceModelByIdAsync(int id)
+        {
+            return await this.repository
+                .AllAsNoTracking()
+                .ProjectTo<EditAthleteServiceModel>(this.mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(a => a.Id == id)
+                ?? throw new InvalidOperationException("Athlete is not found!");
+        }
+
+        public async Task EditAsync(EditAthleteServiceModel model)
+        {
+            var athleteEntity = await this.repository
+                .All()
+                .Where(a => a.Id == model.Id)
+                .Include(a => a.Membership)
+                .FirstOrDefaultAsync() 
+                ?? throw new InvalidOperationException("Athlete not found!");
+
+            this.mapper.Map(model, athleteEntity);
+
+            await this.repository.SaveChangesAsync();
+        }
     }
 }

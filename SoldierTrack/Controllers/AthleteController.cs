@@ -65,5 +65,48 @@
             this.TempData["SuccessMessage"] = AthleteSuccessRegister;
             return this.RedirectToAction("Index", "Home");
         }
+
+        [HttpGet]
+        [AthleteAuthorization]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var serviceModel = await this.athleteService.GetEditServiceModelByIdAsync(id);
+            //we should map it because partial view requires class which is AthleteBaseFormModel or descendant 
+            var viewModel = this.mapper.Map<EditAthleteViewModel>(serviceModel);
+
+            if (!this.User.IsAdmin() && this.User.GetId() != viewModel.UserId)
+            {
+                return this.Unauthorized();
+            }
+
+            return this.View(viewModel);
+        }
+
+        [HttpPost]
+        [AthleteAuthorization]
+        public async Task<IActionResult> Edit(EditAthleteViewModel viewModel)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(viewModel);
+            }
+
+            if (!this.User.IsAdmin() && this.User.GetId() != viewModel.UserId)
+            {
+                return this.Unauthorized();
+            }
+
+            if (await this.athleteService.AthleteWithSameNumberExistsAsync(viewModel.PhoneNumber, viewModel.Id))
+            {
+                this.ModelState.AddModelError(nameof(viewModel.PhoneNumber), string.Format(AthleteWithSameNumberExists, viewModel.PhoneNumber));
+                return this.View(viewModel);
+            }
+
+            var serviceModel = this.mapper.Map<EditAthleteServiceModel>(viewModel);
+            await this.athleteService.EditAsync(serviceModel);
+
+            this.TempData["SuccessMessage"] = this.User.IsAdmin() ? AdminEditAthlete : AthleteEditHimself;
+            return this.RedirectToAction(nameof(Details), new { id = serviceModel.Id });
+        }
     }
 }

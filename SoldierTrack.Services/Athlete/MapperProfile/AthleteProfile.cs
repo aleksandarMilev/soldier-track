@@ -12,12 +12,17 @@
         {
             this.CreateMap<AthleteServiceModel, Athlete>();
 
-            CreateMap<Athlete, AthleteDetailsServiceModel>()
+            this.CreateMap<Athlete, AthleteDetailsServiceModel>()
               .ForMember(dest => dest.Membership, opt => opt.MapFrom(src => src.Membership))
               .ForMember(dest => dest.Workouts, opt => opt.MapFrom(src => src.AthletesWorkouts.Select(aw => aw.Workout)));
 
-            CreateMap<Membership, MembershipServiceModel>();
-            CreateMap<Workout, WorkoutDetailsServiceModel>();
+            this.CreateMap<Membership, MembershipServiceModel>();
+            this.CreateMap<Workout, WorkoutDetailsServiceModel>();
+
+            this.CreateMap<Athlete, EditAthleteServiceModel>()
+                .ReverseMap()
+                .ForMember(dest => dest.UserId, opt => opt.Ignore())
+                .ForMember(dest => dest.MembershipId, opt => opt.Ignore());
         }
     }
 }

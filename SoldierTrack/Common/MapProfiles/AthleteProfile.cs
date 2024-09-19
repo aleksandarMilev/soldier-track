@@ -9,6 +9,10 @@
         public AthleteProfile()
         {
             this.CreateMap<CreateAthleteViewModel, AthleteServiceModel>();
+
+            this.CreateMap<EditAthleteServiceModel, EditAthleteViewModel>()
+                .ReverseMap();
+
         }
     }
 }

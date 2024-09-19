@@ -18,5 +18,9 @@
         Task<bool> AthleteHasMembershipAsync(int id);
 
         Task<Athlete?> GetByIdAsync(int id);
+
+        Task<EditAthleteServiceModel> GetEditServiceModelByIdAsync(int id);
+
+        Task EditAsync(EditAthleteServiceModel serviceModel);
     }
 }
