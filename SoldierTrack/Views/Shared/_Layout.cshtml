@@ -73,18 +73,17 @@
                                 else
                                 {
                                     var athleteId = await this.athleteService.GetIdByUserIdAsync(userId!);
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-route-id="@athleteId" asp-area="" asp-controller="Athlete" asp-action="Details">My Profile</a>
+                                    </li>
+
                                     var athleteHasMembership = await this.athleteService.AthleteHasMembershipAsync(athleteId);
 
                                     if (!athleteHasMembership)
                                     {
                                         <li class="nav-item">
                                             <a class="nav-link" asp-area="" asp-controller="Membership" asp-action="RequestMembership">Request Membership</a>
-                                        </li>
-                                    }
-                                    else
-                                    {
-                                        <li class="nav-item">
-                                            <a class="nav-link" asp-area="" asp-controller="Membership" asp-action="Details">My Membership</a>
                                         </li>
                                     }
                                 }
@@ -98,7 +97,7 @@
 
         <div class="container">
             <main role="main" class="pb-3">
-                @RenderBody()
+                @this.RenderBody()
             </main>
         </div>
 

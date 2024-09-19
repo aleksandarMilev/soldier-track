@@ -1,11 +1,12 @@
 ﻿namespace SoldierTrack.Services.Athlete
 {
     using AutoMapper;
+    using AutoMapper.QueryableExtensions;
     using Microsoft.EntityFrameworkCore;
     using SoldierTrack.Data.Models;
     using SoldierTrack.Data.Repositories.Base;
     using SoldierTrack.Services.Athlete.MapperProfile;
-    using SoldierTrack.Services.Athlete.Models.Base;
+    using SoldierTrack.Services.Athlete.Models;
     using SoldierTrack.Services.Common;
 
     public class AthleteService : IAthleteService
@@ -32,6 +33,14 @@
         {
             return await this.repository
                 .All()
+                .FirstOrDefaultAsync(a => a.Id == id);
+        }
+
+        public async Task<AthleteDetailsServiceModel?> GetDetailsModelByIdAsync(int id)
+        {
+            return await this.repository
+                .AllAsNoTracking()
+                .ProjectTo<AthleteDetailsServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(a => a.Id == id);
         }
 

@@ -4,7 +4,8 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using SoldierTrack.Services.Athlete;
-    using SoldierTrack.Services.Athlete.Models.Base;
+    using SoldierTrack.Services.Athlete.Models;
+    using SoldierTrack.Web.Common.Attributes.Filter;
     using SoldierTrack.Web.Common.Extensions;
     using SoldierTrack.Web.Models.Athlete;
 
@@ -20,6 +21,19 @@
         {
             this.athleteService = athleteService;
             this.mapper = mapper;
+        }
+
+        [AthleteAuthorization]
+        public async Task<IActionResult> Details(int id)
+        {
+            var model = await this.athleteService.GetDetailsModelByIdAsync(id);
+
+            if (!this.User.IsAdmin() && this.User.GetId() != model?.UserId)
+            {
+                return this.Unauthorized();
+            }
+
+            return this.View(model);
         }
 
         [HttpGet]
