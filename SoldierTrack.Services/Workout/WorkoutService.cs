@@ -3,20 +3,23 @@
     using AutoMapper;
     using AutoMapper.QueryableExtensions;
     using Microsoft.EntityFrameworkCore;
-    using SoldierTrack.Data;
     using SoldierTrack.Data.Models;
+    using SoldierTrack.Data.Repositories.Base;
+    using SoldierTrack.Services.Category;
     using SoldierTrack.Services.Common;
     using SoldierTrack.Services.Workout.MapperProfile;
     using SoldierTrack.Services.Workout.Models;
 
     public class WorkoutService : IWorkoutService
     {
-        private readonly ApplicationDbContext data;
+        private readonly IDeletableRepository<Workout> repository;
+        private readonly ICategoryService categoryService;
         private readonly IMapper mapper;
 
-        public WorkoutService(ApplicationDbContext data)
+        public WorkoutService(IDeletableRepository<Workout> workoutRepository, ICategoryService categoryService)
         {
-            this.data = data;
+            this.categoryService = categoryService;
+            this.repository = workoutRepository;
             this.mapper = AutoMapperConfig<WorkoutProfile>.CreateMapper();
         }
 
@@ -86,45 +89,43 @@
 
         public async Task CreateAsync(WorkoutServiceModel model)
         {
-            var category = await this.data
-                .Categories
-                .FirstOrDefaultAsync(c => c.Id == model.CategoryId) 
+            var category = await this.categoryService
+                .GetByIdAsync(model.CategoryId)
                 ?? throw new InvalidOperationException("Category not found!");
 
             var entity = this.mapper.Map<Workout>(model);
             entity.CategoryName = category;
 
-            this.data.Workouts.Add(entity);
-            await this.data.SaveChangesAsync();
+            this.repository.Add(entity);
+            await this.repository.SaveChangesAsync();
         }
 
         public async Task EditAsync(WorkoutDetailsServiceModel model)
         {
-            var category = await this.data
-               .Categories
-               .FirstOrDefaultAsync(c => c.Id == model.CategoryId)
-               ?? throw new InvalidOperationException("Category not found!");
+            var categoryEntity = await this.categoryService
+                 .GetByIdAsync(model.CategoryId)
+                 ?? throw new InvalidOperationException("Category not found!");
 
-            var entity = await this.data
-                .Workouts
+            var workoutEntity = await this.repository
+                .All()
                 .FirstOrDefaultAsync(w => w.Id == model.Id)
                 ?? throw new InvalidOperationException("Workout not found!");
 
-            this.mapper.Map(model, entity);
-            entity.CategoryName = category;
+            this.mapper.Map(model, workoutEntity);
+            workoutEntity.CategoryName = categoryEntity;
 
-            await this.data.SaveChangesAsync();
+            await this.repository.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
         {
-            var entity = await this.data
-                .Workouts
+            var entity = await this.repository
+                .All() 
                 .FirstOrDefaultAsync(w => w.Id == id)
                 ?? throw new InvalidOperationException("Workout not found!");
 
-            this.data.SoftDelete(entity);
-            await this.data.SaveChangesAsync();
+            this.repository.SoftDelete(entity);
+            await this.repository.SaveChangesAsync();
         }
 
         private IQueryable<Workout> GetUpcomingsAsNoTrackingAsync()
@@ -132,9 +133,8 @@
             var todayDate = DateTime.Now.Date;
             var todayTime = DateTime.Now.TimeOfDay;
 
-            return this.data
-                .Workouts
-                .AsNoTracking()
+            return this.repository
+                .AllAsNoTracking()
                 .Where(w =>
                     w.Date > todayDate ||
                     (w.Date == todayDate && w.Time > todayTime));

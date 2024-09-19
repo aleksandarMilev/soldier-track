@@ -3,6 +3,9 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using SoldierTrack.Data;
+    using SoldierTrack.Data.Models;
+    using SoldierTrack.Data.Repositories;
+    using SoldierTrack.Data.Repositories.Base;
     using SoldierTrack.Services.Athlete;
     using SoldierTrack.Services.Category;
     using SoldierTrack.Services.Membership;
@@ -16,6 +19,11 @@
             services.AddTransient<IWorkoutService, WorkoutService>();
             services.AddTransient<IAthleteService, AthleteService>();
             services.AddTransient<IMembershipService, MembershipService>();
+
+            services.AddScoped<IRepository<Category>, Repository<Category>>();
+            services.AddScoped<IDeletableRepository<Workout>, DeletableRepository<Workout>>();
+            services.AddScoped<IDeletableRepository<Athlete>, DeletableRepository<Athlete>>();
+            services.AddScoped<IDeletableRepository<Membership>, DeletableRepository<Membership>>();
 
             return services;
         }

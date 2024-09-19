@@ -1,4 +1,4 @@
-﻿@{
+﻿﻿@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -6,7 +6,14 @@
 {
     <div class="text text-success">
         <p>@this.TempData["SuccessMessage"]</p>
-    </div>   
+    </div>
+}
+
+@if (this.TempData["FailureMessage"] != null)
+{
+    <div class="text text-danger">
+        <p>@this.TempData["FailureMessage"]</p>
+    </div>
 }
 
 <div class="wrapper">
@@ -52,9 +59,9 @@
                         </div>
                         <div id="full-info-2" class="d-none">
                             <p style="backdrop-filter: blur(2px); font-size: 1.2em;">
-                                If you're passionate about weightlifting or gymnastics, 
-                                you'll gain a deep understanding of the fundamentals. 
-                                Prefer simpler movements or workouts? 
+                                If you're passionate about weightlifting or gymnastics,
+                                you'll gain a deep understanding of the fundamentals.
+                                Prefer simpler movements or workouts?
                                 That's perfectly fine—functional fitness training will provide you with solid knowledge and practical experience.
                             </p>
                             <a asp-controller="Workout" asp-action="GetAll" class="btn btn-info">View Workouts</a>
@@ -95,28 +102,22 @@
     function viewMore(e, fullInfoId) {
         e.preventDefault();
 
-        // Select the parent container and the full information section
         let fullInfo = document.getElementById(fullInfoId);
-        let briefInfo = e.target.closest('div'); // Get the closest parent div containing the button
+        let briefInfo = e.target.closest('div'); 
         let isHidden = fullInfo.classList.contains('d-none');
 
-        // Toggle visibility for both brief and full information
         if (isHidden) {
-            // Show the full info and hide the brief info (h5 and p)
             fullInfo.classList.remove('d-none');
             fullInfo.classList.add('visible');
-            briefInfo.querySelector('h5').classList.add('d-none');  // Hide the h5
-            briefInfo.querySelector('p').classList.add('d-none');   // Hide the p
+            briefInfo.querySelector('h5').classList.add('d-none');  
+            briefInfo.querySelector('p').classList.add('d-none');   
             e.target.textContent = 'View Less';
         } else {
-            // Hide the full info and show the brief info
             fullInfo.classList.remove('visible');
             fullInfo.classList.add('d-none');
-            briefInfo.querySelector('h5').classList.remove('d-none');  // Show the h5
-            briefInfo.querySelector('p').classList.remove('d-none');   // Show the p
+            briefInfo.querySelector('h5').classList.remove('d-none');  
+            briefInfo.querySelector('p').classList.remove('d-none');   
             e.target.textContent = 'View More';
         }
     }
 </script>
-
-

@@ -2,38 +2,43 @@
 {
     using AutoMapper;
     using Microsoft.EntityFrameworkCore;
-    using SoldierTrack.Data;
     using SoldierTrack.Data.Models;
+    using SoldierTrack.Data.Repositories.Base;
     using SoldierTrack.Services.Athlete.MapperProfile;
     using SoldierTrack.Services.Athlete.Models.Base;
     using SoldierTrack.Services.Common;
 
     public class AthleteService : IAthleteService
     {
-        private readonly ApplicationDbContext data;
+        private readonly IDeletableRepository<Athlete> repository;
         private readonly IMapper mapper;
 
-        public AthleteService(ApplicationDbContext data)
+        public AthleteService(IDeletableRepository<Athlete> athleteRepository)
         {
-            this.data = data;
+            this.repository = athleteRepository;
             this.mapper = AutoMapperConfig<AthleteProfile>.CreateMapper();
         }
 
         public async Task<int> GetIdByUserIdAsync(string userId)
         {
-            return await this.data
-                .Athletes
-                .AsNoTracking()
+            return await this.repository
+                .AllAsNoTracking()
                 .Where(a => a.UserId == userId)
                 .Select(a => a.Id)
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<Athlete?> GetByIdAsync(int id)
+        {
+            return await this.repository
+                .All()
+                .FirstOrDefaultAsync(a => a.Id == id);
+        }
+
         public async Task<bool> AthleteWithSameNumberExistsAsync(string phoneNumber, int? id = null)
         {
-            var entityId = await this.data
-                .Athletes
-                .AsNoTracking()
+            var entityId = await this.repository
+                .AllAsNoTracking()
                 .Where(a => a.PhoneNumber == phoneNumber)
                 .Select(a => a.Id)
                 .FirstOrDefaultAsync();
@@ -53,18 +58,16 @@
 
         public async Task<bool> UserIsAthleteAsync(string userId)
         {
-            return await this.data
-               .Athletes
-               .AsNoTracking()
+            return await this.repository
+               .AllAsNoTracking()
                .Select(a => a.UserId)
                .AnyAsync(id => id == userId);
         }
 
         public async Task<bool> AthleteHasMembershipAsync(int id)
         {
-            var membershipId = await this.data
-                .Athletes
-                .AsNoTracking()
+            var membershipId = await this.repository
+                .AllAsNoTracking()
                 .Where(a => a.Id == id)
                 .Select(a => a.MembershipId)
                 .FirstOrDefaultAsync();
@@ -76,10 +79,8 @@
         {
             var athleteEntity = this.mapper.Map<Athlete>(model);
 
-            this.data.Athletes.Add(athleteEntity);
-            await this.data.SaveChangesAsync();
+            this.repository.Add(athleteEntity);
+            await this.repository.SaveChangesAsync();
         }
-
-       
     }
 }

@@ -1,6 +1,5 @@
 ﻿namespace SoldierTrack.Data
 {
-    using System.Linq.Expressions;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -41,32 +40,6 @@
         {
             this.UpdateAuditInfo();
             return await base.SaveChangesAsync(cancellationToken);
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-            {
-                if (typeof(IDeletableEntity).IsAssignableFrom(entityType.ClrType))
-                {
-                    var lambdaExpression = GetIsDeletedFilter(entityType.ClrType);
-
-                    modelBuilder
-                        .Entity(entityType.ClrType)
-                        .HasQueryFilter(lambdaExpression);
-                }
-            }
-        }
-
-        private static LambdaExpression GetIsDeletedFilter(Type type)
-        {
-            var parameter = Expression.Parameter(type, "e");
-            var prop = Expression.Property(parameter, nameof(IDeletableEntity.IsDeleted));
-            var condition = Expression.Equal(prop, Expression.Constant(false));
-
-            return Expression.Lambda(condition, parameter);
         }
 
         public void SoftDelete<TEntity>(TEntity entity) 

@@ -20,5 +20,9 @@
 
         //membership
         public const string MembershipRequested = "You have successfully requested yor membership!";
+
+        public const string MembershipApproved = "Membership successfully approved!";
+
+        public const string MembershipRejected = "Membership successfully rejected!";
     }
 }

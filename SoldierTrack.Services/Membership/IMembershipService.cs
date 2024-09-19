@@ -9,5 +9,9 @@
         Task<IEnumerable<MembershipPendingServiceModel>> GetAllPendingAsync();
 
         Task<int> GetPendingCountAsync();
+
+        Task ApproveAsync(int id);
+
+        Task RejectAsync(int id);
     }
 }
