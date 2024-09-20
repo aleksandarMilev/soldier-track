@@ -4,6 +4,7 @@
 
     public interface IAthleteService
     {
+        Task<AthletePageServiceModel> GetPageModelsAsync(string? searchTerm, int pageIndex, int pageSize);
         Task CreateAsync(AthleteServiceModel model);
 
         Task<AthleteDetailsServiceModel?> GetDetailsModelByIdAsync(int id);

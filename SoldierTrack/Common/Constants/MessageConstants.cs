@@ -35,6 +35,8 @@
 
         public const string MembershipEdited = "Membership successfully edited!";
 
+        public const string MembershipDeleted = "Membership successfully deleted!";
+
         //admin
         public const string AdminEditAthlete = "Athlete edited successfully!";
 

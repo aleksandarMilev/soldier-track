@@ -20,6 +20,46 @@
             this.mapper = AutoMapperConfig<AthleteProfile>.CreateMapper();
         }
 
+        public async Task<AthletePageServiceModel> GetPageModelsAsync(string? searchTerm, int pageIndex, int pageSize)
+        {
+            var query = this.data
+                .AllDeletableAsNoTracking<Athlete>()
+                .Include(a => a.Membership)
+                .OrderBy(a => a.FirstName)
+                .ThenBy(a => a.LastName)
+                .ProjectTo<AthleteDetailsServiceModel>(this.mapper.ConfigurationProvider);
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                var searchTermLower = searchTerm.ToLower();
+
+                query = query.Where(a =>
+                            a.FirstName.Contains(searchTermLower) ||
+                            a.LastName.Contains(searchTermLower));
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var athletes = await query
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            var pageViewModel = new AthletePageServiceModel()
+            {
+                Athletes = athletes,
+                TotalCount = totalCount,
+                PageIndex = pageIndex,
+                TotalPages = totalPages,
+                PageSize = pageSize
+            };
+
+            return pageViewModel;
+
+        }
+
         public async Task<int> GetIdByUserIdAsync(string userId)
         {
             return await this.data
@@ -32,9 +72,11 @@
         public async Task<AthleteDetailsServiceModel?> GetDetailsModelByIdAsync(int id)
         {
             return await this.data
-                .AllDeletableAsNoTracking<Athlete>()
-                .ProjectTo<AthleteDetailsServiceModel>(this.mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(a => a.Id == id);
+              .AllDeletableAsNoTracking<Athlete>()
+              .Include(a => a.Membership)
+              .Include(a => a.AthletesWorkouts)
+              .ProjectTo<AthleteDetailsServiceModel>(this.mapper.ConfigurationProvider)
+              .FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<bool> AthleteWithSameNumberExistsAsync(string phoneNumber, int? id = null)

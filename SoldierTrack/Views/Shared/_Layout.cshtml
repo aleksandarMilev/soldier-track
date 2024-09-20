@@ -36,12 +36,15 @@
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Workout" asp-action="GetAll">All Workouts</a>
+                                <a class="nav-link" asp-area="" asp-controller="Workout" asp-action="GetAll">Workouts</a>
                             </li>
                             @if (userIsAdmin)
                             {
                                 <li class="nav-item">
                                     <a class="nav-link" asp-area="Administrator" asp-controller="Workout" asp-action="Create">Create Workout</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="Administrator" asp-controller="Athlete" asp-action="GetAll">Athletes</a>
                                 </li>
 
                                 var pendingCount = await this.membershipService.GetPendingCountAsync();

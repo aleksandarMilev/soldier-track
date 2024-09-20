@@ -91,14 +91,25 @@
         {
             var entity = await this.data
                 .AllDeletable<Membership>()
-                .Include(m => m.Athlete) // Explicitly include Athlete if needed
+                .Include(m => m.Athlete)
                 .FirstOrDefaultAsync(m => m.Id == model.Id)
                 ?? throw new InvalidOperationException("Membership not found!");
 
-            // Detach the Athlete entity from being tracked by EF Core
-            this.data.Entry(entity.Athlete).State = EntityState.Unchanged;
-
             this.mapper.Map(model, entity);
+            await this.data.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var entity = await this.data
+               .AllDeletable<Membership>()
+               .Include(m => m.Athlete) 
+               .FirstOrDefaultAsync(m => m.Id == id)
+               ?? throw new InvalidOperationException("Membership not found!");
+
+            entity.Athlete.MembershipId = null;
+
+            this.data.SoftDelete(entity);
             await this.data.SaveChangesAsync();
         }
     }

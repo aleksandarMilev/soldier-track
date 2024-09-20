@@ -18,5 +18,7 @@
         Task RejectAsync(int id);
 
         Task EditAsync(EditMembershipServiceModel serviceModel);
+
+        Task DeleteAsync(int id);
     }
 }

@@ -1,0 +1,158 @@
+﻿@using SoldierTrack.Services.Athlete.Models
+
+@model AthletePageServiceModel
+
+@{
+    this.ViewData["Title"] = "All Athletes";
+
+    var athletes = this.Model.Athletes;
+    var pageIndex = this.Model.PageIndex;
+    var totalPages = this.Model.TotalPages;
+    var pageSize = this.Model.PageSize;
+}
+
+<h1 class="text-center mb-4">@this.ViewData["Title"]</h1>
+
+@if (this.TempData["Message"] != null)
+{
+    <div class="alert alert-success">
+        <p>@this.TempData["Message"]</p>
+    </div>
+}
+
+<div class="row mb-4">
+    <div class="col-md-6 offset-md-3">
+        <form method="get" asp-action="GetAll" class="d-flex">
+            <input type="text" id="searchTerm" name="searchTerm" class="form-control me-2" placeholder="Search athletes..." />
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+</div>
+
+@if (athletes.Count() > 0)
+{
+    <table class="table table-hover table-sm table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col" class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var athlete in athletes)
+            {
+                <tr>
+                    <td>@athlete.FirstName</td>
+                    <td>@athlete.LastName</td>
+                    <td class="text-center">
+                        <a asp-area=""
+                           asp-controller="Athlete"
+                           asp-action="Details"
+                           asp-route-id="@athlete.Id"
+                           class="btn btn-sm btn-info me-1"
+                           title="Details">
+                            Details
+                        </a>
+
+                        @if (athlete.Membership != null && athlete.Membership.IsPending)
+                        {
+                            <button class="btn btn-sm btn-warning me-1" onclick="toggleApprovalButtons(@athlete.Id)">
+                                Membership is pending
+                            </button>
+
+                            <div id="approvalButtons-@athlete.Id" style="display: none; margin-top: 5px;">
+                                <form asp-area="Administrator"
+                                      asp-controller="Membership"
+                                      asp-action="Approve"
+                                      asp-route-id="@athlete.MembershipId"
+                                      method="post"
+                                      class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-success me-1" onclick="return confirmApproval()">
+                                        Approve
+                                    </button>
+                                </form>
+                                <form asp-area="Administrator"
+                                      asp-controller="Membership"
+                                      asp-action="Reject"
+                                      asp-route-id="@athlete.MembershipId"
+                                      method="post"
+                                      class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirmRejection()">
+                                        Reject
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                        else if (athlete.Membership != null && !athlete.Membership.IsPending)
+                        {
+                            <a asp-area="Workout"
+                               asp-controller="Workout"
+                               asp-action="AddToWorkout"
+                               asp-route-athleteId="@athlete.Id"
+                               class="btn btn-sm btn-info me-1">
+                                Add To Workout
+                            </a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            @if (pageIndex > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@(pageIndex - 1)" asp-route-pageSize="@pageSize">Previous</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <span class="page-link">Previous</span>
+                </li>
+            }
+
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(i == pageIndex ? "active" : "")">
+                    <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@i" asp-route-pageSize="@pageSize">@i</a>
+                </li>
+            }
+
+            @if (pageIndex < totalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@(pageIndex + 1)" asp-route-pageSize="@pageSize">Next</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <span class="page-link">Next</span>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+else
+{
+    <p class="text-danger text-center">No athletes found</p>
+}
+
+<script>
+    function toggleApprovalButtons(athleteId) {
+        let buttonsDiv = document.getElementById("approvalButtons-" + athleteId);
+        buttonsDiv.style.display = buttonsDiv.style.display === "none" ? "block" : "none";
+    }
+
+    function confirmApproval() {
+        return confirm('Are you sure you want to approve this membership request?');
+    }
+
+    function confirmRejection() {
+        return confirm('Are you sure you want to reject this membership request?');
+    }
+</script>

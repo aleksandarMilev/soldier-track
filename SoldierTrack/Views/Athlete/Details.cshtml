@@ -81,11 +81,11 @@
     {
         if (userIsAdmin)
         {
-            <p class="alert alert-danger">Athlete does not have an active membership!</p>
+            <p class="col-sm-4 alert alert-danger">Athlete does not have an active membership!</p>
         }
         else
         {
-            <p class="alert alert-danger">You do not have an active membership!</p>
+            <p class="col-sm-5 alert alert-danger">You do not have an active membership!</p>
         }
     }
 </dl>
@@ -129,9 +129,8 @@
               asp-controller="Membership"
               asp-action="Delete"
               asp-route-id="@this.Model.MembershipId"
-              asp-route-athleteId="@this.Model.Id"
               class="d-inline">
-            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure i want to delete the membership?')">Delete Membership</button>
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete the membership?')">Delete Membership</button>
         </form>
     </div>
 }

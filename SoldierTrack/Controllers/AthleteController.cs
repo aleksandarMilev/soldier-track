@@ -23,6 +23,7 @@
             this.mapper = mapper;
         }
 
+        [HttpGet]
         [AthleteAuthorization]
         public async Task<IActionResult> Details(int id)
         {

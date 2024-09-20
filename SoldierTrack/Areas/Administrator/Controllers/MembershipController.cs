@@ -65,6 +65,15 @@
         }
 
         [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await this.membershipService.DeleteAsync(id);
+
+            this.TempData["SuccessMessage"] = MembershipDeleted;
+            return this.RedirectToAction("Details", "Athlete", new { id, area = "" });
+        }
+
+        [HttpPost]
         public async Task<IActionResult> Approve(int id)
         {
             await this.membershipService.ApproveAsync(id);
