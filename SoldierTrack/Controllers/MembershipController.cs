@@ -9,6 +9,7 @@
     using SoldierTrack.Web.Common.Extensions;
     using SoldierTrack.Web.Models.Membership;
 
+    using static SoldierTrack.Web.Common.Constants.WebConstants;
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
 
     [AthleteAuthorization]
@@ -34,6 +35,11 @@
             var userId = this.User.GetId();
             var athleteId = await this.athleteService.GetIdByUserIdAsync(userId!);
 
+            if (await this.athleteService.AthleteHasMembershipAsync(athleteId))
+            {
+                return this.RedirectToAction("Details", "Athlete", new { id = athleteId });
+            }
+
             var viewModel = new CreateMembershipViewModel()
             {
                 AthleteId = athleteId,
@@ -58,6 +64,17 @@
 
             this.TempData["SuccessMessage"] = MembershipRequested;
             return this.RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetArchive(int athleteId, int pageIndex = 1, int pageSize = 5)
+        {
+            pageSize = Math.Min(pageSize, MaxPageSize);
+            pageSize = Math.Max(pageSize, MinPageSize);
+
+            this.ViewBag.AthleteId = athleteId;
+            var model = await this.membershipService.GetArchiveByAthleteIdAsync(athleteId, pageIndex, pageSize);
+            return this.View(model);
         }
     }
 }

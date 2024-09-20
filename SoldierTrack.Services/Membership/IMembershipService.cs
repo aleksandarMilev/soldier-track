@@ -11,6 +11,8 @@
 
         Task<EditMembershipServiceModel?> GetEditModelByIdAsync(int id);
 
+        Task<MembershipArchivePageServiceModel> GetArchiveByAthleteIdAsync(int athleteId, int pageIndex, int pageSize);
+
         Task<int> GetPendingCountAsync();
 
         Task ApproveAsync(int id);

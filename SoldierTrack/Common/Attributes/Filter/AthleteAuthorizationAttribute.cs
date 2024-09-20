@@ -44,7 +44,7 @@
 
             if (!athleteExists && !userIsAdmin)
             {
-                context.Result = new RedirectToActionResult("Become", "Athlete", new { area = "Athlete" });
+                context.Result = new RedirectToActionResult("Create", "Athlete", new { area = "" });
             }
         }
     }

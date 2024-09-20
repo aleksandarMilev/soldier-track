@@ -129,11 +129,27 @@
               asp-controller="Membership"
               asp-action="Delete"
               asp-route-id="@this.Model.MembershipId"
+              asp-route-athleteId="@this.Model.Id"
               class="d-inline">
             <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete the membership?')">Delete Membership</button>
         </form>
     </div>
 }
+
+<a asp-area=""
+   asp-controller="Membership"
+   asp-action="GetArchive"
+   asp-route-athleteId="@this.Model.Id"
+   class="btn btn-secondary"
+    >MembershipsArchive
+</a>
+<a asp-area=""
+   asp-controller="Workout"
+   asp-action="GetArchive"
+   asp-route-id="@this.Model.Id"
+   class="btn btn-secondary">
+    WorkoutsArchive
+</a>
 
 @if (workouts.Count() > 0)
 {

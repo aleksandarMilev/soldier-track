@@ -57,7 +57,6 @@
             };
 
             return pageViewModel;
-
         }
 
         public async Task<int> GetIdByUserIdAsync(string userId)

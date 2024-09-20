@@ -29,6 +29,8 @@
 
         public DbSet<Category> Categories { get; set; }
 
+        public DbSet<MembershipArchive> MembershipArchives { get; set; }
+
 
         public override int SaveChanges()
         {

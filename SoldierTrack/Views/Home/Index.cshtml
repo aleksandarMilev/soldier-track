@@ -48,7 +48,7 @@
                             <p>
                                 Get you in shape with science-proof protocols.
                             </p>
-                            <a href="#" class="btn btn-primary" onclick="viewMore(event, 'full-info-2')">Learn More</a>
+                            <a href="#" class="btn btn-primary" onclick="viewMore(event, 'full-info-2')">View More</a>
                         </div>
                         <div id="full-info-2" class="d-none">
                             <p style="backdrop-filter: blur(2px); font-size: 1.2em;">
@@ -64,15 +64,16 @@
             </div>
 
             <div class="carousel-item">
-                <div class="home-page-bg" style="background-image: url('/images/sf3.jpg');">
+                <div class="home-page-bg" style="background-image: url('/images/sf-wrk2.jpg');">
                     <div class="carousel-caption d-flex flex-column justify-content-center align-items-center text-center">
                         <div id="brief-info-3">
-                            <h5>Contact Us</h5>
-                            <p>Get in touch and start your SoldierFit journey. Our team is here to support you every step of the way.</p>
-                            <a href="#" class="btn btn-primary" onclick="viewMore(event, 'full-info-3')">Get in Touch</a>
+                            <h5>Memberships</h5>
+                            <p>Register as an athlete to request a membership.</p>
+                            <a href="#" class="btn btn-primary" onclick="viewMore(event, 'full-info-3')">View more</a>
                         </div>
                         <div id="full-info-3" class="d-none">
-                            <p>Contact details and how to get started with SoldierFit. We're excited to hear from you!</p>
+                            <p>As a member, you'll receive a discount on the regular price, with further details available on the request form.</p>
+                            <a asp-controller="Membership" asp-action="RequestMembership" class="btn btn-info">Request Membership</a>
                         </div>
                     </div>
                 </div>

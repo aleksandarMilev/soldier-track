@@ -65,12 +65,12 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id, int athleteId)
         {
             await this.membershipService.DeleteAsync(id);
 
             this.TempData["SuccessMessage"] = MembershipDeleted;
-            return this.RedirectToAction("Details", "Athlete", new { id, area = "" });
+            return this.RedirectToAction("Details", "Athlete", new { athleteId, area = "" });
         }
 
         [HttpPost]

@@ -10,6 +10,34 @@
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-md-6">
             <h2>Request Membership</h2>
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4>Membership Terms</h4>
+                </div>
+                <div class="card-body">
+                    <p>
+                        When you request a membership, our admin team will review and approve your request within a working day.
+                        If the request is made outside of working hours, it will be processed on the next business day.
+                    </p>
+                    <p>
+                        If you require immediate assistance, feel free to call us at <strong>0123456789</strong>.
+                    </p>
+                    <hr>
+                    <h5>Membership Types</h5>
+                    <ul>
+                        <li>
+                            <strong>Monthly Membership:</strong>
+                            This membership is valid for one month from the date of activation, and allows unlimited workouts during this period.
+                            It expires automatically after one month.
+                        </li>
+                        <li>
+                            <strong>Fixed Workout Count Membership:</strong>
+                            This membership is not time-limited, meaning you can use it indefinitely until all your available workouts are completed.
+                            It will expire automatically after your last workout is used.
+                        </li>
+                    </ul>
+                </div>
+            </div>
             <form asp-area="" asp-controller="Membership" asp-action="RequestMembership" method="post" class="form-horizontal">
                 <partial name="_FormPartial" model="Model" />
                 <div class="form-group" style="margin-top: 1em">

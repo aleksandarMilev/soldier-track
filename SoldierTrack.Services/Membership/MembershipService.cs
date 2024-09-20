@@ -107,10 +107,48 @@
                .FirstOrDefaultAsync(m => m.Id == id)
                ?? throw new InvalidOperationException("Membership not found!");
 
+            var archiveEntity = new MembershipArchive()
+            {
+                MembershipId = id,
+                AthleteId = entity.Athlete.Id,
+                DeletedOn = DateTime.UtcNow
+            };
+
+            this.data.MembershipArchives.Add(archiveEntity);
+
             entity.Athlete.MembershipId = null;
 
             this.data.SoftDelete(entity);
             await this.data.SaveChangesAsync();
+        }
+
+        public async Task<MembershipArchivePageServiceModel> GetArchiveByAthleteIdAsync(int athleteId, int pageIndex, int pageSize)
+        {
+            var query = this.data
+                .MembershipArchives
+                .Include(m => m.Membership)
+                .Where(m => m.AthleteId == athleteId)
+                .ProjectTo<MembershipServiceModel>(this.mapper.ConfigurationProvider);
+
+            var totalCount = await query.CountAsync();
+
+            var memberships = await query
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            var pageViewModel = new MembershipArchivePageServiceModel()
+            {
+                Memberships = memberships,
+                TotalCount = totalCount,
+                PageIndex = pageIndex,
+                TotalPages = totalPages,
+                PageSize = pageSize
+            };
+
+            return pageViewModel;
         }
     }
 }
