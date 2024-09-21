@@ -10,7 +10,7 @@
     {
         [Required]
         [MaxLength(TitleMaxLength)]
-        required public string Title { get; set; }
+        public string Title { get; set; } = null!;
 
         [Required]
         public DateTime Date { get; set; }
@@ -28,7 +28,7 @@
         public string? ImageUrl { get; set; } 
 
         [Required]
-        required public Category CategoryName { get; set; }
+        public Category CategoryName { get; set; } = null!;
 
         [Required]
         public bool IsForBeginners { get; set; }

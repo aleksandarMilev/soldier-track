@@ -10,11 +10,11 @@
         [ForeignKey(nameof(Athlete))]
         public int AthleteId { get; set; }
 
-        required public Athlete Athlete { get; set; }
+        public Athlete Athlete { get; set; } = null!;
 
         [ForeignKey(nameof(Workout))]
         public int WorkoutId { get; set; }
 
-        required public Workout Workout { get; set; }
+        public Workout Workout { get; set; } = null!;
     }
 }

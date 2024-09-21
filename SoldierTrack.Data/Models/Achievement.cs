@@ -5,7 +5,7 @@
 
     public class Achievement : BaseModel<int>
     {
-        required public Exercise ExerciseName { get; set; }
+        public Exercise ExerciseName { get; set; } = null!;
 
         public double WeightLifted { get; set; }
 
@@ -14,6 +14,6 @@
         [ForeignKey(nameof(Athlete))]
         public int AthleteId { get; set; }
 
-        required public Athlete Athlete { get; set; }
+        public Athlete Athlete { get; set; } = null!;
     }
 }

@@ -10,7 +10,7 @@
     {
         [Required]
         [MaxLength(NameMaxLength)]
-        required public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         public ICollection<Workout> Workouts { get; set; } = new List<Workout>();
     }

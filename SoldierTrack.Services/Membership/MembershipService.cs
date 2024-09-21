@@ -30,11 +30,48 @@
                 .ToListAsync();
         }
 
+        public async Task<MembershipArchivePageServiceModel> GetArchiveByAthleteIdAsync(int athleteId, int pageIndex, int pageSize)
+        {
+            var query = this.data
+                .MembershipArchives
+                .Include(m => m.Membership)
+                .Where(m => m.AthleteId == athleteId)
+                .ProjectTo<MembershipServiceModel>(this.mapper.ConfigurationProvider);
+
+            var totalCount = await query.CountAsync();
+
+            var memberships = await query
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            var pageViewModel = new MembershipArchivePageServiceModel()
+            {
+                Memberships = memberships,
+                TotalCount = totalCount,
+                PageIndex = pageIndex,
+                TotalPages = totalPages,
+                PageSize = pageSize
+            };
+
+            return pageViewModel;
+        }
+
         public async Task<int> GetPendingCountAsync()
         {
             return await this.data
                 .AllDeletableAsNoTracking<Membership>()
                 .CountAsync(m => m.IsPending);
+        }
+
+        public async Task<EditMembershipServiceModel?> GetEditModelByIdAsync(int id)
+        {
+            return await this.data
+                .AllDeletableAsNoTracking<Membership>()
+                .ProjectTo<EditMembershipServiceModel>(this.mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task RequestAsync(CreateMembershipServiceModel model)
@@ -64,28 +101,7 @@
             await this.data.SaveChangesAsync();
         }
 
-        public async Task RejectAsync(int id)
-        {
-            var membershipEntity = await this.data
-               .AllDeletable<Membership>()
-               .Include(m => m.Athlete)
-               .FirstOrDefaultAsync(m => m.Id == id)
-               ?? throw new InvalidOperationException("Membership not found!");
-
-            var athleteEntity = membershipEntity.Athlete;
-            athleteEntity.MembershipId = null;
-
-            this.data.SoftDelete(membershipEntity);
-            await this.data.SaveChangesAsync();
-        }
-
-        public async Task<EditMembershipServiceModel?> GetEditModelByIdAsync(int id)
-        {
-            return await this.data
-                .AllDeletableAsNoTracking<Membership>()
-                .ProjectTo<EditMembershipServiceModel>(this.mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(m => m.Id == id);
-        }
+        public async Task RejectAsync(int id) => await this.DeleteAsync(id);
 
         public async Task EditAsync(EditMembershipServiceModel model)
         {
@@ -120,35 +136,6 @@
 
             this.data.SoftDelete(entity);
             await this.data.SaveChangesAsync();
-        }
-
-        public async Task<MembershipArchivePageServiceModel> GetArchiveByAthleteIdAsync(int athleteId, int pageIndex, int pageSize)
-        {
-            var query = this.data
-                .MembershipArchives
-                .Include(m => m.Membership)
-                .Where(m => m.AthleteId == athleteId)
-                .ProjectTo<MembershipServiceModel>(this.mapper.ConfigurationProvider);
-
-            var totalCount = await query.CountAsync();
-
-            var memberships = await query
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-
-            var pageViewModel = new MembershipArchivePageServiceModel()
-            {
-                Memberships = memberships,
-                TotalCount = totalCount,
-                PageIndex = pageIndex,
-                TotalPages = totalPages,
-                PageSize = pageSize
-            };
-
-            return pageViewModel;
         }
     }
 }
