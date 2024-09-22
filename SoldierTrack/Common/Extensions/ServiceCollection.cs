@@ -4,9 +4,12 @@
     using Microsoft.EntityFrameworkCore;
     using SoldierTrack.Data;
     using SoldierTrack.Services.Athlete;
+    using SoldierTrack.Services.Athlete.MapperProfile;
     using SoldierTrack.Services.Category;
+    using SoldierTrack.Services.Category.MapperProfile;
     using SoldierTrack.Services.Membership;
     using SoldierTrack.Services.Workout;
+    using SoldierTrack.Services.Workout.MapperProfile;
 
     public static class ServiceCollection
     {
@@ -16,6 +19,20 @@
             services.AddTransient<IAthleteService, AthleteService>();
             services.AddTransient<IMembershipService, MembershipService>();
             services.AddTransient<ICategoryService, CategoryService>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddAutoMapperProfiles(this IServiceCollection services)
+        {
+            services
+               .AddAutoMapper(cfg =>
+               {
+                   cfg.AddProfile<AthleteProfile>();
+                   cfg.AddProfile<WorkoutProfile>();
+                   cfg.AddProfile<CategoryProfile>();
+               }, 
+               typeof(Program).Assembly);
 
             return services;
         }

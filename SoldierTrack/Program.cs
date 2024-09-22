@@ -12,13 +12,12 @@ namespace SoldierTrack
             builder.Services.AddApplicationServices();
             builder.Services.AddApplicationDbContext(builder.Configuration, builder.Environment);
             builder.Services.AddApplicationIdentity();
+            builder.Services.AddAutoMapperProfiles();
 
             builder.Services.AddControllersWithViews(options =>
             {
                 options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
             });
-
-            builder.Services.AddAutoMapper(typeof(Program));
 
             var app = builder.Build();
 

@@ -11,13 +11,13 @@
 
     public class AthleteService : IAthleteService
     {
-        private readonly IMapper mapper;
         private readonly ApplicationDbContext data;
+        private readonly IMapper mapper;
 
-        public AthleteService(ApplicationDbContext data)
+        public AthleteService(ApplicationDbContext data, IMapper mapper)
         {
             this.data = data;
-            this.mapper = AutoMapperConfig<AthleteProfile>.CreateMapper();
+            this.mapper = mapper;
         }
 
         public async Task<AthletePageServiceModel> GetPageModelsAsync(string? searchTerm, int pageIndex, int pageSize)
@@ -59,13 +59,12 @@
             return pageViewModel;
         }
 
-        public async Task<int> GetIdByUserIdAsync(string userId)
+        public async Task<EditAthleteServiceModel?> GetEditServiceModelByIdAsync(int id)
         {
             return await this.data
                 .AllDeletableAsNoTracking<Athlete>()
-                .Where(a => a.UserId == userId)
-                .Select(a => a.Id)
-                .FirstOrDefaultAsync();
+                .ProjectTo<EditAthleteServiceModel>(this.mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<AthleteDetailsServiceModel?> GetDetailsModelByIdAsync(int id)
@@ -76,6 +75,15 @@
               .Include(a => a.AthletesWorkouts)
               .ProjectTo<AthleteDetailsServiceModel>(this.mapper.ConfigurationProvider)
               .FirstOrDefaultAsync(a => a.Id == id);
+        }
+
+        public async Task<int> GetIdByUserIdAsync(string userId)
+        {
+            return await this.data
+                .AllDeletableAsNoTracking<Athlete>()
+                .Where(a => a.UserId == userId)
+                .Select(a => a.Id)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<bool> AthleteWithSameNumberExistsAsync(string phoneNumber, int? id = null)
@@ -124,14 +132,6 @@
 
             this.data.Add(athleteEntity);
             await this.data.SaveChangesAsync();
-        }
-
-        public async Task<EditAthleteServiceModel?> GetEditServiceModelByIdAsync(int id)
-        {
-            return await this.data
-                .AllDeletableAsNoTracking<Athlete>()
-                .ProjectTo<EditAthleteServiceModel>(this.mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task EditAsync(EditAthleteServiceModel model)

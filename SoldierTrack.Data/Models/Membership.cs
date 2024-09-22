@@ -18,6 +18,8 @@
 
         public int Price { get; set; }
 
+        public int AthleteId { get; set; } 
+
         public Athlete Athlete { get; set; } = null!;
     }
 }

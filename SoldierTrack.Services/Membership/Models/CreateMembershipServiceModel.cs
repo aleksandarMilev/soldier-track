@@ -9,7 +9,7 @@
 
         public bool IsPending { get; init; } = true;
 
-        public DateTime? EndDate => this.IsMonthly ? DateTime.Now.AddMonths(1) : null;
+        public DateTime? EndDate => this.IsMonthly ? DateTime.UtcNow.AddMonths(1) : null;
 
         public int? WorkoutsLeft => this.IsMonthly ? null : this.TotalWorkoutsCount;
 

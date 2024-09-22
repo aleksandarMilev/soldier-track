@@ -1,32 +1,26 @@
 ﻿namespace SoldierTrack.Services.Membership
 {
-    using AutoMapper;
-    using AutoMapper.QueryableExtensions;
     using Microsoft.EntityFrameworkCore;
     using SoldierTrack.Data;
     using SoldierTrack.Data.Models;
     using SoldierTrack.Services.Common;
-    using SoldierTrack.Services.Membership.MapperProfile;
+    using SoldierTrack.Services.Membership.MapTo;
     using SoldierTrack.Services.Membership.Models;
     using SoldierTrack.Services.Membership.Models.Base;
 
     public class MembershipService : IMembershipService
-    { 
+    {
         private readonly ApplicationDbContext data;
-        private readonly IMapper mapper;
 
-        public MembershipService(ApplicationDbContext data)
-        {
-            this.data = data;
-            this.mapper = AutoMapperConfig<MembershipProfile>.CreateMapper();
-        }
+        public MembershipService(ApplicationDbContext data) => this.data = data;
 
         public async Task<IEnumerable<MembershipPendingServiceModel>> GetAllPendingAsync()
         {
             return await this.data
                 .AllDeletableAsNoTracking<Membership>()
+                .Include(m => m.Athlete)
                 .Where(m => m.IsPending)
-                .ProjectTo<MembershipPendingServiceModel>(this.mapper.ConfigurationProvider)
+                .MapToMembershipPendingServiceModel()
                 .ToListAsync();
         }
 
@@ -36,7 +30,7 @@
                 .MembershipArchives
                 .Include(m => m.Membership)
                 .Where(m => m.AthleteId == athleteId)
-                .ProjectTo<MembershipServiceModel>(this.mapper.ConfigurationProvider);
+                .MapToMembershipServiceModel();
 
             var totalCount = await query.CountAsync();
 
@@ -70,13 +64,13 @@
         {
             return await this.data
                 .AllDeletableAsNoTracking<Membership>()
-                .ProjectTo<EditMembershipServiceModel>(this.mapper.ConfigurationProvider)
+                .MapToEditMembershipServiceModel()
                 .FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task RequestAsync(CreateMembershipServiceModel model)
         {
-            var membershipEntity = this.mapper.Map<Membership>(model);
+            var membershipEntity = model.MapToMembership();
 
             var athleteEntity = await this.data
                 .AllDeletable<Athlete>()
@@ -111,7 +105,7 @@
                 .FirstOrDefaultAsync(m => m.Id == model.Id)
                 ?? throw new InvalidOperationException("Membership not found!");
 
-            this.mapper.Map(model, entity);
+            entity = model.MapToMembership();
             await this.data.SaveChangesAsync();
         }
 
@@ -126,12 +120,11 @@
             var archiveEntity = new MembershipArchive()
             {
                 MembershipId = id,
-                AthleteId = entity.Athlete.Id,
+                AthleteId = entity.AthleteId,
                 DeletedOn = DateTime.UtcNow
             };
 
             this.data.MembershipArchives.Add(archiveEntity);
-
             entity.Athlete.MembershipId = null;
 
             this.data.SoftDelete(entity);

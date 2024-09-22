@@ -7,6 +7,6 @@
         public bool IsPending { get; init; }
         public DateTime? EndDate { get; init; }
         public int Price { get; init; }
-        public int WorkoutsLeft { get; init; }
+        public int? WorkoutsLeft { get; init; }
     }
 }

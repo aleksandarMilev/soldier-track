@@ -1,29 +1,21 @@
 ﻿namespace SoldierTrack.Web.Areas.Administrator.Controllers
 {
-    using AutoMapper;
-    using SoldierTrack.Services.Membership;
-    using SoldierTrack.Services.Membership.Models.Base;
-    using SoldierTrack.Web.Areas.Administrator.Models.Membership;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using SoldierTrack.Services.Membership;
+    using SoldierTrack.Web.Areas.Administrator.Models.Membership;
+    using SoldierTrack.Web.Common.MapTo;
 
-    using static SoldierTrack.Web.Common.Constants.WebConstants;
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
+    using static SoldierTrack.Web.Common.Constants.WebConstants;
 
     [Area(AdminRoleName)]
     [Authorize(Roles = AdminRoleName)]
     public class MembershipController : Controller
     {
         private readonly IMembershipService membershipService;
-        private readonly IMapper mapper;
 
-        public MembershipController(
-            IMembershipService membershipService,
-            IMapper mapper)
-        {
-            this.membershipService = membershipService;
-            this.mapper = mapper;
-        }
+        public MembershipController(IMembershipService membershipService) => this.membershipService = membershipService;
 
         [HttpGet]
         public async Task<IActionResult> GetAllPending()
@@ -43,7 +35,7 @@
             }
 
             //again, like in the other services, we map it because the partial view from the form accepts MembershipBaseFormModel or descendant
-            var viewModel = this.mapper.Map<EditMembershipViewModel>(serviceModel);
+            var viewModel = serviceModel.MapToEditMembershipServiceModel();
             viewModel.AthleteId = athleteId;
 
             return this.View(viewModel);
@@ -57,7 +49,7 @@
                 return this.View(viewModel);
             }
 
-            var serviceModel = this.mapper.Map<EditMembershipServiceModel>(viewModel);
+            var serviceModel = viewModel.MapToEditMembershipViewModel();
             await this.membershipService.EditAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = MembershipEdited;
@@ -70,7 +62,7 @@
             await this.membershipService.DeleteAsync(id);
 
             this.TempData["SuccessMessage"] = MembershipDeleted;
-            return this.RedirectToAction("Details", "Athlete", new { athleteId, area = "" });
+            return this.RedirectToAction("Details", "Athlete", new { id = athleteId, area = "" });
         }
 
         [HttpPost]

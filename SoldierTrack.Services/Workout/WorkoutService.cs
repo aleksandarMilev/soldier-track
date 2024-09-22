@@ -6,7 +6,6 @@
     using SoldierTrack.Data;
     using SoldierTrack.Data.Models;
     using SoldierTrack.Services.Common;
-    using SoldierTrack.Services.Workout.MapperProfile;
     using SoldierTrack.Services.Workout.Models;
 
     public class WorkoutService : IWorkoutService
@@ -14,10 +13,10 @@
         private readonly ApplicationDbContext data;
         private readonly IMapper mapper;
 
-        public WorkoutService(ApplicationDbContext data)
+        public WorkoutService(ApplicationDbContext data, IMapper mapper)
         {
             this.data = data;
-            this.mapper = AutoMapperConfig<WorkoutProfile>.CreateMapper();
+            this.mapper = mapper;
         }
 
         public async Task<WorkoutPageServiceModel> GetAllAsync(DateTime? date, int pageIndex, int pageSize)
@@ -55,6 +54,14 @@
             return pageModels;
         }
 
+        public async Task<WorkoutDetailsServiceModel?> GetByIdAsync(int id)
+        {
+            return await this
+                .GetUpcomingsAsNoTrackingAsync()
+                .ProjectTo<WorkoutDetailsServiceModel>(this.mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(w => w.Id == id);
+        }
+
         public async Task<bool> IsAnotherWorkoutScheduledAtThisDateAndTimeAsync(DateTime date, TimeSpan time, int? id = null)
         {
             var entityId = await this
@@ -74,14 +81,6 @@
             }
 
             return false;
-        }
-
-        public async Task<WorkoutDetailsServiceModel?> GetByIdAsync(int id)
-        {
-            return await this
-                .GetUpcomingsAsNoTrackingAsync()
-                .ProjectTo<WorkoutDetailsServiceModel>(this.mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(w => w.Id == id);
         }
 
         public async Task CreateAsync(WorkoutServiceModel model)
@@ -134,9 +133,7 @@
 
             return this.data
                 .AllDeletableAsNoTracking<Workout>()
-                .Where(w =>
-                    w.Date > todayDate ||
-                    (w.Date == todayDate && w.Time > todayTime));
+                .Where(w => w.Date > todayDate || (w.Date == todayDate && w.Time > todayTime));
         }
     }
 }
