@@ -5,7 +5,7 @@
     using SoldierTrack.Services.Membership;
     using SoldierTrack.Web.Common.Attributes.Filter;
     using SoldierTrack.Web.Common.Extensions;
-    using SoldierTrack.Web.Common.MapTo;
+    using SoldierTrack.Web.Common.CustomMapping;
     using SoldierTrack.Web.Models.Membership;
 
     using static SoldierTrack.Web.Common.Constants.WebConstants;
@@ -57,7 +57,7 @@
             await this.membershipService.RequestAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = MembershipRequested;
-            return this.RedirectToAction("Index", "Home");
+            return this.RedirectToAction("Details", "Athlete", new { id = viewModel.AthleteId });
         }
 
         [HttpGet]

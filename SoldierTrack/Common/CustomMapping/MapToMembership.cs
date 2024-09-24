@@ -1,11 +1,11 @@
-﻿namespace SoldierTrack.Web.Common.MapTo
+﻿namespace SoldierTrack.Web.Common.CustomMapping
 {
     using SoldierTrack.Services.Membership.Models;
     using SoldierTrack.Services.Membership.Models.Base;
     using SoldierTrack.Web.Areas.Administrator.Models.Membership;
     using SoldierTrack.Web.Models.Membership;
 
-    public static class Membership
+    public static class MapToMembership
     {
         public static CreateMembershipServiceModel MapToCreateMembershipServiceModel(this CreateMembershipViewModel viewModel)
         {

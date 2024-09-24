@@ -65,7 +65,8 @@
                                 <form asp-area="Administrator"
                                       asp-controller="Membership"
                                       asp-action="Approve"
-                                      asp-route-id="@athlete.MembershipId"
+                                      asp-route-membershipId="@athlete.MembershipId"
+                                      asp-route-athleteId="@athlete.Id"
                                       method="post"
                                       class="d-inline">
                                     <button type="submit" class="btn btn-sm btn-success me-1" onclick="return confirmApproval()">
@@ -75,7 +76,8 @@
                                 <form asp-area="Administrator"
                                       asp-controller="Membership"
                                       asp-action="Reject"
-                                      asp-route-id="@athlete.MembershipId"
+                                      asp-route-membershipId="@athlete.MembershipId"
+                                      asp-route-athleteId="@athlete.Id"
                                       method="post"
                                       class="d-inline">
                                     <button type="submit" class="btn btn-sm btn-danger" onclick="return confirmRejection()">

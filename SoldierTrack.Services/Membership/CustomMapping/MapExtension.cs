@@ -59,7 +59,7 @@
                 StartDate = m.Membership.StartDate,
                 TotalWorkoutsCount = m.Membership.TotalWorkoutsCount,
                 IsMonthly = m.Membership.IsMonthly,
-                AthleteId = m.Membership.Athlete.Id,
+                AthleteId = m.AthleteId,
                 EndDate = m.Membership.EndDate,
                 Price = m.Membership.Price,
                 IsPending = m.Membership.IsPending,

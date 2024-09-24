@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoldierTrack.Data", "Soldie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoldierTrack.Services", "SoldierTrack.Services\SoldierTrack.Services.csproj", "{196AF1FE-BB38-454C-B8CF-A9C810DF8A1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoldierTrack.Tests", "SoldierTrack.Tests\SoldierTrack.Tests.csproj", "{ACBBDB25-349C-4E01-904C-726EFFE25AA1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoldierTrack.Tests", "SoldierTrack.Tests\SoldierTrack.Tests.csproj", "{ACBBDB25-349C-4E01-904C-726EFFE25AA1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

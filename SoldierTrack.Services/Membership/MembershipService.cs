@@ -29,6 +29,7 @@
             var query = this.data
                 .MembershipArchives
                 .Include(m => m.Membership)
+                .Include(m => m.Athlete)
                 .Where(m => m.AthleteId == athleteId)
                 .MapToMembershipServiceModel();
 

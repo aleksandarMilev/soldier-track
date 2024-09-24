@@ -40,11 +40,33 @@
                     <td>@(membership.IsMonthly ? "Yes" : "No")</td>
                     <td>@membership.Price</td>
                     <td>
-                        <form asp-controller="Membership" asp-action="Approve" asp-route-id="@membership.Id" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-success" onclick="return confirmApproval()">Approve</button>
+                        <form
+                            asp-controller="Membership"
+                            asp-action="Approve"
+                            asp-route-membershipId="@membership.Id"
+                            asp-route-athleteId="@membership.AthleteId"
+                            method="post"
+                            class="d-inline">
+                                <button 
+                                    type="submit" 
+                                    class="btn btn-success" 
+                                    onclick="return confirmApproval()">
+                                    Approve
+                                </button>
                         </form>
-                        <form asp-controller="Membership" asp-action="Reject" asp-route-id="@membership.Id" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-danger" onclick="return confirmRejection()">Reject</button>
+                        <form 
+                            asp-controller="Membership" 
+                            asp-action="Reject"
+                              asp-route-membershipId="@membership.Id"
+                            asp-route-athleteId="@membership.AthleteId"
+                            method="post"
+                            class="d-inline">
+                                <button 
+                                    type="submit" 
+                                    class="btn btn-danger" 
+                                    onclick="return confirmRejection()">
+                                    Reject
+                                </button>
                         </form>
                     </td>
                 </tr>

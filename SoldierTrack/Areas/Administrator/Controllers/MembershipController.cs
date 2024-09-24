@@ -2,9 +2,10 @@
 {
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using SoldierTrack.Data.Models;
     using SoldierTrack.Services.Membership;
     using SoldierTrack.Web.Areas.Administrator.Models.Membership;
-    using SoldierTrack.Web.Common.MapTo;
+    using SoldierTrack.Web.Common.CustomMapping;
 
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
     using static SoldierTrack.Web.Common.Constants.WebConstants;
@@ -66,21 +67,21 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> Approve(int id)
+        public async Task<IActionResult> Approve(int membershipId, int athleteId)
         {
-            await this.membershipService.ApproveAsync(id);
+            await this.membershipService.ApproveAsync(membershipId);
 
             this.TempData["SuccessMessage"] = MembershipApproved;
-            return this.RedirectToAction("Index", "Home", new { area = "" });
+            return this.RedirectToAction("Details", "Athlete", new { id = athleteId, area = "" });
         }
 
         [HttpPost]
-        public async Task<IActionResult> Reject(int id)
+        public async Task<IActionResult> Reject(int membershipId, int athleteId)
         {
-            await this.membershipService.RejectAsync(id);
+            await this.membershipService.RejectAsync(membershipId);
 
             this.TempData["SuccessMessage"] = MembershipRejected;
-            return this.RedirectToAction("Index", "Home", new { area = "" });
+            return this.RedirectToAction("Details", "Athlete", new { id = athleteId, area = "" });
         }
     }
 }
