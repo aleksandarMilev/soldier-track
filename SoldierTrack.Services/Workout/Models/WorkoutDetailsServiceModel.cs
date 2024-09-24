@@ -11,6 +11,6 @@
 
         public int CurrentParticipants { get; init; }
 
-        public IEnumerable<AthleteServiceModel> Athletes { get; set; } = new List<AthleteServiceModel>();
+        public IEnumerable<AthleteSummaryServiceModel> Athletes { get; set; } = new List<AthleteSummaryServiceModel>();
     }
 }

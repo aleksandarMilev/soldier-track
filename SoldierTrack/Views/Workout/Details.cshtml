@@ -30,10 +30,6 @@
     var workoutIsClosed =
         workout.Date < DateTime.Now.Date ||
         (workout.Date == DateTime.Now.Date && workout.Time < DateTime.Now.TimeOfDay);
-
-    var userId = this.User.GetId();
-    var athleteId = await this.service.GetIdByUserIdAsync(userId!);
-    var athleteAlreadyJoined = await service.AthleteAlreadyJoinedByIdAsync(athleteId, workout.Id);
 }
 
 <div class="container mt-4">
@@ -88,31 +84,38 @@
                 this.User.Identity.IsAuthenticated &&
                 !this.User.IsAdmin())
             {
+                //if we get here, we are sure that the current user is athlete
                 if (!workoutIsClosed)
                 {
-                    if (!athleteAlreadyJoined)
+                    var userId = this.User.GetId();
+                    var athleteId = await this.service.GetIdByUserIdAsync(userId!);
+
+                    if (await this.service.AthleteHasApprovedMembershipByAthleteIdAsync(athleteId))
                     {
-                        <form asp-area=""
-                              asp-controller="Athlete"
-                              asp-action="Join"
-                              asp-route-athleteId="@athleteId"
-                              asp-route-workoutId="@workout.Id"
-                              method="post"
-                              onsubmit="return confirm('Are you sure you want to join in the workout?')">
-                             <button type="submit" class="btn btn-primary">Join</button>
-                        </form>
-                    }
-                    else
-                    {
-                        <form asp-area=""
-                              asp-controller="Athlete"
-                              asp-action="Leave"
-                              asp-route-athleteId="@athleteId"
-                              asp-route-workoutId="@workout.Id"
-                              method="post"
-                              onsubmit="return confirm('Are you sure you want to leave this workout?')">
-                            <button type="submit" class="btn btn-danger">Leave</button>
-                        </form>
+                        if (!await service.AthleteAlreadyJoinedByIdAsync(athleteId, workout.Id))
+                        {
+                            <form asp-area=""
+                                  asp-controller="Athlete"
+                                  asp-action="Join"
+                                  asp-route-athleteId="@athleteId"
+                                  asp-route-workoutId="@workout.Id"
+                                  method="post"
+                                  onsubmit="return confirm('Are you sure you want to join in the workout?')">
+                                <button type="submit" class="btn btn-primary">Join</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-area=""
+                                  asp-controller="Athlete"
+                                  asp-action="Leave"
+                                  asp-route-athleteId="@athleteId"
+                                  asp-route-workoutId="@workout.Id"
+                                  method="post"
+                                  onsubmit="return confirm('Are you sure you want to leave this workout?')">
+                                <button type="submit" class="btn btn-danger">Leave</button>
+                            </form>
+                        }
                     }
                 }
             }
@@ -120,62 +123,62 @@
         @if (workout.Athletes.Count() > 0)
         {
             <div class="mt-5">
-                <h3>Athletes</h3>
-                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                    @foreach (var athlete in workout.Athletes)
-                    {
-                        <div class="col">
-                            <div class="card h-100 border-primary">
-                                <div class="card-header bg-primary text-white">
-                                    <h5 class="mb-0">@athlete.FirstName @athlete.LastName</h5>
-                                </div>
-                                <div class="card-body">
-                                    <table class="table table-sm table-borderless">
-                                        <tbody>
-                                            <tr>
-                                                <th>First Name:</th>
-                                                <td>@athlete.FirstName</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Last Name:</th>
-                                                <td>@athlete.LastName</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="card-footer bg-light d-flex justify-content-between">
-                                    @if (this.User.IsAdmin() && !workoutIsClosed)
+                <div class="container">
+                    <h3 class="text text-center">Athletes</h3>
+                    <div class="row justify-content-center">
+                        <div class="col-8">
+                            <table class="table table-hover table-sm table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col">First Name</th>
+                                        <th scope="col">Last Name</th>
+                                        @if (this.User.IsAdmin() && !workoutIsClosed)
+                                        {
+                                            <th scope="col" class="text-center">Actions</th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var athlete in workout.Athletes)
                                     {
-                                        <form
-                                            asp-area=""
-                                            asp-controller="Workout"
-                                            asp-action="RemoveFromWorkout"
-                                            method="post"
-                                            onsubmit="return confirm('Are you sure you want to remove this athlete from the workout?')"
-                                            class="d-inline">
-                                            <input type="hidden" name="athleteId" value="@athleteId" />
-                                            <input type="hidden" name="workoutId" value="@workout.Id" />
-                                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
-                                        </form>
+                                        <tr>
+                                            <td>@athlete.FirstName</td>
+                                            <td>@athlete.LastName</td>
+                                            @if (this.User.IsAdmin())
+                                            {
+                                                <td class="text-center">
+                                                    @if (!workoutIsClosed)
+                                                    {
+                                                        <form asp-area=""
+                                                              asp-controller="Workout"
+                                                              asp-action="RemoveFromWorkout"
+                                                              method="post"
+                                                              onsubmit="return confirm('Are you sure you want to remove this athlete from the workout?')"
+                                                              class="d-inline">
+                                                            <input type="hidden" name="athleteId" value="@athlete.Id" />
+                                                            <input type="hidden" name="workoutId" value="@workout.Id" />
+                                                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                                                        </form>
+                                                    }
+                                                    <a asp-area=""
+                                                       asp-controller="Athlete"
+                                                       asp-action="Details"
+                                                       asp-route-id="@athlete.Id"
+                                                       class="btn btn-primary btn-sm">
+                                                        View Details
+                                                    </a>
+                                                </td>
+                                            }
+                                        </tr>
                                     }
-                                    @if (this.User.IsAdmin())
-                                    {
-                                        <a 
-                                           asp-area=""
-                                           asp-controller="Athlete"
-                                           asp-action="Details"
-                                           asp-route-id="@athleteId"
-                                           class="btn btn-primary btn-sm">
-                                            View Details
-                                        </a>
-                                    }
-                                </div>
-                            </div>
+                                </tbody>
+                            </table>
                         </div>
-                    }
+                    </div>
                 </div>
             </div>
         }
+
 
         else
         {
@@ -183,5 +186,9 @@
                 <p>No athletes for this workout yet!</p>
             </div>
         }
-        <a asp-area="" asp-controller="Workout" asp-action="GetAll" class="btn btn-secondary mt-4">Back to List</a>
+
+        <a asp-area="" asp-controller="Workout" asp-action="GetAll" class="btn btn-secondary mt-4 narrow-button">
+            Back to List
+        </a>
+       
 </div>

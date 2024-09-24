@@ -9,6 +9,7 @@
     using SoldierTrack.Services.Common;
     using SoldierTrack.Services.Membership;
     using SoldierTrack.Services.Membership.Exceptions;
+    using SoldierTrack.Services.Workout.Exceptions;
 
     public class AthleteService : IAthleteService
     {
@@ -121,15 +122,22 @@
                .AnyAsync(id => id == userId);
         }
 
-        public async Task<bool> AthleteHasMembershipAsync(int id)
+        public async Task<bool> AthleteHasActiveMembershipByAthleteIdAsync(int id)
         {
-            var membershipId = await this.data
-                .AllDeletableAsNoTracking<Athlete>()
-                .Where(a => a.Id == id)
-                .Select(a => a.MembershipId)
-                .FirstOrDefaultAsync();
+            var membership = await this.data
+                .AllDeletableAsNoTracking<Membership>()
+                .FirstOrDefaultAsync(m => m.AthleteId == id);
 
-            return membershipId != null;
+            return membership != null;
+        }
+
+        public async Task<bool> AthleteHasApprovedMembershipByAthleteIdAsync(int id)
+        {
+            var membership = await this.data
+                .AllDeletableAsNoTracking<Membership>()
+                .FirstOrDefaultAsync(m => m.AthleteId == id);
+
+            return membership != null && !membership.IsPending;
         }
 
         public async Task CreateAsync(AthleteServiceModel model)
@@ -177,15 +185,17 @@
 
         public async Task JoinAsync(int athleteId, int workoutId)
         {
-            var workoutIdIsValid = await this.data
+            var workout = await this.data
                 .AllDeletableAsNoTracking<Workout>()
-                .Select(w => w.Id)
-                .AnyAsync(id => id == workoutId);
+                .FirstOrDefaultAsync(a => a.Id == workoutId)
+               ?? throw new InvalidOperationException("Athlete not found!");
 
-            if (!workoutIdIsValid)
+            if (workout.MaxParticipants == workout.CurrentParticipants) 
             {
-               throw new InvalidOperationException("Workout not found!");
+               throw new WorkoutClosedException();
             }
+
+            workout.CurrentParticipants++;
 
             var athleteEntity = await this.data
                .AllDeletable<Athlete>()

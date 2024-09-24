@@ -18,7 +18,7 @@
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.CategoryName.Name))
                 .ForMember(dest => dest.Athletes, opt => opt.MapFrom(src => src.AthletesWorkouts.Select(aw => aw.Athlete)));
 
-            this.CreateMap<Athlete, AthleteServiceModel>();
+            this.CreateMap<Athlete, AthleteSummaryServiceModel>();
         }
     }
 }
