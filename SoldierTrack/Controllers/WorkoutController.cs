@@ -23,5 +23,13 @@
             var model = await this.workoutService.GetAllAsync(date, pageIndex, pageSize);
             return this.View(model);
         }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Details(int id)
+        {
+            var model = await this.workoutService.GetDetailsByIdAsync(id);
+            return this.View(model);
+        }
     }
 }

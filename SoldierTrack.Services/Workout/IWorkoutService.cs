@@ -4,7 +4,9 @@
 
     public interface IWorkoutService
     {
-        Task<WorkoutDetailsServiceModel?> GetByIdAsync(int id);
+        Task<WorkoutDetailsServiceModel?> GetDetailsByIdAsync(int id);
+
+        Task<EditWorkoutServiceModel?> GetByIdAsync(int id);
 
         Task<WorkoutPageServiceModel> GetAllAsync(DateTime? date, int pageIndex, int pageSize);
 
@@ -12,7 +14,7 @@
 
         Task CreateAsync(WorkoutServiceModel model);
 
-        Task EditAsync(WorkoutDetailsServiceModel model);
+        Task EditAsync(EditWorkoutServiceModel model);
 
         Task DeleteAsync(int id);
     }

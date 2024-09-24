@@ -17,7 +17,7 @@
               .ForMember(dest => dest.Workouts, opt => opt.MapFrom(src => src.AthletesWorkouts.Select(aw => aw.Workout)));  
 
             this.CreateMap<Membership, MembershipServiceModel>();
-            this.CreateMap<Workout, WorkoutDetailsServiceModel>();
+            this.CreateMap<Workout, EditWorkoutServiceModel>();
 
             this.CreateMap<Athlete, EditAthleteServiceModel>()
                 .ReverseMap()

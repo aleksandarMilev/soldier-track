@@ -5,18 +5,24 @@
     using Microsoft.EntityFrameworkCore;
     using SoldierTrack.Data;
     using SoldierTrack.Data.Models;
-    using SoldierTrack.Services.Athlete.MapperProfile;
     using SoldierTrack.Services.Athlete.Models;
     using SoldierTrack.Services.Common;
+    using SoldierTrack.Services.Membership;
+    using SoldierTrack.Services.Membership.Exceptions;
 
     public class AthleteService : IAthleteService
     {
         private readonly ApplicationDbContext data;
+        private readonly IMembershipService membershipService;
         private readonly IMapper mapper;
 
-        public AthleteService(ApplicationDbContext data, IMapper mapper)
+        public AthleteService(
+            ApplicationDbContext data,
+            IMembershipService membershipService,
+            IMapper mapper)
         {
             this.data = data;
+            this.membershipService = membershipService;
             this.mapper = mapper;
         }
 
@@ -166,6 +172,114 @@
             }
 
             await this.data.SaveChangesAsync();
+        }
+
+
+        public async Task JoinAsync(int athleteId, int workoutId)
+        {
+            var workoutIdIsValid = await this.data
+                .AllDeletableAsNoTracking<Workout>()
+                .Select(w => w.Id)
+                .AnyAsync(id => id == workoutId);
+
+            if (!workoutIdIsValid)
+            {
+               throw new InvalidOperationException("Workout not found!");
+            }
+
+            var athleteEntity = await this.data
+               .AllDeletable<Athlete>()
+               .Include(a => a.Membership)
+               .FirstOrDefaultAsync(a => a.Id == athleteId)
+               ?? throw new InvalidOperationException("Athlete not found!");
+
+            var membershipEntity = athleteEntity.Membership
+               ?? throw new InvalidOperationException("Athlete has not active membership!");
+
+            if (membershipEntity.IsMonthly)
+            {
+                if (DateTime.UtcNow > membershipEntity.EndDate)
+                {
+                    /*relatively-rare edge case where (monthly) membership is expired but is not deleted by hangfire yet,
+                    so we delete it manually and return a user-friendly message*/
+                    await this.membershipService.DeleteAsync(membershipEntity.Id);
+                    throw new MembershipExpiredException();
+                }
+            }
+            else
+            {
+                membershipEntity.WorkoutsLeft--;
+
+                if (membershipEntity.WorkoutsLeft == 0)
+                {
+                    await this.membershipService.DeleteAsync(membershipEntity.Id);
+                }
+            }
+
+            var mapEntity = new AthleteWorkout()
+            {
+                AthleteId = athleteId,
+                WorkoutId = workoutId
+            };
+
+            this.data.Add(mapEntity);
+            await this.data.SaveChangesAsync();
+        }
+
+        public async Task LeaveAsync(int athleteId, int workoutId)
+        {
+            var workoutIdIsValid = await this.data
+                .AllDeletableAsNoTracking<Workout>()
+                .Select(w => w.Id)
+                .AnyAsync(id => id == workoutId);
+
+            if (!workoutIdIsValid)
+            {
+                throw new InvalidOperationException("Workout not found!");
+            }
+
+            var athleteEntity = await this.data
+               .AllDeletable<Athlete>()
+               .Include(a => a.Membership)
+               .FirstOrDefaultAsync(a => a.Id == athleteId)
+               ?? throw new InvalidOperationException("Athlete not found!");
+
+            var membershipEntity = athleteEntity.Membership
+               ?? throw new InvalidOperationException("Athlete has not active membership!");
+
+            if (membershipEntity.IsMonthly)
+            {
+                if (DateTime.UtcNow > membershipEntity.EndDate)
+                {
+                    throw new InvalidOperationException("Athlete has not active membership!");
+                }
+            }
+            else
+            {
+                membershipEntity.WorkoutsLeft--;
+
+                if (membershipEntity.WorkoutsLeft == 0)
+                {
+                    await this.membershipService.DeleteAsync(membershipEntity.Id);
+                }
+            }
+
+            var mapEntity = new AthleteWorkout()
+            {
+                AthleteId = athleteId,
+                WorkoutId = workoutId
+            };
+
+            this.data.Add(mapEntity);
+            await this.data.SaveChangesAsync();
+        }
+
+        public async Task<bool> AthleteAlreadyJoinedByIdAsync(int athleteId, int workoutId)
+        {
+            return await this.data
+                .AthletesWorkouts
+                .AsNoTracking()
+                .AnyAsync(aw => aw.AthleteId == athleteId && aw.WorkoutId == workoutId);
         }
     }
 }

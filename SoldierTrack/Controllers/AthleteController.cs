@@ -135,5 +135,26 @@
             this.TempData["SuccessMessage"] = this.User.IsAdmin() ? AdminDeleteAthlete : AthleteDeleteHimself;
             return this.RedirectToAction("Index", "Home", new { area = "" });
         }
+
+
+        [HttpPost]
+        [AthleteAuthorization]
+        public async Task<IActionResult> Join(int athleteId, int workoutId)
+        {
+            await this.athleteService.JoinAsync(athleteId, workoutId);
+
+            this.TempData["SuccessMessage"] = JoinSuccess;
+            return this.RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        [AthleteAuthorization]
+        public async Task<IActionResult> Leave(int athleteId, int workoutId)
+        {
+            await this.athleteService.LeaveAsync(athleteId, workoutId);
+
+            this.TempData["SuccessMessage"] = LeaveSuccess;
+            return this.RedirectToAction("Index", "Home");
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿namespace SoldierTrack.Web.Common.Extensions
 {
+    using Hangfire;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using SoldierTrack.Data;
@@ -25,14 +26,14 @@
 
         public static IServiceCollection AddAutoMapperProfiles(this IServiceCollection services)
         {
-            services
-               .AddAutoMapper(cfg =>
-               {
-                   cfg.AddProfile<AthleteProfile>();
-                   cfg.AddProfile<WorkoutProfile>();
-                   cfg.AddProfile<CategoryProfile>();
-               }, 
-               typeof(Program).Assembly);
+
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile<AthleteProfile>();
+                cfg.AddProfile<WorkoutProfile>();
+                cfg.AddProfile<CategoryProfile>();
+            }, 
+            typeof(Program).Assembly);
 
             return services;
         }
@@ -47,10 +48,10 @@
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
             services
-                .AddDbContext<ApplicationDbContext>(options =>
-                {
-                    options.UseSqlServer(connectionString);
-                });
+            .AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(connectionString);
+            });
 
             if (environment.IsDevelopment())
             {
@@ -62,18 +63,31 @@
 
         public static IServiceCollection AddApplicationIdentity(this IServiceCollection services)
         {
-            services
-                .AddDefaultIdentity<IdentityUser>(options =>
-                {
-                    options.SignIn.RequireConfirmedAccount = false;
-                    options.Password.RequireDigit = false;
-                    options.Password.RequireLowercase = false;
-                    options.Password.RequireUppercase = false;
-                    options.Password.RequireNonAlphanumeric = false;
-                })
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services.AddDefaultIdentity<IdentityUser>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+            })
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddHangfireConfigurations(this IServiceCollection services, IConfiguration configuration)
+        {
+            var connectionStr = configuration.GetConnectionString("DefaultConnection");
+
+            services.AddHangfire(configuration =>
+            {
+                configuration.UseSqlServerStorage(connectionStr);
+            });
+
+            services.AddHangfireServer();
             return services;
         }
     }

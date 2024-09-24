@@ -19,7 +19,7 @@
                            "hh\\:mm",
                            CultureInfo.InvariantCulture)));
 
-            this.CreateMap<WorkoutDetailsServiceModel, EditWorkoutViewModel>()
+            this.CreateMap<EditWorkoutServiceModel, EditWorkoutViewModel>()
                 .ReverseMap()
                 .ForMember(
                    dest => dest.Time,

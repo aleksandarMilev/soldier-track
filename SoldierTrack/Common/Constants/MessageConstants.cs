@@ -17,6 +17,10 @@
 
         public const string WorkoutCreated = "You have successfully added the workout!";
 
+        public const string JoinSuccess = "You have successfully joined in the workout!";
+
+        public const string LeaveSuccess = "You have successfully left the workout!";
+
         //athlete
         public const string AthleteWithSameNumberExists = "An athlete with number {0} is already registered!";
 

@@ -131,5 +131,16 @@
             this.data.SoftDelete(entity);
             await this.data.SaveChangesAsync();
         }
+
+        public async Task DeleteExpiredMembershipsAsync()
+        {
+            var expiredMemberships = await data
+                .AllDeletable<Membership>()
+                .Where(m => m.EndDate < DateTime.UtcNow)
+                .ToListAsync();
+
+            this.data.Memberships.RemoveRange(expiredMemberships);
+            await this.data.SaveChangesAsync();
+        }
     }
 }

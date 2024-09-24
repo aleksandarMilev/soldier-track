@@ -22,5 +22,7 @@
         Task EditAsync(EditMembershipServiceModel serviceModel);
 
         Task DeleteAsync(int id);
+
+        Task DeleteExpiredMembershipsAsync();
     }
 }

@@ -83,7 +83,7 @@
                 return await this.ReturnWorkoutViewWithCategoriesLoaded(viewModel);
             }
 
-            var serviceModel = this.mapper.Map<WorkoutDetailsServiceModel>(viewModel);
+            var serviceModel = this.mapper.Map<EditWorkoutServiceModel>(viewModel);
 
             if (await this.workoutService.IsAnotherWorkoutScheduledAtThisDateAndTimeAsync(serviceModel.Date, serviceModel.Time, serviceModel.Id))
             {

@@ -26,7 +26,7 @@
                 .Include(w => w.CategoryName)
                 .OrderBy(w => w.Date)
                 .ThenBy(w => w.Time)
-                .ProjectTo<WorkoutDetailsServiceModel>(this.mapper.ConfigurationProvider);
+                .ProjectTo<EditWorkoutServiceModel>(this.mapper.ConfigurationProvider);
 
             if (date != null)
             {
@@ -54,11 +54,19 @@
             return pageModels;
         }
 
-        public async Task<WorkoutDetailsServiceModel?> GetByIdAsync(int id)
+        public async Task<WorkoutDetailsServiceModel?> GetDetailsByIdAsync(int id)
+        {
+            return await this.data
+                .AllDeletableAsNoTracking<Workout>()
+                .ProjectTo<WorkoutDetailsServiceModel>(this.mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(w => w.Id == id);
+        }
+
+        public async Task<EditWorkoutServiceModel?> GetByIdAsync(int id)
         {
             return await this
                 .GetUpcomingsAsNoTrackingAsync()
-                .ProjectTo<WorkoutDetailsServiceModel>(this.mapper.ConfigurationProvider)
+                .ProjectTo<EditWorkoutServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(w => w.Id == id);
         }
 
@@ -97,7 +105,7 @@
             await this.data.SaveChangesAsync();
         }
 
-        public async Task EditAsync(WorkoutDetailsServiceModel model)
+        public async Task EditAsync(EditWorkoutServiceModel model)
         {
             var categoryEntity = await this.data
                 .Categories

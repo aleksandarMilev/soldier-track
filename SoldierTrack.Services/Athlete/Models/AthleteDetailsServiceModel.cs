@@ -9,6 +9,6 @@
         public int Id { get; init; }
         public int? MembershipId { get; init; }
         public MembershipServiceModel? Membership { get; init; } = new();
-        public IEnumerable<WorkoutDetailsServiceModel> Workouts { get; set; } = new List<WorkoutDetailsServiceModel>();
+        public IEnumerable<EditWorkoutServiceModel> Workouts { get; set; } = new List<EditWorkoutServiceModel>();
     }
 }
