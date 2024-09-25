@@ -4,23 +4,23 @@
 
 @model WorkoutDetailsServiceModel
 
-@inject IAthleteService service;
+@inject IAthleteService athleteService;
 
 @{
     this.ViewData["Title"] = "Workout Details";
 }
 
-@if (this.TempData["Message"] != null)
+@if (this.TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success">
-        <p>@this.TempData["Message"]</p>
+        <p>@this.TempData["SuccessMessage"]</p>
     </div>
 }
 
-@if (this.TempData["ErrorMessage"] != null)
+@if (this.TempData["FailureMessage"] != null)
 {
     <div class="alert alert-danger">
-        <p>@this.TempData["ErrorMessage"]</p>
+        <p>@this.TempData["FailureMessage"]</p>
     </div>
 }
 
@@ -88,34 +88,41 @@
                 if (!workoutIsClosed)
                 {
                     var userId = this.User.GetId();
-                    var athleteId = await this.service.GetIdByUserIdAsync(userId!);
+                    var athleteId = await this.athleteService.GetIdByUserIdAsync(userId!);
 
-                    if (await this.service.AthleteHasApprovedMembershipByAthleteIdAsync(athleteId))
+                    var athleteIsAlreadyJoined = await athleteService.AthleteAlreadyJoinedByIdAsync(athleteId, workout.Id);
+                    var athleteHasMembership = await this.athleteService.AthleteHasMembershipByAthleteIdAsync(athleteId);
+                    var athleteHasApprovedMembership = await this.athleteService.AthleteHasApprovedMembershipByAthleteIdAsync(athleteId);
+
+                    var workoutIsFull = workout.CurrentParticipants == workout.MaxParticipants;
+
+                    if (athleteHasApprovedMembership && !athleteIsAlreadyJoined && !workoutIsFull)
                     {
-                        if (!await service.AthleteAlreadyJoinedByIdAsync(athleteId, workout.Id))
-                        {
-                            <form asp-area=""
-                                  asp-controller="Athlete"
-                                  asp-action="Join"
-                                  asp-route-athleteId="@athleteId"
-                                  asp-route-workoutId="@workout.Id"
-                                  method="post"
-                                  onsubmit="return confirm('Are you sure you want to join in the workout?')">
-                                <button type="submit" class="btn btn-primary">Join</button>
-                            </form>
-                        }
-                        else
-                        {
-                            <form asp-area=""
-                                  asp-controller="Athlete"
-                                  asp-action="Leave"
-                                  asp-route-athleteId="@athleteId"
-                                  asp-route-workoutId="@workout.Id"
-                                  method="post"
-                                  onsubmit="return confirm('Are you sure you want to leave this workout?')">
-                                <button type="submit" class="btn btn-danger">Leave</button>
-                            </form>
-                        }
+                        <form asp-area=""
+                              asp-controller="Athlete"
+                              asp-action="Join"
+                              asp-route-athleteId="@athleteId"
+                              asp-route-workoutId="@workout.Id"
+                              method="post"
+                              onsubmit="return confirm('Are you sure you want to join in the workout?')">
+                            <button type="submit" class="btn btn-primary">Join</button>
+                        </form>
+                       
+                    }
+                    else if (athleteIsAlreadyJoined)
+                    {
+                        <form asp-area=""
+                              asp-controller="Athlete"
+                              asp-action="Leave"
+                              asp-route-athleteId="@athleteId"
+                              asp-route-workoutId="@workout.Id"
+                              method="post"
+                              onsubmit=
+                                "return confirm('@(!athleteHasMembership 
+                                     ? "You have not active membership. While we should restore one workout in it (if it is monthly), this is not possible. Are you sure you want to continue?)" 
+                                     : "Are you sure you want to leave this workout?")')">
+                            <button type="submit" class="btn btn-danger">Leave</button>
+                        </form>
                     }
                 }
             }

@@ -18,7 +18,7 @@
 
         Task<int> GetIdByUserIdAsync(string userId);
 
-        Task<bool> AthleteHasActiveMembershipByAthleteIdAsync(int id);
+        Task<bool> AthleteHasMembershipByAthleteIdAsync(int id);
 
         Task<bool> AthleteHasApprovedMembershipByAthleteIdAsync(int id);
 

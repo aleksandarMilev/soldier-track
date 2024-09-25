@@ -5,6 +5,7 @@
     using Microsoft.AspNetCore.Mvc;
     using SoldierTrack.Services.Athlete;
     using SoldierTrack.Services.Athlete.Models;
+    using SoldierTrack.Services.Membership.Exceptions;
     using SoldierTrack.Web.Common.Attributes.Filter;
     using SoldierTrack.Web.Common.Extensions;
     using SoldierTrack.Web.Models.Athlete;
@@ -141,20 +142,41 @@
         [AthleteAuthorization]
         public async Task<IActionResult> Join(int athleteId, int workoutId)
         {
-            await this.athleteService.JoinAsync(athleteId, workoutId);
+            try
+            {
+                await this.athleteService.JoinAsync(athleteId, workoutId);
+            }
+            catch (MembershipExpiredException)
+            {
+                this.TempData["FailureMessage"] = MembershipExpired;
+                return this.RedirectToAction("Details", "Workout", new { id = workoutId });
+            }
+            catch (Exception)
+            {
+                this.TempData["FailureMessage"] = JoinUtilFailure;
+                return this.RedirectToAction("Details", "Workout", new { id = workoutId });
+            }
 
             this.TempData["SuccessMessage"] = JoinSuccess;
-            return this.RedirectToAction("Index", "Home");
+            return this.RedirectToAction("Details", "Workout", new { id = workoutId });
         }
 
         [HttpPost]
         [AthleteAuthorization]
         public async Task<IActionResult> Leave(int athleteId, int workoutId)
         {
-            await this.athleteService.LeaveAsync(athleteId, workoutId);
+            try
+            {
+                await this.athleteService.LeaveAsync(athleteId, workoutId);
+            }
+            catch (Exception)
+            {
+                this.TempData["FailureMessage"] = LeaveUtilFailure;
+                return this.RedirectToAction("Details", "Workout", new { id = workoutId });
+            }
 
             this.TempData["SuccessMessage"] = LeaveSuccess;
-            return this.RedirectToAction("Index", "Home");
+            return this.RedirectToAction("Details", "Workout", new { id = workoutId });
         }
     }
 }

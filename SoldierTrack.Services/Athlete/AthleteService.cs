@@ -122,7 +122,7 @@
                .AnyAsync(id => id == userId);
         }
 
-        public async Task<bool> AthleteHasActiveMembershipByAthleteIdAsync(int id)
+        public async Task<bool> AthleteHasMembershipByAthleteIdAsync(int id)
         {
             var membership = await this.data
                 .AllDeletableAsNoTracking<Membership>()
@@ -182,29 +182,24 @@
             await this.data.SaveChangesAsync();
         }
 
-
         public async Task JoinAsync(int athleteId, int workoutId)
         {
-            var workout = await this.data
-                .AllDeletableAsNoTracking<Workout>()
+            var workoutEntity = await this.data
+                .AllDeletable<Workout>()
                 .FirstOrDefaultAsync(a => a.Id == workoutId)
-               ?? throw new InvalidOperationException("Athlete not found!");
+                ?? throw new InvalidOperationException("Workout not found!");
 
-            if (workout.MaxParticipants == workout.CurrentParticipants) 
+            if (workoutEntity.MaxParticipants == workoutEntity.CurrentParticipants) 
             {
                throw new WorkoutClosedException();
             }
 
-            workout.CurrentParticipants++;
+            workoutEntity.CurrentParticipants++;
 
-            var athleteEntity = await this.data
-               .AllDeletable<Athlete>()
-               .Include(a => a.Membership)
-               .FirstOrDefaultAsync(a => a.Id == athleteId)
-               ?? throw new InvalidOperationException("Athlete not found!");
-
-            var membershipEntity = athleteEntity.Membership
-               ?? throw new InvalidOperationException("Athlete has not active membership!");
+            var membershipEntity = await this.data
+               .AllDeletable<Membership>()
+               .FirstOrDefaultAsync(m => m.AthleteId == athleteId)
+                ?? throw new InvalidOperationException("Athlete has not active membership!");
 
             if (membershipEntity.IsMonthly)
             {
@@ -238,49 +233,37 @@
 
         public async Task LeaveAsync(int athleteId, int workoutId)
         {
-            var workoutIdIsValid = await this.data
-                .AllDeletableAsNoTracking<Workout>()
-                .Select(w => w.Id)
-                .AnyAsync(id => id == workoutId);
+            var athleteExists = await this.data
+                .AllDeletable<Workout>()
+                .AnyAsync(a => a.Id == workoutId);
 
-            if (!workoutIdIsValid)
+            if (!athleteExists)
             {
-                throw new InvalidOperationException("Workout not found!");
+                throw new InvalidOperationException("Athlete not found!");
             }
 
-            var athleteEntity = await this.data
-               .AllDeletable<Athlete>()
-               .Include(a => a.Membership)
-               .FirstOrDefaultAsync(a => a.Id == athleteId)
-               ?? throw new InvalidOperationException("Athlete not found!");
+            var workoutEntity = await this.data
+                 .AllDeletable<Workout>()
+                 .FirstOrDefaultAsync(a => a.Id == workoutId)
+                ?? throw new InvalidOperationException("Workout not found!");
 
-            var membershipEntity = athleteEntity.Membership
-               ?? throw new InvalidOperationException("Athlete has not active membership!");
+            workoutEntity.CurrentParticipants--;
 
-            if (membershipEntity.IsMonthly)
+            var membershipEntity = await this.data
+                 .AllDeletable<Membership>()
+                 .FirstOrDefaultAsync(m => m.AthleteId == athleteId);
+
+            if (membershipEntity != null && !membershipEntity.IsMonthly)
             {
-                if (DateTime.UtcNow > membershipEntity.EndDate)
-                {
-                    throw new InvalidOperationException("Athlete has not active membership!");
-                }
-            }
-            else
-            {
-                membershipEntity.WorkoutsLeft--;
-
-                if (membershipEntity.WorkoutsLeft == 0)
-                {
-                    await this.membershipService.DeleteAsync(membershipEntity.Id);
-                }
+                membershipEntity.WorkoutsLeft++;
             }
 
-            var mapEntity = new AthleteWorkout()
-            {
-                AthleteId = athleteId,
-                WorkoutId = workoutId
-            };
+            var mapEntity = await this.data
+                .AthletesWorkouts
+                .FirstOrDefaultAsync(aw => aw.AthleteId == athleteId && aw.WorkoutId == workoutId)
+                ?? throw new InvalidOperationException("Map entity not found!");
 
-            this.data.Add(mapEntity);
+            this.data.Remove(mapEntity);
             await this.data.SaveChangesAsync();
         }
 

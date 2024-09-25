@@ -29,6 +29,12 @@
         public async Task<IActionResult> Details(int id)
         {
             var model = await this.workoutService.GetDetailsByIdAsync(id);
+
+            if (model == null)
+            {
+                return this.NotFound();
+            }
+
             return this.View(model);
         }
     }

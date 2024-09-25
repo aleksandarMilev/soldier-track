@@ -41,6 +41,12 @@
 
         public const string MembershipDeleted = "Membership successfully deleted!";
 
+        public const string MembershipExpired = "Yor membership have expired! Please, request a new one.";
+
+        public const string JoinUtilFailure = "A problem has occurred while joining. Please, try again. If the problem continues, call us on 0000000000.";
+
+        public const string LeaveUtilFailure = "A problem has occurred, you are not removed from the workout. Please, try again. If the problem continues, call us on 0000000000.";
+
         //admin
         public const string AdminEditAthlete = "Athlete edited successfully!";
 
