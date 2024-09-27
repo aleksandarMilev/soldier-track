@@ -86,11 +86,12 @@
 
         public async Task<int> GetIdByUserIdAsync(string userId)
         {
-            return await this.data
+            var athlete = await this.data
                 .AllDeletableAsNoTracking<Athlete>()
-                .Where(a => a.UserId == userId)
-                .Select(a => a.Id)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(a => a.UserId == userId)
+                ?? throw new InvalidOperationException("Athlete not found!");
+
+            return athlete.Id;
         }
 
         public async Task<bool> AthleteWithSameNumberExistsAsync(string phoneNumber, int? id = null)
@@ -114,7 +115,7 @@
             return false;
         }
 
-        public async Task<bool> UserIsAthleteAsync(string userId)
+        public async Task<bool> UserIsAthleteByUserIdAsync(string userId)
         {
             return await this.data
                .AllDeletableAsNoTracking<Athlete>()
@@ -140,6 +141,14 @@
             return membership != null && !membership.IsPending;
         }
 
+        public async Task<bool> AthleteAlreadyJoinedByIdAsync(int athleteId, int workoutId)
+        {
+            return await this.data
+                .AthletesWorkouts
+                .AsNoTracking()
+                .AnyAsync(aw => aw.AthleteId == athleteId && aw.WorkoutId == workoutId);
+        }
+
         public async Task CreateAsync(AthleteServiceModel model)
         {
             var athleteEntity = this.mapper.Map<Athlete>(model);
@@ -152,9 +161,8 @@
         {
             var athleteEntity = await this.data
                 .AllDeletable<Athlete>()
-                .Where(a => a.Id == model.Id)
                 .Include(a => a.Membership)
-                .FirstOrDefaultAsync() 
+                .FirstOrDefaultAsync(a => a.Id == model.Id) 
                 ?? throw new InvalidOperationException("Athlete not found!");
 
             this.mapper.Map(model, athleteEntity);
@@ -194,8 +202,6 @@
                throw new WorkoutClosedException();
             }
 
-            workoutEntity.CurrentParticipants++;
-
             var membershipEntity = await this.data
                .AllDeletable<Membership>()
                .FirstOrDefaultAsync(m => m.AthleteId == athleteId)
@@ -221,6 +227,8 @@
                 }
             }
 
+            workoutEntity.CurrentParticipants++;
+
             var mapEntity = new AthleteWorkout()
             {
                 AthleteId = athleteId,
@@ -234,8 +242,8 @@
         public async Task LeaveAsync(int athleteId, int workoutId)
         {
             var athleteExists = await this.data
-                .AllDeletable<Workout>()
-                .AnyAsync(a => a.Id == workoutId);
+                .AllDeletable<Athlete>()
+                .AnyAsync(a => a.Id == athleteId);
 
             if (!athleteExists)
             {
@@ -245,7 +253,12 @@
             var workoutEntity = await this.data
                  .AllDeletable<Workout>()
                  .FirstOrDefaultAsync(a => a.Id == workoutId)
-                ?? throw new InvalidOperationException("Workout not found!");
+                 ?? throw new InvalidOperationException("Workout not found!");
+          
+            var mapEntity = await this.data
+                .AthletesWorkouts
+                .FirstOrDefaultAsync(aw => aw.AthleteId == athleteId && aw.WorkoutId == workoutId)
+                ?? throw new InvalidOperationException("Map entity not found!");
 
             workoutEntity.CurrentParticipants--;
 
@@ -258,21 +271,8 @@
                 membershipEntity.WorkoutsLeft++;
             }
 
-            var mapEntity = await this.data
-                .AthletesWorkouts
-                .FirstOrDefaultAsync(aw => aw.AthleteId == athleteId && aw.WorkoutId == workoutId)
-                ?? throw new InvalidOperationException("Map entity not found!");
-
             this.data.Remove(mapEntity);
             await this.data.SaveChangesAsync();
-        }
-
-        public async Task<bool> AthleteAlreadyJoinedByIdAsync(int athleteId, int workoutId)
-        {
-            return await this.data
-                .AthletesWorkouts
-                .AsNoTracking()
-                .AnyAsync(aw => aw.AthleteId == athleteId && aw.WorkoutId == workoutId);
         }
     }
 }

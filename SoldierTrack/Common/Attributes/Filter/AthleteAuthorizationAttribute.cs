@@ -35,7 +35,7 @@
             Task
                 .Run(async () =>
                 {
-                    athleteExists = await athleteService.UserIsAthleteAsync(context.HttpContext.User.GetId()!);
+                    athleteExists = await athleteService.UserIsAthleteByUserIdAsync(context.HttpContext.User.GetId()!);
                 })
                 .GetAwaiter()
                 .GetResult();

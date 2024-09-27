@@ -65,7 +65,7 @@
 
                             @if (userIsLogged.GetValueOrDefault() && !userIsAdmin)
                             {
-                                var userIsAthlete = await this.athleteService.UserIsAthleteAsync(userId!);
+                                var userIsAthlete = await this.athleteService.UserIsAthleteByUserIdAsync(userId!);
 
                                 if (!userIsAthlete)
                                 {

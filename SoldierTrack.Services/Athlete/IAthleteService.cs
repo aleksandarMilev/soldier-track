@@ -12,7 +12,7 @@
 
         Task<bool> AthleteWithSameNumberExistsAsync(string phoneNumber, int? id = null);
 
-        Task<bool> UserIsAthleteAsync(string userId);
+        Task<bool> UserIsAthleteByUserIdAsync(string userId);
 
         Task<bool> AthleteAlreadyJoinedByIdAsync(int athleteId, int workoutId);
 

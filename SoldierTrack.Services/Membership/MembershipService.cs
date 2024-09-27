@@ -139,7 +139,11 @@
                 .Where(m => m.EndDate < DateTime.UtcNow)
                 .ToListAsync();
 
-            this.data.Memberships.RemoveRange(expiredMemberships);
+            foreach (var m in expiredMemberships)
+            {
+                this.data.SoftDelete(m);
+            }
+
             await this.data.SaveChangesAsync();
         }
     }

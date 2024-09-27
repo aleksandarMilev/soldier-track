@@ -376,6 +376,88 @@
             notDeletedEntity.IsDeleted.Should().Be(false);
         }
 
+        [Fact]
+        public async Task DeleteExpiredMembershipsAsync_ShouldSoftDeleteExpiredMemberships()
+        {
+            this.fixture.ResetDb();
+
+            var membership1 = new Membership
+            {
+                Id = 1,
+                IsMonthly = true,
+                StartDate = DateTime.UtcNow,
+                EndDate = DateTime.UtcNow,
+                TotalWorkoutsCount = null,
+                WorkoutsLeft = null,
+                Price = 96,
+                CreatedOn = DateTime.UtcNow,
+                DeletedOn = null,
+                IsDeleted = false,
+                ModifiedOn = null,
+                IsPending = true,
+            };
+
+            var athlete1 = new Athlete
+            {
+                Id = 1,
+                FirstName = "athl1",
+                LastName = "athl1",
+                PhoneNumber = "0000000001",
+                Email = null,
+                UserId = "test-user-id1",
+                CreatedOn = DateTime.UtcNow,
+                DeletedOn = null,
+                IsDeleted = false,
+                ModifiedOn = null,
+                MembershipId = membership1.Id,
+            };
+
+            var membership2 = new Membership
+            {
+                Id = 2,
+                IsMonthly = false,
+                StartDate = DateTime.UtcNow,
+                EndDate = null,
+                TotalWorkoutsCount = 12,
+                WorkoutsLeft = 12,
+                Price = 96,
+                CreatedOn = DateTime.UtcNow,
+                DeletedOn = null,
+                IsDeleted = false,
+                ModifiedOn = null,
+                IsPending = true,
+            };
+
+            var athlete2 = new Athlete
+            {
+                Id = 2,
+                FirstName = "athl1",
+                LastName = "athl1",
+                PhoneNumber = "0000000001",
+                Email = null,
+                UserId = "test-user-id1",
+                CreatedOn = DateTime.UtcNow,
+                DeletedOn = null,
+                IsDeleted = false,
+                ModifiedOn = null,
+                MembershipId = membership2.Id,
+            };
+
+            membership1.AthleteId = 1;
+            membership2.AthleteId = 2;
+
+            this.data.Memberships.AddRange(membership1, membership2);
+            this.data.Athletes.AddRange(athlete1, athlete2);
+            await this.data.SaveChangesAsync();
+
+            await this.service.DeleteExpiredMembershipsAsync();
+
+            var deleted = await this.data.Memberships.FirstAsync(m => m.Id == 1);
+            var nonDeleted = await this.data.Memberships.FirstAsync(m => m.Id == 2);
+            deleted.IsDeleted.Should().BeTrue();
+            nonDeleted.IsDeleted.Should().BeFalse();
+        }
+
         private async Task<Membership> SeedDatabaseAsync()
         {
             var membership1 = new Membership
