@@ -13,6 +13,8 @@
 
         Task<MembershipArchivePageServiceModel> GetArchiveByAthleteIdAsync(int athleteId, int pageIndex, int pageSize);
 
+        Task<bool> MembershipIsExpired(int id);
+
         Task<int> GetPendingCountAsync();
 
         Task ApproveAsync(int id);

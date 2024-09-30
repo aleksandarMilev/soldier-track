@@ -70,6 +70,14 @@
                 .FirstOrDefaultAsync(w => w.Id == id);
         }
 
+        public async Task<EditWorkoutServiceModel?> GetByDateAndTimeAsync(DateTime date, TimeSpan time)
+        {
+            return await this
+                .GetUpcomingsAsNoTrackingAsync()
+                .ProjectTo<EditWorkoutServiceModel>(this.mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(w => w.Date == date && w.Time == time);
+        }
+
         public async Task<bool> IsAnotherWorkoutScheduledAtThisDateAndTimeAsync(DateTime date, TimeSpan time, int? id = null)
         {
             var entityId = await this
@@ -99,7 +107,6 @@
                 ?? throw new InvalidOperationException("Category not found!");
 
             var entity = this.mapper.Map<Workout>(model);
-            entity.CategoryName = categoryEntity;
 
             this.data.Add(entity);
             await this.data.SaveChangesAsync();
@@ -118,7 +125,6 @@
                 ?? throw new InvalidOperationException("Workout not found!");
 
             this.mapper.Map(model, workoutEntity);
-            workoutEntity.CategoryName = categoryEntity;
 
             await this.data.SaveChangesAsync();
         }

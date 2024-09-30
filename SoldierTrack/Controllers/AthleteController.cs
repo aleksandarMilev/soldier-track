@@ -175,7 +175,7 @@
                 return this.RedirectToAction("Details", "Workout", new { id = workoutId });
             }
 
-            this.TempData["SuccessMessage"] = LeaveSuccess;
+            this.TempData["SuccessMessage"] = this.User.IsAdmin() ? AdminLeaveSuccess : AthleteLeaveSuccess;
             return this.RedirectToAction("Details", "Workout", new { id = workoutId });
         }
     }

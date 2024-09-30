@@ -12,10 +12,8 @@
         [MaxLength(TitleMaxLength)]
         public string Title { get; set; } = null!;
 
-        [Required]
         public DateTime Date { get; set; }
 
-        [Required]
         public TimeSpan Time { get; set; }
 
         [MaxLength(BriefDescriptionMaxLength)]
@@ -27,10 +25,10 @@
         [MaxLength(ImageUrlMaxLength)]
         public string? ImageUrl { get; set; } 
 
-        [Required]
+        public int CategoryId { get; set; }
+
         public Category CategoryName { get; set; } = null!;
 
-        [Required]
         public bool IsForBeginners { get; set; }
 
         public int MaxParticipants { get; set; }

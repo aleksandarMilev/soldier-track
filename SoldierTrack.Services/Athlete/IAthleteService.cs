@@ -22,6 +22,8 @@
 
         Task<bool> AthleteHasApprovedMembershipByAthleteIdAsync(int id);
 
+        Task<bool> AthleteMembershipIsExpiredByIdAsync(int athleteId);
+
         Task<EditAthleteServiceModel?> GetEditServiceModelByIdAsync(int id);
 
         Task EditAsync(EditAthleteServiceModel serviceModel);

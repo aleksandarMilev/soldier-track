@@ -76,12 +76,27 @@
 
         public async Task<AthleteDetailsServiceModel?> GetDetailsModelByIdAsync(int id)
         {
-            return await this.data
-              .AllDeletableAsNoTracking<Athlete>()
-              .Include(a => a.Membership)
-              .Include(a => a.AthletesWorkouts)
-              .ProjectTo<AthleteDetailsServiceModel>(this.mapper.ConfigurationProvider)
-              .FirstOrDefaultAsync(a => a.Id == id);
+            var todayDate = DateTime.Now.Date;
+            var todayTime = DateTime.Now.TimeOfDay;
+
+            var model = await this.data
+                .AllDeletableAsNoTracking<Athlete>()
+                .Include(a => a.Membership)
+                .Include(a => a.AthletesWorkouts)
+                .ProjectTo<AthleteDetailsServiceModel>(this.mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (model == null)
+            {
+                return null;
+            }
+
+            if (model.Workouts != null)
+            {
+                model.Workouts = model.Workouts.Where(w => w.Date > todayDate || (w.Date == todayDate && w.Time > todayTime));
+            }
+
+            return model;
         }
 
         public async Task<int> GetIdByUserIdAsync(string userId)
@@ -149,6 +164,27 @@
                 .AnyAsync(aw => aw.AthleteId == athleteId && aw.WorkoutId == workoutId);
         }
 
+        public async Task<bool> AthleteMembershipIsExpiredByIdAsync(int athleteId)
+        {
+            var membershipEntity = await this.data
+                .AllDeletableAsNoTracking<Athlete>()
+                .Where(a => a.Id == athleteId)
+                .Include(a => a.Membership)
+                .Select(a => a.Membership)
+                .FirstOrDefaultAsync()
+                ?? throw new InvalidOperationException("Membership not found@");
+
+            var isExpired = membershipEntity.IsMonthly && membershipEntity.EndDate > DateTime.UtcNow;
+
+            if (!isExpired)
+            {
+                return false;
+            }
+
+            await this.membershipService.DeleteAsync(membershipEntity.Id);
+            return true;
+        }
+
         public async Task CreateAsync(AthleteServiceModel model)
         {
             var athleteEntity = this.mapper.Map<Athlete>(model);
@@ -211,8 +247,6 @@
             {
                 if (DateTime.UtcNow > membershipEntity.EndDate)
                 {
-                    /*relatively-rare edge case where (monthly) membership is expired but is not deleted by hangfire yet,
-                    so we delete it manually and return a user-friendly message*/
                     await this.membershipService.DeleteAsync(membershipEntity.Id);
                     throw new MembershipExpiredException();
                 }
@@ -258,7 +292,7 @@
             var mapEntity = await this.data
                 .AthletesWorkouts
                 .FirstOrDefaultAsync(aw => aw.AthleteId == athleteId && aw.WorkoutId == workoutId)
-                ?? throw new InvalidOperationException("Map entity not found!");
+                ?? throw new InvalidOperationException("Map membershipEntity not found!");
 
             workoutEntity.CurrentParticipants--;
 

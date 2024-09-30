@@ -98,16 +98,20 @@
 
                     if (athleteHasApprovedMembership && !athleteIsAlreadyJoined && !workoutIsFull)
                     {
-                        <form asp-area=""
-                              asp-controller="Athlete"
-                              asp-action="Join"
-                              asp-route-athleteId="@athleteId"
-                              asp-route-workoutId="@workout.Id"
-                              method="post"
-                              onsubmit="return confirm('Are you sure you want to join in the workout?')">
-                            <button type="submit" class="btn btn-primary">Join</button>
-                        </form>
-                       
+                        var membershipIsExpired = await this.athleteService.AthleteMembershipIsExpiredByIdAsync(athleteId);
+
+                        if(!membershipIsExpired)
+                        {
+                            <form asp-area=""
+                                  asp-controller="Athlete"
+                                  asp-action="Join"
+                                  asp-route-athleteId="@athleteId"
+                                  asp-route-workoutId="@workout.Id"
+                                  method="post"
+                                  onsubmit="return confirm('Are you sure you want to join in the workout?')">
+                                <button type="submit" class="btn btn-primary">Join</button>
+                            </form>
+                        }
                     }
                     else if (athleteIsAlreadyJoined)
                     {
@@ -156,12 +160,13 @@
                                                 <td class="text-center">
                                                     @if (!workoutIsClosed)
                                                     {
-                                                        <form asp-area=""
-                                                              asp-controller="Workout"
-                                                              asp-action="RemoveFromWorkout"
-                                                              method="post"
-                                                              onsubmit="return confirm('Are you sure you want to remove this athlete from the workout?')"
-                                                              class="d-inline">
+                                                        <form 
+                                                            asp-area=""
+                                                            asp-controller="Athlete"
+                                                            asp-action="Leave"
+                                                            method="post"
+                                                            onsubmit="return confirm('Are you sure you want to remove this athlete from the workout?')"
+                                                            class="d-inline">
                                                             <input type="hidden" name="athleteId" value="@athlete.Id" />
                                                             <input type="hidden" name="workoutId" value="@workout.Id" />
                                                             <button type="submit" class="btn btn-danger btn-sm">Remove</button>

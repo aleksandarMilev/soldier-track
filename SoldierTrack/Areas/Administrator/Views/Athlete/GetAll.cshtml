@@ -1,4 +1,7 @@
 ﻿@using SoldierTrack.Services.Athlete.Models
+@using SoldierTrack.Services.Membership
+
+@inject IMembershipService membershipService;
 
 @model AthletePageServiceModel
 
@@ -88,13 +91,18 @@
                         }
                         else if (athlete.Membership != null && !athlete.Membership.IsPending)
                         {
-                            <a asp-area="Workout"
-                               asp-controller="Workout"
-                               asp-action="AddToWorkout"
-                               asp-route-athleteId="@athlete.Id"
-                               class="btn btn-sm btn-info me-1">
-                                Add To Workout
-                            </a>
+                            var membershipIsExpired = await this.membershipService.MembershipIsExpired(athlete.MembershipId!.Value);
+
+                            if(!membershipIsExpired)
+                            {
+                                <a asp-area="Administrator"
+                                   asp-controller="Athlete"
+                                   asp-action="AddToWorkout"
+                                   asp-route-athleteId="@athlete.Id"
+                                   class="btn btn-sm btn-info me-1">
+                                    Add To Workout
+                                </a>
+                            }
                         }
                     </td>
                 </tr>

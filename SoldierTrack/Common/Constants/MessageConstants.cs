@@ -19,7 +19,9 @@
 
         public const string JoinSuccess = "You have successfully joined in the workout!";
 
-        public const string LeaveSuccess = "You have successfully left the workout!";
+        public const string AthleteLeaveSuccess = "You have successfully left the workout!";
+
+        public const string WorkoutNotFound = "Workout is not found!";
 
         //athlete
         public const string AthleteWithSameNumberExists = "An athlete with number {0} is already registered!";
@@ -29,6 +31,8 @@
         public const string AthleteEditHimself = "You have edited your profile successfully!";
 
         public const string AthleteDeleteHimself = "Your profile was deleted successfully!";
+
+        public const string AthleteAreadyJoined = "Athlete has already joined in {0}!";
 
         //membership
         public const string MembershipRequested = "You have successfully requested yor membership!";
@@ -51,5 +55,9 @@
         public const string AdminEditAthlete = "Athlete edited successfully!";
 
         public const string AdminDeleteAthlete = "Athlete deleted successfully!";
+
+        public const string AdminAddedAthlete = "You have successfully added the athlete in {0}!";
+
+        public const string AdminLeaveSuccess = "You have successfully removed the athlete!";
     }
 }

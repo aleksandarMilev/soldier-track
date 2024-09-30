@@ -182,13 +182,14 @@
                         </a>
                         @if (!workoutIsClosed && userIsAdmin)
                         {
-                            <form asp-area="Administrator"
-                                  asp-controller="Workout"
-                                  asp-action="RemoveFromWorkout"
-                                  method="post"
-                                  onsubmit="return confirm('Are you sure you want to remove this workout from athlete\'s schedule?')"
-                                  class="d-inline">
-                                <input type="hidden" name="athleteId" value="@Model.Id" />
+                            <form
+                                asp-area=""
+                                asp-controller="Athlete"
+                                asp-action="Leave"
+                                method="post"
+                                onsubmit="return confirm('Are you sure you want to remove this workout from athlete\'s schedule?')"
+                                class="d-inline">
+                                <input type="hidden" name="athleteId" value="@this.Model.Id" />
                                 <input type="hidden" name="workoutId" value="@workout.Id" />
                                 <button type="submit" class="btn btn-danger">Remove</button>
                             </form>

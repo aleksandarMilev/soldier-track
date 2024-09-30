@@ -10,6 +10,8 @@
 
         Task<WorkoutPageServiceModel> GetAllAsync(DateTime? date, int pageIndex, int pageSize);
 
+        Task<EditWorkoutServiceModel?> GetByDateAndTimeAsync(DateTime date, TimeSpan time);
+
         Task<bool> IsAnotherWorkoutScheduledAtThisDateAndTimeAsync(DateTime date, TimeSpan time, int? id = null);
 
         Task CreateAsync(WorkoutServiceModel model);

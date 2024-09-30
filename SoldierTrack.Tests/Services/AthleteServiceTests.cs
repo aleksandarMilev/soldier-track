@@ -11,11 +11,7 @@
     using SoldierTrack.Services.Athlete.Models;
     using SoldierTrack.Services.Membership;
     using SoldierTrack.Services.Membership.Exceptions;
-    using SoldierTrack.Services.Membership.Models;
     using SoldierTrack.Services.Workout.Exceptions;
-    using SoldierTrack.Services.Workout.Models;
-    using System;
-    using System.Runtime.InteropServices;
     using Xunit;
 
     using static SoldierTrack.Tests.Services.AthleteServiceTests;
@@ -54,8 +50,6 @@
         private readonly Mock<IMembershipService> mockMembershipService;
         private readonly Mock<IMapper> mockMapper;
 
-        private readonly IConfigurationProvider mapperConfig;
-
         public AthleteServiceTests(TestDatabaseFixture fixture)
         {
             this.fixture = fixture;
@@ -64,13 +58,11 @@
             this.mockMembershipService = new Mock<IMembershipService>();
             this.mockMapper = new Mock<IMapper>();
 
-            this.mapperConfig = new MapperConfiguration(mc => mc.AddProfile(new AthleteProfile()));
-
             this.service = new AthleteService(this.data, this.mockMembershipService.Object, this.mockMapper.Object);
         }
 
         [Fact]
-        public async Task CreateAsync_ShouldCreateTheExpectedEntity()
+        public async Task CreateAsync_ShouldCreate_TheExpectedEntity()
         {
             this.fixture.ResetDb();
 
@@ -104,7 +96,7 @@
         }
 
         [Fact]
-        public async Task EditAsync_ShouldThrowInvalidOperationExceptionIfModelIdIsNotValid()
+        public async Task EditAsync_ShouldThrowInvalidOperationException_IfModelIdIsNotValid()
         {
             this.fixture.ResetDb();
             await this.SeedDbAsync();
@@ -147,7 +139,7 @@
         }
 
         [Fact]
-        public async Task EditAsync_ShouldEditTheEntity()
+        public async Task EditAsync_ShouldEdit_TheEntity()
         {
             this.fixture.ResetDb();
             await this.SeedDbAsync();
@@ -193,7 +185,7 @@
         }
 
         [Fact]
-        public async Task DeleteAsync_ShouldThrowInvalidOperationExceptionIfIdPassedIsNotValid()
+        public async Task DeleteAsync_ShouldThrowInvalidOperationException_IfIdPassedIsNotValid()
         {
             this.fixture.ResetDb();
             await this.SeedDbAsync();
@@ -202,7 +194,7 @@
         }
 
         [Fact]
-        public async Task DeleteAsync_ShouldSoftDeleteAthleteAndAthleteMembership()
+        public async Task DeleteAsync_ShouldSoftDelete_AthleteAndAthleteMembership()
         {
             this.fixture.ResetDb();
             await this.SeedDbAsync();
@@ -219,7 +211,7 @@
         }
 
         [Fact]
-        public async Task AthleteHasApprovedMembershipByAthleteIdAsync_ShouldReturnTrueIfAthleteHasApprovedMembership()
+        public async Task AthleteHasApprovedMembershipByAthleteIdAsync_ShouldReturnTrue_IfAthleteHasApprovedMembership()
         {
             this.fixture.ResetDb();
             var membership = new Membership
@@ -264,7 +256,7 @@
         }
 
         [Fact]
-        public async Task AthleteHasApprovedMembershipByAthleteIdAsync_ShouldReturnFalseIfAthleteHasMembershipIsPending()
+        public async Task AthleteHasApprovedMembershipByAthleteIdAsync_ShouldReturnFalse_IfAthleteHasMembershipIsPending()
         {
             this.fixture.ResetDb();
             var membership = new Membership
@@ -309,7 +301,7 @@
         }
 
         [Fact]
-        public async Task AthleteHasMembershipByAthleteIdAsync_ShouldReturnTrueIfAthleteHasMembership()
+        public async Task AthleteHasMembershipByAthleteIdAsync_ShouldReturnTrue_IfAthleteHasMembership()
         {
             this.fixture.ResetDb();
             var membership = new Membership
@@ -354,7 +346,7 @@
         }
 
         [Fact]
-        public async Task AthleteHasMembershipByAthleteIdAsync_ShouldReturnFalseIfAthleteHasNotMembership()
+        public async Task AthleteHasMembershipByAthleteIdAsync_ShouldReturnFalse_IfAthleteHasNotMembership()
         {
             this.fixture.ResetDb();
 
@@ -381,7 +373,7 @@
         }
 
         [Fact]
-        public async Task UserIsAthleteByUserIdAsync_ShouldReturnFalseIfAthleteWithSuchUserIdDoNotExist() 
+        public async Task UserIsAthleteByUserIdAsync_ShouldReturnFalse_IfAthleteWithSuchUserIdDoNotExist() 
         {
             this.fixture.ResetDb();
             await this.SeedDbAsync();
@@ -391,7 +383,7 @@
         }
 
         [Fact]
-        public async Task UserIsAthleteByUserIdAsync_ShouldReturnTrueIfAthleteWithSuchUserIdExists()
+        public async Task UserIsAthleteByUserIdAsync_ShouldReturnTrue_IfAthleteWithSuchUserIdExists()
         {
             this.fixture.ResetDb();
             await this.SeedDbAsync();
@@ -401,7 +393,7 @@
         }
 
         [Fact]
-        public async Task AthleteWithSameNumberExistsAsync_ShouldReturnFalseIfSuchDoNotExist()
+        public async Task AthleteWithSameNumberExistsAsync_ShouldReturnFalse_IfSuchDoNotExist()
         {
             this.fixture.ResetDb();
             await this.SeedDbAsync();
@@ -411,7 +403,7 @@
         }
 
         [Fact]
-        public async Task AthleteWithSameNumberExistsAsync_ShouldReturnTrueIfThereIsSuch()
+        public async Task AthleteWithSameNumberExistsAsync_ShouldReturnTrue_IfThereIsSuch()
         {
             this.fixture.ResetDb();
             await this.SeedDbAsync();
@@ -421,7 +413,7 @@
         }
 
         [Fact]
-        public async Task GetIdByUserIdAsync_ShouldThrowInvalidOperationExceptionIfAthleteWithSuchIdDoNotExist()
+        public async Task GetIdByUserIdAsync_ShouldThrowInvalidOperationException_IfAthleteWithSuchIdDoNotExist()
         {
             this.fixture.ResetDb();
             await this.SeedDbAsync();
@@ -430,7 +422,7 @@
         }
 
         [Fact]
-        public async Task GetIdByUserIdAsync_ShouldReturnTheCorrectIdIfAthleteExists()
+        public async Task GetIdByUserIdAsync_ShouldReturnTheCorrectId_IfAthleteExists()
         {
             this.fixture.ResetDb();
             await this.SeedDbAsync();
@@ -440,7 +432,7 @@
         }
 
         [Fact]
-        public async Task AthleteAlreadyJoinedByIdAsync_ShouldReturnFalseIfAthleteHasNotJoined() 
+        public async Task AthleteAlreadyJoinedByIdAsync_ShouldReturnFalse_IfAthleteHasNotJoined() 
         {
             this.fixture.ResetDb();
             await this.SeedDbAsync();
@@ -476,7 +468,7 @@
         }
 
         [Fact]
-        public async Task AthleteAlreadyJoinedByIdAsync_ShouldReturnTrueIfAthleteHasJoined()
+        public async Task AthleteAlreadyJoinedByIdAsync_ShouldReturnTrue_IfAthleteHasJoined()
         {
             this.fixture.ResetDb();
             await this.SeedDbAsync();
@@ -512,7 +504,7 @@
         }
 
         [Fact]
-        public async Task GetDetailsModelByIdAsync_ShouldReturnNullIfAthleteDoesNotExist()
+        public async Task GetDetailsModelByIdAsync_ShouldReturnNull_IfAthleteDoesNotExist()
         {
             this.fixture.ResetDb();
             await this.SeedDbAsync();
@@ -552,7 +544,7 @@
         }
 
         [Fact]
-        public async Task GetDetailsModelByIdAsync_ShouldReturnTheCorrectModel()
+        public async Task GetDetailsModelByIdAsync_ShouldReturn_TheCorrectModel()
         {
             this.fixture.ResetDb();
             await this.SeedDbAsync();
@@ -597,7 +589,7 @@
         }
 
         [Fact]
-        public async Task GetEditServiceModelByIdAsync_ShouldReturnNullIfModelDoesNotExist()
+        public async Task GetEditServiceModelByIdAsync_ShouldReturnNull_IfModelDoesNotExist()
         {
             this.fixture.ResetDb();
             await this.SeedDbAsync();
@@ -611,7 +603,7 @@
         }
 
         [Fact]
-        public async Task GetEditServiceModelByIdAsync_ShouldReturnTheCorrectModel()
+        public async Task GetEditServiceModelByIdAsync_ShouldReturn_TheCorrectModel()
         {
             this.fixture.ResetDb();
             await this.SeedDbAsync();
@@ -696,7 +688,7 @@
         }
 
         [Fact]
-        public async Task JoinAsync_ShouldThrowInvalidOperationExceptionIfWorkoutIsNotFound() 
+        public async Task JoinAsync_ShouldThrowInvalidOperationException_IfWorkoutIsNotFound() 
         {
             this.fixture.ResetDb();
             await this.SeedDbAsync();
@@ -924,7 +916,7 @@
         }
 
         [Fact]
-        public async Task JoinAsync_ShouldSoftDeleteAthleteMembershipIfWorkoutsLeftAre1()
+        public async Task JoinAsync_ShouldSoftDeleteAthleteMembership_IfWorkoutsLeftAre1()
         {
             this.fixture.ResetDb();
 

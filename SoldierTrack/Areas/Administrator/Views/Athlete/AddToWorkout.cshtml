@@ -1,0 +1,43 @@
+﻿@using SoldierTrack.Web.Areas.Administrator.Models
+
+@model AddAthleteToWorkoutViewModel
+
+@{
+    this.ViewData["Title"] = "Add Athlete to Workout";
+}
+
+
+<div class="row justify-content-center">
+    <form class="col-md-6" asp-action="AddToWorkout" method="post">
+        @if (!this.ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach (var error in this.ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <li>@error.ErrorMessage</li>
+                    }
+                </ul>
+            </div>
+        }
+        <h2>Add Athlete to Workout</h2>
+        <div class="form-group">
+            <label asp-for="WorkoutDate">Workout Date:</label>
+            <input asp-for="WorkoutDate" class="form-control" type="date" />
+            <span asp-validation-for="WorkoutDate" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="WorkoutTime">Workout Time:</label>
+            <input asp-for="WorkoutTime" class="form-control" type="time" />
+            <span asp-validation-for="WorkoutTime" class="text-danger"></span>
+        </div>
+        <input asp-for="AthleteId" type="hidden" />
+        <button type="submit" class="btn btn-primary">Add Athlete</button>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -5,6 +5,7 @@
 
     using Microsoft.AspNetCore.Identity;
     using SoldierTrack.Data.Models.Base;
+
     using static SoldierTrack.Data.Constants.ModelsConstraints.AthleteConstraints;
 
     public class Athlete : BaseDeletableModel<int>
@@ -25,9 +26,9 @@
         public string? Email { get; set; } = null!;
 
         [Required]
+        [ForeignKey(nameof(User))]
         public string UserId { get; set; } = null!;
 
-        [ForeignKey(nameof(UserId))]
         public IdentityUser User { get; set; } = null!;
 
         [ForeignKey(nameof(Membership))]

@@ -4,9 +4,7 @@
     using AutoMapper.QueryableExtensions;
     using Microsoft.EntityFrameworkCore;
     using SoldierTrack.Data;
-    using SoldierTrack.Services.Category.MapperProfile;
     using SoldierTrack.Services.Category.Models;
-    using SoldierTrack.Services.Common;
 
     public class CategoryService : ICategoryService
     {

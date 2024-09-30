@@ -69,6 +69,24 @@
                 .FirstOrDefaultAsync(m => m.Id == id);
         }
 
+        public async Task<bool> MembershipIsExpired(int id)
+        {
+            var entity = await this.data
+                .AllDeletableAsNoTracking<Membership>()
+                .FirstOrDefaultAsync(a => a.Id == id)
+                ?? throw new InvalidOperationException("Membership not found!");
+
+            var isExpired = entity.IsMonthly && entity.EndDate > DateTime.UtcNow;
+
+            if (!isExpired)
+            {
+                return false;
+            }
+
+            await this.DeleteAsync(id);
+            return true;
+        }
+
         public async Task RequestAsync(CreateMembershipServiceModel model)
         {
             var membershipEntity = model.MapToMembership();
