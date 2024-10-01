@@ -1,4 +1,6 @@
-﻿namespace SoldierTrack.Web.Common.Constants
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+
+namespace SoldierTrack.Web.Common.Constants
 {
     public static class ModelValidationConstants
     {
@@ -43,6 +45,12 @@
 
             public const int PriceMinValue = 0;
             public const int PriceMaxValue = 300;
+        }
+
+        public static class AchievementConstants
+        {
+            public const double RecordValueMinValue = 0;
+            public const double RecordValueMaxValue = 500;
         }
     }
 }

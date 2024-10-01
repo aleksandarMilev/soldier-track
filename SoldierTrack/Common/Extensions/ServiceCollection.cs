@@ -4,10 +4,14 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using SoldierTrack.Data;
+    using SoldierTrack.Services.Achievement;
+    using SoldierTrack.Services.Achievement.MapperProfile;
     using SoldierTrack.Services.Athlete;
     using SoldierTrack.Services.Athlete.MapperProfile;
     using SoldierTrack.Services.Category;
     using SoldierTrack.Services.Category.MapperProfile;
+    using SoldierTrack.Services.Exercise;
+    using SoldierTrack.Services.Exercise.MapperProfile;
     using SoldierTrack.Services.Membership;
     using SoldierTrack.Services.Workout;
     using SoldierTrack.Services.Workout.MapperProfile;
@@ -20,6 +24,8 @@
             services.AddTransient<IAthleteService, AthleteService>();
             services.AddTransient<IMembershipService, MembershipService>();
             services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<IAchievementService, AchievementService>();
+            services.AddTransient<IExcerciseService, ExcerciseService>();
 
             return services;
         }
@@ -32,6 +38,8 @@
                 cfg.AddProfile<AthleteProfile>();
                 cfg.AddProfile<WorkoutProfile>();
                 cfg.AddProfile<CategoryProfile>();
+                cfg.AddProfile<ExerciseProfile>();
+                cfg.AddProfile<AchievementProfile>();
             }, 
             typeof(Program).Assembly);
 

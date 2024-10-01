@@ -1,0 +1,33 @@
+﻿@using SoldierTrack.Web.Models.Achievement
+
+@model CreateAchievementViewModel
+
+@{
+    this.ViewData["Title"] = "Add New PR";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="text-center mb-5 p-4 bg-light text-dark rounded">
+                <h1 class="display-5">Add New PR</h1>
+                <p class="lead">Log your new personal records and track your progress.</p>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form asp-action="Create">
+                        <input asp-for="AthleteId" type="hidden" />
+                        <partial name="_FormPartial" model="Model" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

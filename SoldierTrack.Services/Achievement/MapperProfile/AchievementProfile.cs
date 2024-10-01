@@ -1,0 +1,16 @@
+﻿namespace SoldierTrack.Services.Achievement.MapperProfile
+{
+    using AutoMapper;
+    using SoldierTrack.Data.Models;
+    using SoldierTrack.Services.Achievement.Models;
+
+    public class AchievementProfile : Profile
+    {
+        public AchievementProfile()
+        {
+            this.CreateMap<AchievementServiceModel, Achievement>()
+                .ReverseMap()
+                .ForMember(dest => dest.Exercise, opt => opt.MapFrom(src => src.Exercise.Name));
+        }
+    }
+}

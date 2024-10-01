@@ -59,5 +59,10 @@
         public const string AdminAddedAthlete = "You have successfully added the athlete in {0}!";
 
         public const string AdminLeaveSuccess = "You have successfully removed the athlete!";
+
+        //achievement
+        public const string InvalidRecordValue = "Weight lifted should be between {1} and {2} kilos!";
+
+        public const string PRSuccessfullyAdded = "PR successfully added!";
     }
 }
