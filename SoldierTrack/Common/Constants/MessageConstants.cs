@@ -64,5 +64,7 @@
         public const string InvalidRecordValue = "Weight lifted should be between {1} and {2} kilos!";
 
         public const string PRSuccessfullyAdded = "PR successfully added!";
+
+        public const string AchievementAlreadyAdded = "You have already added your PR for this movement. If you want to improve it, please, go back on 'My Achievements' and click on the 'Update' button.";
     }
 }

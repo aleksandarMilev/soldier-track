@@ -49,7 +49,7 @@ namespace SoldierTrack.Web.Common.Constants
 
         public static class AchievementConstants
         {
-            public const double RecordValueMinValue = 0;
+            public const double RecordValueMinValue = 1;
             public const double RecordValueMaxValue = 500;
         }
     }

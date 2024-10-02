@@ -47,5 +47,13 @@
             this.data.Add(achievementEntity);
             await this.data.SaveChangesAsync();
         }
+
+        public async Task<bool> AcheivementIsAlreadyAdded(int exerciseId, int athleteId)
+        {
+            return await this.data
+                .Achievements
+                .AsNoTracking()
+                .AnyAsync(a => a.ExerciseId == exerciseId && a.AthleteId == athleteId);
+        }
     }
 }

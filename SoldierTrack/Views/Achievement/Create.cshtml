@@ -17,6 +17,7 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4">
                     <form asp-action="Create">
+                        <div asp-validation-summary="All" class="text text-danger"></div>
                         <input asp-for="AthleteId" type="hidden" />
                         <partial name="_FormPartial" model="Model" />
                     </form>

@@ -15,7 +15,7 @@
 
         public DateTime? DateAchieved { get; init; }
 
-        public int AthleteId { get; init; }
+        public int AthleteId { get; set; }
 
         public int ExerciseId { get; init; }
 

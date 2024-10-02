@@ -44,32 +44,22 @@
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var athleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
-            var exercices = await this.exerciseService.GetAllAsycn();
-
-            var exerciseSelectList = exercices
-               .Select(c => new SelectListItem()
-               {
-                   Value = c.Id.ToString(),
-                   Text = c.Name
-               });
-
-            var model = new CreateAchievementViewModel()
-            {
-                AthleteId = athleteId,
-                DateAchieved = DateTime.Now.Date,
-                Exercises = exerciseSelectList
-            };
-
+            var model = await this.GetFormViewModel();
             return this.View(model);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(CreateAchievementViewModel viewModel)
         {
-            if (!this.ModelState.IsValid)
+            if (!this.ModelState.IsValid || await this.achievementService.AcheivementIsAlreadyAdded(viewModel.ExerciseId, viewModel.AthleteId))
             {
-                return this.View(viewModel);
+                if (await this.achievementService.AcheivementIsAlreadyAdded(viewModel.ExerciseId, viewModel.AthleteId))
+                {
+                    this.ModelState.AddModelError("", AchievementAlreadyAdded);
+                }
+
+                var updatedViewModel = await this.GetFormViewModel(viewModel);
+                return this.View(updatedViewModel);
             }
 
             var serviceModel = this.mapper.Map<AchievementServiceModel>(viewModel);
@@ -77,6 +67,33 @@
 
             this.TempData["SuccessMessage"] = PRSuccessfullyAdded;
             return this.RedirectToAction(nameof(GetAll));
+        }
+
+        private async Task<CreateAchievementViewModel> GetFormViewModel(CreateAchievementViewModel? viewModel = null)
+        {
+            var athleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
+            var exercises = await this.exerciseService.GetAllAsycn();
+
+            var exerciseSelectList = exercises
+                .Select(c => new SelectListItem()
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                });
+
+            if (viewModel == null)
+            {
+                viewModel = new CreateAchievementViewModel
+                {
+                    AthleteId = athleteId,
+                    DateAchieved = DateTime.Now.Date,
+                };
+            }
+
+            viewModel.Exercises = exerciseSelectList;
+            viewModel.AthleteId = athleteId;
+
+            return viewModel;
         }
     }
 }
