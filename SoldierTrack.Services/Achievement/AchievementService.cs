@@ -75,5 +75,16 @@
             this.mapper.Map(model, entity);
             await this.data.SaveChangesAsync();
         }
+
+        public async Task DeleteAsync(int id)
+        {
+            var entity = await this.data
+              .Achievements
+              .FirstOrDefaultAsync(a => a.Id == id)
+              ?? throw new InvalidOperationException("Achievement not found!");
+
+            this.data.Remove(entity);
+            await this.data.SaveChangesAsync();
+        }
     }
 }

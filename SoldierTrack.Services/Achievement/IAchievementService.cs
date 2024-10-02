@@ -13,5 +13,7 @@
         Task CreateAsync(AchievementServiceModel model);
 
         Task EditAsync(AchievementServiceModel model);
+
+        Task DeleteAsync(int id);
     }
 }

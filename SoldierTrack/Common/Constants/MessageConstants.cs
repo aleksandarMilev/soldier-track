@@ -68,5 +68,7 @@
         public const string AchievementAlreadyAdded = "You have already added your PR for this movement. If you want to improve it, please, go back on 'My Achievements' and click on the 'Update' button.";
 
         public const string AchievementEdited = "You have successfully edited your achievement!";
+
+        public const string AchievementDeleted = "You have successfully reset your achievement!";
     }
 }

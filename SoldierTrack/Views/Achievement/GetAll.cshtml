@@ -46,11 +46,13 @@
                                     <td>@date</td>
                                     <td>
                                         <a asp-action="Edit" asp-route-id="@achievement.Id" class="btn btn-success btn-sm">Update</a>
-                                        <form asp-action="Delete"
-                                              asp-route-id="@achievement.Id"
-                                              method="post"
-                                              style="display:inline;"
-                                              onsubmit="return confirm('You will delete your @achievement.ExerciseName PR, are you sure you want to continue?');">
+                                        <form 
+                                            asp-action="Delete"
+                                            asp-route-achievementId="@achievement.Id"
+                                            asp-route-athleteId="@achievement.AthleteId"
+                                            method="post"
+                                            style="display:inline;"
+                                            onsubmit="return confirm('You will delete your @achievement.ExerciseName PR, are you sure you want to continue?');">
                                             <button type="submit" class="btn btn-danger btn-sm">Reset</button>
                                         </form>
                                     </td>

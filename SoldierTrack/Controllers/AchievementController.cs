@@ -109,6 +109,20 @@
             return this.RedirectToAction(nameof(GetAll));
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Delete(int achievementId, int athleteId)
+        {
+            if (athleteId != await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!))
+            {
+                return this.Unauthorized();
+            }
+
+            await this.achievementService.DeleteAsync(achievementId);
+
+            this.TempData["SuccessMessage"] = AchievementDeleted;
+            return this.RedirectToAction(nameof(GetAll));
+        }
+
         private async Task<CreateAchievementViewModel> GetFormViewModel(CreateAchievementViewModel? viewModel = null)
         {
             var athleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
