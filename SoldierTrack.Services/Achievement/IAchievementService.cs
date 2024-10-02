@@ -8,6 +8,10 @@
 
         Task<bool> AcheivementIsAlreadyAdded(int exerciseId, int athleteId);
 
+        Task<AchievementServiceModel?> GetByIdAsync(int id);
+
         Task CreateAsync(AchievementServiceModel model);
+
+        Task EditAsync(AchievementServiceModel model);
     }
 }

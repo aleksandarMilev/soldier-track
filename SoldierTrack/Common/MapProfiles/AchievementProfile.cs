@@ -9,6 +9,9 @@
         public AchievementProfile()
         {
             this.CreateMap<CreateAchievementViewModel, AchievementServiceModel>();
+
+            this.CreateMap<AchievementServiceModel, EditAchievementViewModel>()
+                .ReverseMap();
         }
     }
 }

@@ -10,6 +10,6 @@
 
         public int ExerciseId { get; init; }
 
-        public string Exercise { get; init; } = null!;
+        public string ExerciseName { get; init; } = null!;
     }
 }

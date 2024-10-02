@@ -1,27 +1,26 @@
 ﻿@using SoldierTrack.Web.Models.Achievement
 
-@model CreateAchievementViewModel
+@model EditAchievementViewModel
 
 @{
-    this.ViewData["Title"] = "Add New PR";
+    this.ViewData["Title"] = "Edit PR";
 }
 
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-5">
             <div class="text-center mb-5 p-4 bg-light text-dark rounded">
-                <h1 class="display-5">Add New PR</h1>
+                <h1 class="display-5">Edit PR</h1>
                 <p class="lead">Log your new personal records and track your progress.</p>
             </div>
 
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4">
-                    <form asp-action="Create">
+                    <form asp-action="Edit">
                         <div asp-validation-summary="All" class="text text-danger"></div>
-                        <input asp-for="AthleteId" type="hidden" />
                         <div class="form-group">
-                            <label asp-for="ExerciseId" class="control-label">Exercise</label>
-                            <select asp-for="ExerciseId" asp-items="Model.Exercises" class="form-control"></select>
+                            <label asp-for="ExerciseName" class="control-label"></label>
+                            <input asp-for="ExerciseName" class="form-control" readonly />
                         </div>
 
                         <div class="form-group">
@@ -38,6 +37,8 @@
                             <button type="submit" class="btn btn-primary">Add Achievement</button>
                             <a asp-action="GetAll" class="btn btn-secondary">Back to List</a>
                         </div>
+                        <input asp-for="ExerciseId" type="hidden" />
+                        <input asp-for="AthleteId" type="hidden" />
                     </form>
                 </div>
             </div>

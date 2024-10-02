@@ -55,5 +55,25 @@
                 .AsNoTracking()
                 .AnyAsync(a => a.ExerciseId == exerciseId && a.AthleteId == athleteId);
         }
+
+        public async Task<AchievementServiceModel?> GetByIdAsync(int id)
+        {
+            return await this.data
+                .Achievements
+                .AsNoTracking()
+                .ProjectTo<AchievementServiceModel>(this.mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(a => a.Id == id);
+        }
+
+        public async Task EditAsync(AchievementServiceModel model)
+        {
+            var entity = await this.data
+                .Achievements
+                .FirstOrDefaultAsync(a => a.Id == model.Id)
+                ?? throw new InvalidOperationException("Achievement not found!");
+
+            this.mapper.Map(model, entity);
+            await this.data.SaveChangesAsync();
+        }
     }
 }

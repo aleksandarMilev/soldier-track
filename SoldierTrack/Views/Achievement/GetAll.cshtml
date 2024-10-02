@@ -41,7 +41,7 @@
                                 : "Not specified";
 
                                 <tr>
-                                    <td>@achievement.Exercise</td>
+                                    <td>@achievement.ExerciseName</td>
                                     <td>@achievement.WeightLifted kg</td>
                                     <td>@date</td>
                                     <td>
@@ -50,7 +50,7 @@
                                               asp-route-id="@achievement.Id"
                                               method="post"
                                               style="display:inline;"
-                                              onsubmit="return confirm('You will delete your @achievement.Exercise PR, are you sure you want to continue?');">
+                                              onsubmit="return confirm('You will delete your @achievement.ExerciseName PR, are you sure you want to continue?');">
                                             <button type="submit" class="btn btn-danger btn-sm">Reset</button>
                                         </form>
                                     </td>

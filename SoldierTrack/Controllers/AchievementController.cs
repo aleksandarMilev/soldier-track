@@ -1,6 +1,7 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
     using AutoMapper;
+    using Humanizer.DateTimeHumanizeStrategy;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
     using SoldierTrack.Services.Achievement;
@@ -66,6 +67,45 @@
             await this.achievementService.CreateAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = PRSuccessfullyAdded;
+            return this.RedirectToAction(nameof(GetAll));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var serviceModel = await this.achievementService.GetByIdAsync(id);
+
+            if (serviceModel == null)
+            {
+                return this.NotFound();
+            }
+
+            if (serviceModel.AthleteId != await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!))
+            {
+                return this.Unauthorized();
+            }
+
+            var viewModel = this.mapper.Map<EditAchievementViewModel>(serviceModel);
+            return this.View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditAchievementViewModel viewModel)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(viewModel);
+            }
+
+            if (viewModel.AthleteId != await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!))
+            {
+                return this.Unauthorized();
+            }
+
+            var serviceModel = this.mapper.Map<AchievementServiceModel>(viewModel);
+            await this.achievementService.EditAsync(serviceModel);
+
+            this.TempData["SuccessMessage"] = AchievementEdited;
             return this.RedirectToAction(nameof(GetAll));
         }
 
