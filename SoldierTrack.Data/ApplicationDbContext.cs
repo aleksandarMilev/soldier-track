@@ -1,8 +1,5 @@
 ﻿namespace SoldierTrack.Data
 {
-    using System.Threading;
-    using System.Threading.Tasks;
-
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
     using SoldierTrack.Data.Models;
@@ -30,7 +27,6 @@
         public DbSet<Category> Categories { get; set; }
 
         public DbSet<MembershipArchive> MembershipArchives { get; set; }
-
 
         public override int SaveChanges()
         {

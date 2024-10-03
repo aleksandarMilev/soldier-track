@@ -2,7 +2,7 @@
 
 @model CreateWorkoutViewModel
 @{
-    ViewData["Title"] = "Create Workout";
+    this.ViewData["Title"] = "Create Workout";
 }
 
 <div class="container h-100">
@@ -13,7 +13,7 @@
                 <partial name="_WorkoutFormPartial" model="Model" />
                 <div class="form-group" style="margin-top: 1em">
                     <button type="submit" class="btn btn-primary">Create</button>
-                    <a asp-action="GetAll" class="btn btn-secondary">Cancel</a>
+                    <a asp-area="" asp-controller="Workout" asp-action="GetAll" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>

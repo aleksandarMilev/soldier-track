@@ -28,17 +28,23 @@
         [HttpGet]
         public async Task<IActionResult> RequestMembership()
         {
+            if (this.User.IsAdmin())
+            {
+                this.TempData["FailureMessage"] = AdminRequestMembership;
+                return this.RedirectToAction("Index", "Home");
+            }
+
             var userId = this.User.GetId();
             var athleteId = await this.athleteService.GetIdByUserIdAsync(userId!);
 
-            if (await this.athleteService.AthleteHasMembershipByAthleteIdAsync(athleteId))
+            if (await this.athleteService.AthleteHasMembershipByAthleteIdAsync(athleteId.Value))
             {
                 return this.RedirectToAction("Details", "Athlete", new { id = athleteId });
             }
 
             var viewModel = new CreateMembershipViewModel()
             {
-                AthleteId = athleteId,
+                AthleteId = athleteId.Value,
                 StartDate = DateTime.Now.Date
             };
 
@@ -65,6 +71,12 @@
         {
             pageSize = Math.Min(pageSize, MaxPageSize);
             pageSize = Math.Max(pageSize, MinPageSize);
+
+            var currentAthleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
+            if (currentAthleteId != athleteId)
+            {
+                return this.Unauthorized();
+            }
 
             this.ViewBag.AthleteId = athleteId;
             var model = await this.membershipService.GetArchiveByAthleteIdAsync(athleteId, pageIndex, pageSize);

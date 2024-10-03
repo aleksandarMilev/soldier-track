@@ -504,6 +504,105 @@
         }
 
         [Fact]
+        public async Task AthleteMembershipIsExpiredByIdAsync_ShouldThrowInvalidOperationException_IfMembershipNotFound()
+        {
+            this.fixture.ResetDb();
+            await this.SeedDbAsync();
+
+            var athlete3 = new Athlete()
+            {
+                Id = 3,
+                FirstName = "athl3",
+                LastName = "athl3",
+                PhoneNumber = "0000000003",
+                Email = null,
+                UserId = "test-user-id3",
+                MembershipId = null
+            };
+
+            this.data.Add(athlete3);
+            await this.data.SaveChangesAsync();
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() => this.service.AthleteMembershipIsExpiredByIdAsync(3));
+        }
+
+        [Fact]
+        public async Task AthleteMembershipIsExpiredByIdAsync_ShouldRetrunTrue_IfMembershipIsExpired()
+        {
+            this.fixture.ResetDb();
+            await this.SeedDbAsync();
+
+            var membership3 = new Membership()
+            {
+                Id = 3,
+                IsMonthly = true,
+                StartDate = DateTime.UtcNow.AddMonths(-2),
+                EndDate = DateTime.UtcNow.AddMonths(-1),
+                TotalWorkoutsCount = null,
+                WorkoutsLeft = null,
+                Price = 200,
+                IsPending = false,
+            };
+
+            var athlete3 = new Athlete()
+            {
+                Id = 3,
+                FirstName = "athl3",
+                LastName = "athl3",
+                PhoneNumber = "0000000003",
+                Email = null,
+                UserId = "test-user-id3",
+                MembershipId = 3
+            };
+
+            membership3.AthleteId = 3;
+            this.data.Add(athlete3);
+            this.data.Add(membership3);
+            await this.data.SaveChangesAsync();
+
+            var result = await this.service.AthleteMembershipIsExpiredByIdAsync(3);
+            result.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task AthleteMembershipIsExpiredByIdAsync_ShouldRetrunFalse_IfMembershipIsNotExpired()
+        {
+            this.fixture.ResetDb();
+            await this.SeedDbAsync();
+
+            var membership3 = new Membership()
+            {
+                Id = 3,
+                IsMonthly = true,
+                StartDate = DateTime.UtcNow,
+                EndDate = DateTime.UtcNow.AddMonths(1),
+                TotalWorkoutsCount = null,
+                WorkoutsLeft = null,
+                Price = 200,
+                IsPending = false,
+            };
+
+            var athlete3 = new Athlete()
+            {
+                Id = 3,
+                FirstName = "athl3",
+                LastName = "athl3",
+                PhoneNumber = "0000000003",
+                Email = null,
+                UserId = "test-user-id3",
+                MembershipId = 3
+            };
+
+            membership3.AthleteId = 3;
+            this.data.Add(athlete3);
+            this.data.Add(membership3);
+            await this.data.SaveChangesAsync();
+
+            var result = await this.service.AthleteMembershipIsExpiredByIdAsync(3);
+            result.Should().BeFalse();
+        }
+
+        [Fact]
         public async Task GetDetailsModelByIdAsync_ShouldReturnNull_IfAthleteDoesNotExist()
         {
             this.fixture.ResetDb();

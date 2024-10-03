@@ -128,17 +128,21 @@
             await this.data.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int membershipId) => await this.DeleteMembershipAsyncBy(by: membershipId);
+
+        public async Task DeleteByAthleteIdAsync(int athleteId) => await this.DeleteMembershipAsyncBy(by: athleteId);
+
+        public async Task DeleteMembershipAsyncBy(int by)
         {
             var entity = await this.data
-               .AllDeletable<Membership>()
-               .Include(m => m.Athlete) 
-               .FirstOrDefaultAsync(m => m.Id == id)
-               ?? throw new InvalidOperationException("Membership not found!");
+              .AllDeletable<Membership>()
+              .Include(m => m.Athlete)
+              .FirstOrDefaultAsync(m => m.AthleteId == by)
+              ?? throw new InvalidOperationException("Membership not found!");
 
             var archiveEntity = new MembershipArchive()
             {
-                MembershipId = id,
+                MembershipId = entity.Id,
                 AthleteId = entity.AthleteId,
                 DeletedOn = DateTime.UtcNow
             };
@@ -147,21 +151,6 @@
             entity.Athlete.MembershipId = null;
 
             this.data.SoftDelete(entity);
-            await this.data.SaveChangesAsync();
-        }
-
-        public async Task DeleteExpiredMembershipsAsync()
-        {
-            var expiredMemberships = await data
-                .AllDeletable<Membership>()
-                .Where(m => m.EndDate < DateTime.UtcNow)
-                .ToListAsync();
-
-            foreach (var m in expiredMemberships)
-            {
-                this.data.SoftDelete(m);
-            }
-
             await this.data.SaveChangesAsync();
         }
     }

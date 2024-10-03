@@ -1,13 +1,13 @@
-﻿@using SoldierTrack.Services.Membership.Models
+﻿@using SoldierTrack.Services.Workout.Models
 
-@model MembershipArchivePageServiceModel
+@model WorkoutArchivePageServiceModel
 
 @{
-    this.ViewData["Title"] = "Membership Archive";
+    this.ViewData["Title"] = "Workout Archive";
 }
 
 @{
-    var memberships = this.Model.Memberships;
+    var workouts = this.Model.Workouts;
     var pageIndex = this.Model.PageIndex;
     var totalPages = this.Model.TotalPages;
     var pageSize = this.Model.PageSize;
@@ -15,8 +15,8 @@
 
 <div class="row justify-content-center">
     <div class="col-md-8">
-        <h3 class="text-center mb-4">My Memberships:</h3>
-        @if (memberships.Count() == 0)
+        <h3 class="text-center mb-4">My Past Workouts:</h3>
+        @if (workouts.Count() == 0)
         {
             <div class="alert alert-danger text-center" role="alert">
                 No past workouts yet!
@@ -28,22 +28,20 @@
                 <table class="table table-striped table-hover shadow-sm">
                     <thead class="thead-dark">
                         <tr>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Workouts Count</th>
-                            <th>Price</th>
+                            <th>Workout Title</th>
+                            <th>Date</th>
+                            <th>Time</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var membership in memberships)
+                        @foreach (var workout in workouts)
                         {
                             <tr>
+                                <td>@workout.Title</td>
                                 <td>
-                                    <span class="utc-date" data-utc="@membership.StartDate.ToString("o")"></span>
+                                    <span class="utc-date" data-utc="@workout.Date.ToString("o")"></span>
                                 </td>
-                                <td>@(membership.IsMonthly ? membership.EndDate!.Value.ToString("dd MMM yyyy") : "Non-monthly")</td>
-                                <td>@(membership.IsMonthly ? "Monthly" : membership.TotalWorkoutsCount)</td>
-                                <td>@membership.Price lv.</td>
+                                <td>@workout.Time.ToString(@"hh\:mm")</td>
                             </tr>
                         }
                     </tbody>

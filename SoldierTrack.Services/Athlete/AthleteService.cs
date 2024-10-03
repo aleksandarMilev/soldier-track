@@ -99,14 +99,13 @@
             return model;
         }
 
-        public async Task<int> GetIdByUserIdAsync(string userId)
+        public async Task<int?> GetIdByUserIdAsync(string userId)
         {
             var athlete = await this.data
                 .AllDeletableAsNoTracking<Athlete>()
-                .FirstOrDefaultAsync(a => a.UserId == userId)
-                ?? throw new InvalidOperationException("Athlete not found!");
+                .FirstOrDefaultAsync(a => a.UserId == userId);
 
-            return athlete.Id;
+            return athlete != null ? athlete.Id : null;
         }
 
         public async Task<bool> AthleteWithSameNumberExistsAsync(string phoneNumber, int? id = null)
@@ -167,22 +166,15 @@
         public async Task<bool> AthleteMembershipIsExpiredByIdAsync(int athleteId)
         {
             var membershipEntity = await this.data
-                .AllDeletableAsNoTracking<Athlete>()
-                .Where(a => a.Id == athleteId)
-                .Include(a => a.Membership)
-                .Select(a => a.Membership)
-                .FirstOrDefaultAsync()
-                ?? throw new InvalidOperationException("Membership not found@");
+                .AllDeletableAsNoTracking<Membership>()
+                .FirstOrDefaultAsync(m => m.AthleteId == athleteId);
 
-            var isExpired = membershipEntity.IsMonthly && membershipEntity.EndDate > DateTime.UtcNow;
-
-            if (!isExpired)
+            if (membershipEntity == null || (membershipEntity.IsMonthly && membershipEntity.EndDate < DateTime.UtcNow))
             {
-                return false;
+                return true;
             }
 
-            await this.membershipService.DeleteAsync(membershipEntity.Id);
-            return true;
+            return false;
         }
 
         public async Task CreateAsync(AthleteServiceModel model)
@@ -292,7 +284,7 @@
             var mapEntity = await this.data
                 .AthletesWorkouts
                 .FirstOrDefaultAsync(aw => aw.AthleteId == athleteId && aw.WorkoutId == workoutId)
-                ?? throw new InvalidOperationException("Map membershipEntity not found!");
+                ?? throw new InvalidOperationException("Map entity not found!");
 
             workoutEntity.CurrentParticipants--;
 

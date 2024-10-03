@@ -60,6 +60,10 @@
 
         public const string AdminLeaveSuccess = "You have successfully removed the athlete!";
 
+        public const string AdminRequestMembership = "Admins can not request memberships";
+
+        public const string AdminGetAchievement = "Admins have not achievements";
+
         //achievement
         public const string InvalidRecordValue = "Weight lifted should be between {1} and {2} kilos!";
 

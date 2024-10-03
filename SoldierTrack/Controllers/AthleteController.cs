@@ -25,25 +25,6 @@
         }
 
         [HttpGet]
-        [AthleteAuthorization]
-        public async Task<IActionResult> Details(int id)
-        {
-            var model = await this.athleteService.GetDetailsModelByIdAsync(id);
-
-            if (model == null)
-            {
-                return this.NotFound();
-            }
-
-            if (!this.User.IsAdmin() && this.User.GetId() != model?.UserId)
-            {
-                return this.Unauthorized();
-            }
-
-            return this.View(model);
-        }
-
-        [HttpGet]
         public IActionResult Create()
         {
             var model = new CreateAthleteViewModel();
@@ -72,6 +53,26 @@
             this.TempData["SuccessMessage"] = AthleteSuccessRegister;
             return this.RedirectToAction("Index", "Home");
         }
+
+        [HttpGet]
+        [AthleteAuthorization]
+        public async Task<IActionResult> Details(int id)
+        {
+            var model = await this.athleteService.GetDetailsModelByIdAsync(id);
+
+            if (model == null)
+            {
+                return this.NotFound();
+            }
+
+            if (!this.User.IsAdmin() && this.User.GetId() != model?.UserId)
+            {
+                return this.Unauthorized();
+            }
+
+            return this.View(model);
+        }
+
 
         [HttpGet]
         [AthleteAuthorization]

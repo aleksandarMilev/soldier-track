@@ -25,6 +25,6 @@
 
         Task DeleteAsync(int id);
 
-        Task DeleteExpiredMembershipsAsync();
+        Task DeleteByAthleteIdAsync(int athleteId);
     }
 }

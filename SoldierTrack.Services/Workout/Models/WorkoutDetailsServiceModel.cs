@@ -11,6 +11,12 @@
 
         public int CurrentParticipants { get; init; }
 
+        public bool ShowJoinButton { get; set; }
+
+        public bool ShowLeaveButton { get; set; }
+
+        public bool AthleteHasMembership { get; set; }
+
         public IEnumerable<AthleteSummaryServiceModel> Athletes { get; set; } = new List<AthleteSummaryServiceModel>();
     }
 }

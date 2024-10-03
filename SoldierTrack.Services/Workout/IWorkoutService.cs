@@ -6,6 +6,8 @@
     {
         Task<WorkoutDetailsServiceModel?> GetDetailsByIdAsync(int id);
 
+        Task<WorkoutArchivePageServiceModel> GetArchiveByAthleteIdAsync(int athleteId, int pageIndex, int pageSize);
+
         Task<EditWorkoutServiceModel?> GetByIdAsync(int id);
 
         Task<WorkoutPageServiceModel> GetAllAsync(DateTime? date, int pageIndex, int pageSize);

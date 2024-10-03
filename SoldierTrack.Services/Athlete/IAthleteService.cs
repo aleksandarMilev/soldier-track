@@ -16,7 +16,7 @@
 
         Task<bool> AthleteAlreadyJoinedByIdAsync(int athleteId, int workoutId);
 
-        Task<int> GetIdByUserIdAsync(string userId);
+        Task<int?> GetIdByUserIdAsync(string userId);
 
         Task<bool> AthleteHasMembershipByAthleteIdAsync(int id);
 

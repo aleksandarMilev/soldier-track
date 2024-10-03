@@ -6,6 +6,7 @@
     using SoldierTrack.Data;
     using SoldierTrack.Data.Models;
     using SoldierTrack.Services.Achievement.Models;
+    using SoldierTrack.Services.Common;
 
     public class AchievementService : IAchievementService
     {
@@ -28,24 +29,13 @@
                 .ToListAsync();
         }
 
-        public async Task CreateAsync(AchievementServiceModel model)
+        public async Task<AchievementServiceModel?> GetByIdAsync(int id)
         {
-            var exercise = await this.data
-                .Exercises
+            return await this.data
+                .Achievements
                 .AsNoTracking()
-                .FirstOrDefaultAsync(e => e.Id == model.ExerciseId)
-                ?? throw new InvalidOperationException("Exercise not found!");
-
-
-            var athlete = await this.data
-                .Athletes
-                .AsNoTracking()
-                .FirstOrDefaultAsync(a => a.Id == model.AthleteId)
-                ?? throw new InvalidOperationException("Athlete not found!");
-
-            var achievementEntity = this.mapper.Map<Achievement>(model);
-            this.data.Add(achievementEntity);
-            await this.data.SaveChangesAsync();
+                .ProjectTo<AchievementServiceModel>(this.mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<bool> AcheivementIsAlreadyAdded(int exerciseId, int athleteId)
@@ -56,13 +46,23 @@
                 .AnyAsync(a => a.ExerciseId == exerciseId && a.AthleteId == athleteId);
         }
 
-        public async Task<AchievementServiceModel?> GetByIdAsync(int id)
+        public async Task CreateAsync(AchievementServiceModel model)
         {
-            return await this.data
-                .Achievements
+            var exercise = await this.data
+                .Exercises
                 .AsNoTracking()
-                .ProjectTo<AchievementServiceModel>(this.mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(a => a.Id == id);
+                .FirstOrDefaultAsync(e => e.Id == model.ExerciseId)
+                ?? throw new InvalidOperationException("Exercise not found!");
+
+
+            var athlete = await this.data
+                .AllDeletableAsNoTracking<Athlete>()
+                .FirstOrDefaultAsync(a => a.Id == model.AthleteId)
+                ?? throw new InvalidOperationException("Athlete not found!");
+
+            var achievementEntity = this.mapper.Map<Achievement>(model);
+            this.data.Add(achievementEntity);
+            await this.data.SaveChangesAsync();
         }
 
         public async Task EditAsync(AchievementServiceModel model)

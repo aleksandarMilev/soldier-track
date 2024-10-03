@@ -6,6 +6,8 @@
     using SoldierTrack.Data;
     using SoldierTrack.Data.Models;
     using SoldierTrack.Services.Common;
+    using SoldierTrack.Services.Membership.MapTo;
+    using SoldierTrack.Services.Membership.Models;
     using SoldierTrack.Services.Workout.Models;
 
     public class WorkoutService : IWorkoutService
@@ -52,6 +54,32 @@
             };
 
             return pageModels;
+        }
+
+        public async Task<WorkoutArchivePageServiceModel> GetArchiveByAthleteIdAsync(int athleteId, int pageIndex, int pageSize)
+        {
+            var query = this.data
+               .AthletesWorkouts 
+               .Where(aw => aw.AthleteId == athleteId && aw.Workout.Date < DateTime.UtcNow) 
+               .ProjectTo<WorkoutServiceModel>(this.mapper.ConfigurationProvider);
+
+            var totalCount = await query.CountAsync();
+
+            var workouts = await query
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            return new WorkoutArchivePageServiceModel()
+            {
+                Workouts = workouts,
+                TotalCount = totalCount,
+                PageIndex = pageIndex,
+                TotalPages = totalPages,
+                PageSize = pageSize
+            };
         }
 
         public async Task<WorkoutDetailsServiceModel?> GetDetailsByIdAsync(int id)

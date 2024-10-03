@@ -1,11 +1,9 @@
 namespace SoldierTrack
 {
-    using Hangfire;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using SoldierTrack.Services.Membership;
     using SoldierTrack.Web.Common.Extensions;
 
     public class Program
@@ -47,25 +45,9 @@ namespace SoldierTrack
             app.MapDefaultControllerRoute();
             app.MapRazorPages();
 
-            app.UseHangfireDashboard();
-            ConfigureRecurringJobs(app.Services);
-
             await app.CreateAdminRoleAsync();
 
             app.Run();
-        }
-
-        private static void ConfigureRecurringJobs(IServiceProvider services)
-        {
-            using var scope = services.CreateScope();
-            var membershipService = scope.ServiceProvider.GetRequiredService<IMembershipService>();
-
-            RecurringJob.AddOrUpdate(
-                "DeleteExpiredMembershipsJob",
-                () => membershipService.DeleteExpiredMembershipsAsync(),
-                Cron.Daily,
-                new RecurringJobOptions()
-            );
         }
     }
 }

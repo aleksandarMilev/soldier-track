@@ -19,6 +19,11 @@
                 .ForMember(dest => dest.Athletes, opt => opt.MapFrom(src => src.AthletesWorkouts.Select(aw => aw.Athlete)));
 
             this.CreateMap<Athlete, AthleteSummaryServiceModel>();
+
+            this.CreateMap<AthleteWorkout, WorkoutServiceModel>()
+                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Workout.Title))
+                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Workout.Date))
+                .ForMember(dest => dest.Time, opt => opt.MapFrom(src => src.Workout.Time));
         }
     }
 }

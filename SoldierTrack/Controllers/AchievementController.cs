@@ -1,7 +1,6 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
     using AutoMapper;
-    using Humanizer.DateTimeHumanizeStrategy;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
     using SoldierTrack.Services.Achievement;
@@ -37,8 +36,14 @@
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            if (this.User.IsAdmin())
+            {
+                this.TempData["FailureMessage"] = AdminGetAchievement;
+                return this.RedirectToAction("Index", "Home");
+            }
+
             var athleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
-            var models = await this.achievementService.GetAllByAthleteIdAsync(athleteId);
+            var models = await this.achievementService.GetAllByAthleteIdAsync(athleteId.Value);
             return this.View(models);
         }
 
@@ -135,17 +140,14 @@
                     Text = c.Name
                 });
 
-            if (viewModel == null)
+            viewModel ??= new CreateAchievementViewModel
             {
-                viewModel = new CreateAchievementViewModel
-                {
-                    AthleteId = athleteId,
-                    DateAchieved = DateTime.Now.Date,
-                };
-            }
+                AthleteId = athleteId.Value,
+                DateAchieved = DateTime.Now.Date,
+            };
 
             viewModel.Exercises = exerciseSelectList;
-            viewModel.AthleteId = athleteId;
+            viewModel.AthleteId = athleteId.Value;
 
             return viewModel;
         }
