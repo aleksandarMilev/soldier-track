@@ -36,6 +36,8 @@
 
         public Membership? Membership { get; set; }
 
+        public ICollection<FoodDiary> FoodDiaries { get; set; } = new List<FoodDiary>();
+
         public ICollection<AthleteWorkout> AthletesWorkouts { get; set; } = new List<AthleteWorkout>();
 
         public ICollection<Achievement> Achievements { get; set; } = new List<Achievement>();

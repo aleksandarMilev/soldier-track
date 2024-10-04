@@ -55,5 +55,10 @@ namespace SoldierTrack.Data.Constants
         {
             public const int NameMaxLength = 50;
         }
+
+        public static class FoodConstraints
+        {
+            public const int NameMaxLength = 100;
+        }
     }
 }

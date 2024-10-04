@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SoldierTrack.Data;
 
@@ -11,9 +12,11 @@ using SoldierTrack.Data;
 namespace SoldierTrack.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241004111705_AddFoodModels")]
+    partial class AddFoodModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -412,7 +415,7 @@ namespace SoldierTrack.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Foods");
+                    b.ToTable("Food");
                 });
 
             modelBuilder.Entity("SoldierTrack.Data.Models.FoodDiary", b =>
@@ -442,7 +445,7 @@ namespace SoldierTrack.Data.Migrations
 
                     b.HasIndex("AthleteId");
 
-                    b.ToTable("FoodDiaries");
+                    b.ToTable("FoodDiary");
                 });
 
             modelBuilder.Entity("SoldierTrack.Data.Models.FoodDiaryFood", b =>
@@ -460,7 +463,7 @@ namespace SoldierTrack.Data.Migrations
 
                     b.HasIndex("FoodDiaryId");
 
-                    b.ToTable("FoodDiariesFoods");
+                    b.ToTable("FoodDiaryFood");
                 });
 
             modelBuilder.Entity("SoldierTrack.Data.Models.Membership", b =>

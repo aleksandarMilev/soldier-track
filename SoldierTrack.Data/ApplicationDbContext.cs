@@ -13,20 +13,16 @@
         }
 
         public DbSet<Athlete> Athletes { get; set; }
-
         public DbSet<Workout> Workouts { get; set; }
-
         public DbSet<AthleteWorkout> AthletesWorkouts { get; set; }
-
         public DbSet<Membership> Memberships { get; set; }
-
-        public DbSet<Achievement> Achievements { get; set; }
-
-        public DbSet<Exercise> Exercises { get; set; }
-
-        public DbSet<Category> Categories { get; set; }
-
         public DbSet<MembershipArchive> MembershipArchives { get; set; }
+        public DbSet<Achievement> Achievements { get; set; }
+        public DbSet<Exercise> Exercises { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Food> Foods { get; set; }
+        public DbSet<FoodDiary> FoodDiaries { get; set; }
+        public DbSet<FoodDiaryFood> FoodDiariesFoods { get; set; }
 
         public override int SaveChanges()
         {
