@@ -5,5 +5,6 @@
     public interface IFoodService
     {
         Task<FoodPageServiceModel> GetPageModelsAsync(string? searchTerm, int pageIndex, int pageSize);
+
     }
 }

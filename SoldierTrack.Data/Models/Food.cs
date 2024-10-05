@@ -11,14 +11,14 @@
         [MaxLength(NameMaxLength)]
         public string Name { get; set; } = null!;
 
-        public int Calories { get; set; } 
+        public decimal TotalCalories { get; set; } 
 
-        public decimal Protein { get; set; } 
+        public decimal Proteins { get; set; } 
 
         public decimal Carbohydrates { get; set; } 
 
-        public decimal Fat { get; set; }
+        public decimal Fats { get; set; }
 
-        public ICollection<FoodDiaryFood> MapCollection { get; set; } = new List<FoodDiaryFood>();
+        public ICollection<MealFood> MealsFoods { get; set; } = new List<MealFood>();
     }
 }

@@ -4,17 +4,19 @@
 
     using Microsoft.EntityFrameworkCore;
 
-    [PrimaryKey(nameof(FoodId), nameof(FoodDiaryId))]
-    public class FoodDiaryFood
+    [PrimaryKey(nameof(FoodId), nameof(MealId))]
+    public class MealFood
     {
+        [ForeignKey(nameof(Meal))]
+        public int MealId { get; set; }
+
+        public Meal Meal { get; set; } = null!;
+
         [ForeignKey(nameof(Food))]
         public int FoodId { get; set; }
 
         public Food Food { get; set; } = null!;
 
-        [ForeignKey(nameof(FoodDiary))]
-        public int FoodDiaryId { get; set; }
-
-        public FoodDiary FoodDiary { get; set; } = null!;
+        public int Quantity { get; set; }
     }
 }

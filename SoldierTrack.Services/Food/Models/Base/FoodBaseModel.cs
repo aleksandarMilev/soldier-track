@@ -6,12 +6,12 @@
 
         public string Name { get; init; } = null!;
 
-        public int Calories { get; init; }
+        public decimal TotalCalories { get; set; }
 
-        public decimal Protein { get; init; }
+        public decimal Proteins { get; set; }
 
-        public decimal Carbohydrates { get; init; }
+        public decimal Carbohydrates { get; set; }
 
-        public decimal Fat { get; init; }
+        public decimal Fats { get; set; }
     }
 }

@@ -1,13 +1,21 @@
 ﻿@using SoldierTrack.Services.FoodDiary.Models
+@using SoldierTrack.Web.Models.Meal
 @model FoodDiaryServiceModel
 
 @{
     this.ViewData["Title"] = "My Diary";
 
-    var foods = this.Model.FoodEntries.Foods;
-    var pageIndex = this.Model.FoodEntries.PageIndex;
-    var totalPages = this.Model.FoodEntries.TotalPages;
-    var pageSize = this.Model.FoodEntries.PageSize;
+    var foods = this.Model.Foods.Foods;
+    var pageIndex = this.Model.Foods.PageIndex;
+    var totalPages = this.Model.Foods.TotalPages;
+    var pageSize = this.Model.Foods.PageSize;
+}
+
+@if (this.TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        <p>@this.TempData["SuccessMessage"]</p>
+    </div>
 }
 
 <div class="container">
@@ -36,16 +44,22 @@
                     </div>
                     <div class="d-flex justify-content-between mb-2">
                         <p class="mb-0">Protein:</p>
-                        <p class="mb-0"><strong>@this.Model.TotalProtein</strong>g</p>
+                        <p class="mb-0"><strong>@this.Model.Proteins</strong>g</p>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
                         <p class="mb-0">Carbohydrates:</p>
-                        <p class="mb-0"><strong>@this.Model.TotalCarbohydrates</strong>g</p>
+                        <p class="mb-0"><strong>@this.Model.Carbohydrates</strong>g</p>
                     </div>
                     <div class="d-flex justify-content-between">
                         <p class="mb-0">Fats:</p>
-                        <p class="mb-0"><strong>@this.Model.TotalFats</strong>g</p>
+                        <p class="mb-0"><strong>@this.Model.Fats</strong>g</p>
                     </div>
+                    <a 
+                        class="btn btn-primary"
+                        asp-action="Details"
+                        asp-route-diaryId="@this.Model.Id">
+                            View Details
+                    </a>
                 </div>
             </div>
         </div>
@@ -54,7 +68,6 @@
                 <input type="hidden" name="athleteId" value="@this.Model.AthleteId" />
                 <input type="hidden" name="date" value="@this.Model.Date.ToString("yyyy-MM-dd")" />
                 <div class="col-md-12">
-                    <label for="searchTerm" class="form-label">Search Food:</label>
                     <div class="input-group">
                         <input type="text" id="searchTerm" name="searchTerm" class="form-control" placeholder="Enter food name" />
                         <button type="submit" class="btn btn-secondary">
@@ -65,35 +78,55 @@
             </form>
             <div class="card shadow-sm border-0">
                 <div class="card-body">
-                    <h5 class="card-title">Search Results</h5>
+                    <h5 style="font-size:1em" class="card-title">Foods:</h5>
+                    <div class="mb-4">
+                        
+                    </div>
                     <ul class="list-group">
                         @if (foods != null && foods.Any())
                         {
                             @foreach (var food in foods)
                             {
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div class="flex-grow-1">
-                                        <strong>@food.Name</strong>
-                                        <div class="small text-muted">
-                                            <p class="mb-0">Total Calories: <span>@food.Calories</span>g</p>
-                                            <p class="mb-0">Protein: <span>@food.Protein</span>g</p>
-                                            <p class="mb-0">Carbohydrates: <span>@food.Carbohydrates</span>g</p>
-                                            <p class="mb-0">Fats: <span>@food.Fat</span>g</p>
+                                <li class="list-group-item">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-6">
+                                            <strong>@food.Name</strong>
+                                            <div class="small text-muted">
+                                                <p class="mb-0">Total Calories: <span>@food.TotalCalories</span></p>
+                                                <p class="mb-0">Protein: <span>@food.Proteins</span>g</p>
+                                                <p class="mb-0">Carbohydrates: <span>@food.Carbohydrates</span>g</p>
+                                                <p class="mb-0">Fats: <span>@food.Fats</span>g</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <form method="post"
+                                                  asp-action="AddFood"
+                                                  asp-route-foodId="@food.Id"
+                                                  asp-route-foodDiaryId="@this.Model.Id"
+                                                  class="d-flex flex-column gap-2">
+                                                <div>
+                                                    <select id="mealType" name="mealType" class="form-select" style="min-width: 100%;">
+                                                        @foreach (var mealType in Enum.GetValues(typeof(MealType)).Cast<MealType>())
+                                                        {
+                                                            <option value="@mealType">@mealType</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <input type="number"
+                                                           name="quantity"
+                                                           class="form-control"
+                                                           placeholder="grams"
+                                                           min="1"
+                                                           style="min-width: 100%;"
+                                                           required />
+                                                </div>
+                                                <div>
+                                                    <button type="submit" class="btn btn-success w-100">Add</button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
-                                    <form method="post"
-                                          asp-action="AddToDiary"
-                                          asp-route-foodId="@food.Id"
-                                          asp-route-foodDiaryId="@this.Model.Id"
-                                          class="d-flex align-items-center">
-                                        <input type="number"
-                                               name="quantity"
-                                               class="form-control me-2"
-                                               placeholder="grams"
-                                               min="1"
-                                               required />
-                                        <button type="submit" class="btn btn-success btn-sm">Add</button>
-                                    </form>
                                 </li>
                             }
                         }
@@ -106,6 +139,7 @@
                     </ul>
                 </div>
             </div>
+
             <nav style="margin-top: 1em;" aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
                     @if (pageIndex > 1)

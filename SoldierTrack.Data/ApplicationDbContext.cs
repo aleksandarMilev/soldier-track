@@ -21,8 +21,9 @@
         public DbSet<Exercise> Exercises { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Food> Foods { get; set; }
+        public DbSet<Meal> Meals { get; set; }
+        public DbSet<MealFood> MealsFoods { get; set; }
         public DbSet<FoodDiary> FoodDiaries { get; set; }
-        public DbSet<FoodDiaryFood> FoodDiariesFoods { get; set; }
 
         public override int SaveChanges()
         {

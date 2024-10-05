@@ -5,15 +5,9 @@
     using SoldierTrack.Data.Models.Base;
     using SoldierTrack.Data.Models.Enums;
 
-    public class FoodDiary : BaseDeletableModel<int>
+    public class Meal : BaseModel<int>
     {
-
-        [ForeignKey(nameof(Athlete))]
-        public int AthleteId { get; set; }
-
-        public Athlete Athlete { get; set; } = null!;
-
-        public DateTime Date { get; set; }
+        public MealType MealType { get; set; }
 
         public decimal TotalCalories { get; set; }
 
@@ -23,6 +17,11 @@
 
         public decimal Fats { get; set; }
 
-        public ICollection<Meal> Meals { get; set; } = new List<Meal>();
+        [ForeignKey(nameof(FoodDiary))]
+        public int FoodDiaryId { get; set; }
+
+        public FoodDiary FoodDiary { get; set; } = null!;
+
+        public ICollection<MealFood> MealsFoods { get; set; } = new List<MealFood>();
     }
 }

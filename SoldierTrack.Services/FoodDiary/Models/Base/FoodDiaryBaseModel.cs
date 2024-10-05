@@ -6,13 +6,13 @@
 
         public DateTime Date { get; init; }
 
-        public int TotalCalories { get; init; }
+        public decimal TotalCalories { get; set; }
 
-        public int TotalProtein { get; init; }
+        public decimal Proteins { get; set; }
 
-        public int TotalCarbohydrates { get; init; }
+        public decimal Carbohydrates { get; set; }
 
-        public int TotalFats { get; init; }
+        public decimal Fats { get; set; }
 
         public int AthleteId { get; init; }
     }

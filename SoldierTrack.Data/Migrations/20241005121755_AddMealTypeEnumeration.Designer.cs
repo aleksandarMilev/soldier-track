@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SoldierTrack.Data;
 
@@ -11,9 +12,11 @@ using SoldierTrack.Data;
 namespace SoldierTrack.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241005121755_AddMealTypeEnumeration")]
+    partial class AddMealTypeEnumeration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -387,13 +390,16 @@ namespace SoldierTrack.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("Calories")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Carbohydrates")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("Fats")
+                    b.Property<decimal>("Fat")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("ModifiedOn")
@@ -404,10 +410,7 @@ namespace SoldierTrack.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<decimal>("Proteins")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("TotalCalories")
+                    b.Property<decimal>("Protein")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -426,9 +429,6 @@ namespace SoldierTrack.Data.Migrations
                     b.Property<int>("AthleteId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Carbohydrates")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
@@ -438,20 +438,23 @@ namespace SoldierTrack.Data.Migrations
                     b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("Fats")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("Proteins")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("TotalCalories")
+                        .HasColumnType("int");
 
-                    b.Property<decimal>("TotalCalories")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("TotalCarbohydrates")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalFats")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalProtein")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -468,14 +471,14 @@ namespace SoldierTrack.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Carbohydrates")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("Carbohydrates")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("Fats")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("Fats")
+                        .HasColumnType("int");
 
                     b.Property<int>("FoodDiaryId")
                         .HasColumnType("int");
@@ -486,11 +489,11 @@ namespace SoldierTrack.Data.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("Proteins")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("Protein")
+                        .HasColumnType("int");
 
-                    b.Property<decimal>("TotalCalories")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("TotalCalories")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
