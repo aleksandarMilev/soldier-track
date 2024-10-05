@@ -1,0 +1,207 @@
+﻿@using SoldierTrack.Services.FoodDiary.Models
+@model FoodDiaryServiceModel
+
+@{
+    this.ViewData["Title"] = "My Diary";
+
+    var foods = this.Model.FoodEntries.Foods;
+    var pageIndex = this.Model.FoodEntries.PageIndex;
+    var totalPages = this.Model.FoodEntries.TotalPages;
+    var pageSize = this.Model.FoodEntries.PageSize;
+}
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2 class="text-center mb-4">My Food Diary</h2>
+            <form method="get" asp-action="MyDiary" asp-route-athleteId="@this.Model.AthleteId" class="row justify-content-center mb-4">
+                <input type="hidden" name="athleteId" value="@this.Model.AthleteId" />
+                <div class="col-md-6">
+                    <label for="selectedDate" class="form-label">Select Date:</label>
+                    <div class="input-group">
+                        <input type="date" id="selectedDate" name="date" class="form-control" value="@this.Model.Date.ToString("yyyy-MM-dd")" />
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-calendar-day"></i> View Diary
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Nutritional Summary for <span class="utc-date" data-utc="@this.Model.Date.ToString("o")"></span></h5>
+                    <hr />
+                    <div class="d-flex justify-content-between mb-2">
+                        <p class="mb-0">Total Calories:</p>
+                        <p class="mb-0"><strong>@this.Model.TotalCalories</strong></p>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <p class="mb-0">Protein:</p>
+                        <p class="mb-0"><strong>@this.Model.TotalProtein</strong>g</p>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <p class="mb-0">Carbohydrates:</p>
+                        <p class="mb-0"><strong>@this.Model.TotalCarbohydrates</strong>g</p>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <p class="mb-0">Fats:</p>
+                        <p class="mb-0"><strong>@this.Model.TotalFats</strong>g</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <form method="get" asp-action="MyDiary" class="row mb-4">
+                <input type="hidden" name="athleteId" value="@this.Model.AthleteId" />
+                <input type="hidden" name="date" value="@this.Model.Date.ToString("yyyy-MM-dd")" />
+                <div class="col-md-12">
+                    <label for="searchTerm" class="form-label">Search Food:</label>
+                    <div class="input-group">
+                        <input type="text" id="searchTerm" name="searchTerm" class="form-control" placeholder="Enter food name" />
+                        <button type="submit" class="btn btn-secondary">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title">Search Results</h5>
+                    <ul class="list-group">
+                        @if (foods != null && foods.Any())
+                        {
+                            @foreach (var food in foods)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="flex-grow-1">
+                                        <strong>@food.Name</strong>
+                                        <div class="small text-muted">
+                                            <p class="mb-0">Total Calories: <span>@food.Calories</span>g</p>
+                                            <p class="mb-0">Protein: <span>@food.Protein</span>g</p>
+                                            <p class="mb-0">Carbohydrates: <span>@food.Carbohydrates</span>g</p>
+                                            <p class="mb-0">Fats: <span>@food.Fat</span>g</p>
+                                        </div>
+                                    </div>
+                                    <form method="post"
+                                          asp-action="AddToDiary"
+                                          asp-route-foodId="@food.Id"
+                                          asp-route-foodDiaryId="@this.Model.Id"
+                                          class="d-flex align-items-center">
+                                        <input type="number"
+                                               name="quantity"
+                                               class="form-control me-2"
+                                               placeholder="grams"
+                                               min="1"
+                                               required />
+                                        <button type="submit" class="btn btn-success btn-sm">Add</button>
+                                    </form>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li class="list-group-item text-center">
+                                No food found for your search term.
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            <nav style="margin-top: 1em;" aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    @if (pageIndex > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link"
+                               asp-action="MyDiary"
+                               asp-route-athleteId="@this.Model.AthleteId"
+                               asp-route-date="@this.Model.Date.ToString("yyyy-MM-dd")"
+                               asp-route-searchTerm="@this.ViewBag.SearchTerm"
+                               asp-route-pageIndex="@(pageIndex - 1)"
+                               asp-route-pageSize="@pageSize">
+                                Previous
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">Previous</span>
+                        </li>
+                    }
+                    @if (pageIndex > 3)
+                    {
+                        <li class="page-item">
+                            <a class="page-link"
+                               asp-action="MyDiary"
+                               asp-route-athleteId="@this.Model.AthleteId"
+                               asp-route-date="@this.Model.Date.ToString("yyyy-MM-dd")"
+                               asp-route-searchTerm="@this.ViewBag.SearchTerm"
+                               asp-route-pageIndex="1"
+                               asp-route-pageSize="@pageSize">
+                                1
+                            </a>
+                        </li>
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    }
+                    @for (int i = Math.Max(1, pageIndex - 2); i <= Math.Min(totalPages, pageIndex + 2); i++)
+                    {
+                        <li class="page-item @(i == pageIndex ? "active" : "")">
+                            <a class="page-link"
+                               asp-action="MyDiary"
+                               asp-route-athleteId="@this.Model.AthleteId"
+                               asp-route-date="@this.Model.Date.ToString("yyyy-MM-dd")"
+                               asp-route-searchTerm="@this.ViewBag.SearchTerm"
+                               asp-route-pageIndex="@i"
+                               asp-route-pageSize="@pageSize">
+                                @i
+                            </a>
+                        </li>
+                    }
+                    @if (pageIndex < totalPages - 2)
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link"
+                               asp-action="MyDiary"
+                               asp-route-athleteId="@this.Model.AthleteId"
+                               asp-route-date="@this.Model.Date.ToString("yyyy-MM-dd")"
+                               asp-route-searchTerm="@this.ViewBag.SearchTerm"
+                               asp-route-pageIndex="@totalPages"
+                               asp-route-pageSize="@pageSize">
+                                @totalPages
+                            </a>
+                        </li>
+                    }
+                    @if (pageIndex < totalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link"
+                               asp-action="MyDiary"
+                               asp-route-athleteId="@this.Model.AthleteId"
+                               asp-route-date="@this.Model.Date.ToString("yyyy-MM-dd")"
+                               asp-route-searchTerm="@this.ViewBag.SearchTerm"
+                               asp-route-pageIndex="@(pageIndex + 1)"
+                               asp-route-pageSize="@pageSize">
+                                Next
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">Next</span>
+                        </li>
+                    }
+                </ul>
+            </nav>
+
+        </div>
+
+    </div>
+</div>
+
+<script src="~/js/convertUtcToLocaleDate.js"></script>

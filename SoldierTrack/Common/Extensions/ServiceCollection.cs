@@ -1,6 +1,5 @@
 ﻿namespace SoldierTrack.Web.Common.Extensions
 {
-    using Hangfire;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using SoldierTrack.Data;
@@ -12,6 +11,10 @@
     using SoldierTrack.Services.Category.MapperProfile;
     using SoldierTrack.Services.Exercise;
     using SoldierTrack.Services.Exercise.MapperProfile;
+    using SoldierTrack.Services.Food;
+    using SoldierTrack.Services.Food.MapProfile;
+    using SoldierTrack.Services.FoodDiary;
+    using SoldierTrack.Services.FoodDiary.MapProfile;
     using SoldierTrack.Services.Membership;
     using SoldierTrack.Services.Workout;
     using SoldierTrack.Services.Workout.MapperProfile;
@@ -26,6 +29,8 @@
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IAchievementService, AchievementService>();
             services.AddTransient<IExcerciseService, ExcerciseService>();
+            services.AddTransient<IFoodService, FoodService>();
+            services.AddTransient<IFoodDiaryService, FoodDiaryService>();
 
             return services;
         }
@@ -40,6 +45,8 @@
                 cfg.AddProfile<CategoryProfile>();
                 cfg.AddProfile<ExerciseProfile>();
                 cfg.AddProfile<AchievementProfile>();
+                cfg.AddProfile<FoodProfile>();
+                cfg.AddProfile<FoodDiaryProfile>();
             }, 
             typeof(Program).Assembly);
 
@@ -83,19 +90,6 @@
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            return services;
-        }
-
-        public static IServiceCollection AddHangfireConfigurations(this IServiceCollection services, IConfiguration configuration)
-        {
-            var connectionStr = configuration.GetConnectionString("DefaultConnection");
-
-            services.AddHangfire(configuration =>
-            {
-                configuration.UseSqlServerStorage(connectionStr);
-            });
-
-            services.AddHangfireServer();
             return services;
         }
     }

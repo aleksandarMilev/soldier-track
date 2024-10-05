@@ -16,7 +16,5 @@
         public int FoodDiaryId { get; set; }
 
         public FoodDiary FoodDiary { get; set; } = null!;
-
-        public int Quantity { get; set; }
     }
 }

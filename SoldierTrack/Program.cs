@@ -1,9 +1,6 @@
 namespace SoldierTrack
 {
-    using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
     using SoldierTrack.Web.Common.Extensions;
 
     public class Program
@@ -16,7 +13,6 @@ namespace SoldierTrack
             builder.Services.AddApplicationDbContext(builder.Configuration, builder.Environment);
             builder.Services.AddApplicationIdentity();
             builder.Services.AddAutoMapperProfiles();
-            builder.Services.AddHangfireConfigurations(builder.Configuration);
 
             builder.Services.AddControllersWithViews(options =>
             {

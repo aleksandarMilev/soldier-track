@@ -11,6 +11,16 @@
 
         public Athlete Athlete { get; set; } = null!;
 
+        public DateTime Date { get; set; }
+
+        public int TotalCalories { get; set; }
+
+        public int TotalProtein { get; set; }
+
+        public int TotalCarbohydrates { get; set; }
+
+        public int TotalFats { get; set; }
+
         public ICollection<FoodDiaryFood> MapCollection { get; set; } = new List<FoodDiaryFood>();
     }
 }
