@@ -4,5 +4,6 @@
 
     public class AthleteServiceModel : AthleteBaseModel
     {
+        public string Email { get; set; } = null!;
     }
 }

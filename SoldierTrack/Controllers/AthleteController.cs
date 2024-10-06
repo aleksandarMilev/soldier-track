@@ -9,7 +9,7 @@
     using SoldierTrack.Web.Common.Attributes.Filter;
     using SoldierTrack.Web.Common.Extensions;
     using SoldierTrack.Web.Models.Athlete;
-
+    using System.Security.Claims;
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
 
     [Authorize]
@@ -48,6 +48,7 @@
                 return this.View(viewModel);
             }
 
+            serviceModel.Email = this.User.FindFirstValue(ClaimTypes.Name)!;
             await this.athleteService.CreateAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = AthleteSuccessRegister;

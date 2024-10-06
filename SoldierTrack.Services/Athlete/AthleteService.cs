@@ -239,7 +239,7 @@
             {
                 if (DateTime.UtcNow > membershipEntity.EndDate)
                 {
-                    await this.membershipService.DeleteAsync(membershipEntity.Id);
+                    await this.membershipService.DeleteByIdAsync(membershipEntity.Id);
                     throw new MembershipExpiredException();
                 }
             }
@@ -249,7 +249,7 @@
 
                 if (membershipEntity.WorkoutsLeft == 0)
                 {
-                    await this.membershipService.DeleteAsync(membershipEntity.Id);
+                    await this.membershipService.DeleteByIdAsync(membershipEntity.Id);
                 }
             }
 

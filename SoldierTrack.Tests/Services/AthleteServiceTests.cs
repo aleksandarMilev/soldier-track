@@ -1073,7 +1073,7 @@
             await this.data.SaveChangesAsync();
 
             this.mockMembershipService
-              .Setup(m => m.DeleteAsync(membership.Id))
+              .Setup(m => m.DeleteByIdAsync(membership.Id))
               .Callback(() =>
               {
                   membership.IsDeleted = true;

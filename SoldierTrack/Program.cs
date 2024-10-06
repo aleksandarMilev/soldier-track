@@ -9,7 +9,7 @@ namespace SoldierTrack
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddApplicationServices();
+            builder.Services.AddApplicationServices(builder.Configuration);
             builder.Services.AddApplicationDbContext(builder.Configuration, builder.Environment);
             builder.Services.AddApplicationIdentity();
             builder.Services.AddAutoMapperProfiles();

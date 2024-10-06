@@ -4,15 +4,23 @@
     using SoldierTrack.Data;
     using SoldierTrack.Data.Models;
     using SoldierTrack.Services.Common;
+    using SoldierTrack.Services.Email;
     using SoldierTrack.Services.Membership.MapTo;
     using SoldierTrack.Services.Membership.Models;
     using SoldierTrack.Services.Membership.Models.Base;
 
+    using static SoldierTrack.Services.Membership.Constants.Messages;
+
     public class MembershipService : IMembershipService
     {
         private readonly ApplicationDbContext data;
+        private readonly IEmailService emailService;
 
-        public MembershipService(ApplicationDbContext data) => this.data = data;
+        public MembershipService(ApplicationDbContext data, IEmailService emailService)
+        {
+            this.data = data;
+            this.emailService = emailService;
+        }
 
         public async Task<IEnumerable<MembershipPendingServiceModel>> GetAllPendingAsync()
         {
@@ -83,7 +91,7 @@
                 return false;
             }
 
-            await this.DeleteAsync(id);
+            await this.DeleteByIdAsync(id);
             return true;
         }
 
@@ -112,9 +120,14 @@
 
             entity.IsPending = false;
             await this.data.SaveChangesAsync();
+
+            var a = await this.data.AllDeletableAsNoTracking<Athlete>().FirstAsync(a => a.Id == entity.AthleteId);
+            var email = a.Email;
+
+            await this.emailService.SendEmailAsync(email!, "Membership approved", MembershipApproved);
         }
 
-        public async Task RejectAsync(int id) => await this.DeleteAsync(id);
+        public async Task RejectAsync(int id) => await this.DeleteByIdAsync(id);
 
         public async Task EditAsync(EditMembershipServiceModel model)
         {
@@ -128,18 +141,30 @@
             await this.data.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int membershipId) => await this.DeleteMembershipAsyncBy(by: membershipId);
-
-        public async Task DeleteByAthleteIdAsync(int athleteId) => await this.DeleteMembershipAsyncBy(by: athleteId);
-
-        public async Task DeleteMembershipAsyncBy(int by)
+        public async Task DeleteByIdAsync(int membershipId)
         {
             var entity = await this.data
               .AllDeletable<Membership>()
               .Include(m => m.Athlete)
-              .FirstOrDefaultAsync(m => m.AthleteId == by)
+              .FirstOrDefaultAsync(m => m.Id == membershipId)
               ?? throw new InvalidOperationException("Membership not found!");
 
+            await this.DeleteAsync(entity);
+        }
+
+        public async Task DeleteByAthleteIdAsync(int athleteId)
+        {
+            var entity = await this.data
+                .AllDeletable<Membership>()
+                .Include(m => m.Athlete)
+                .FirstOrDefaultAsync(m => m.AthleteId == athleteId)
+                ?? throw new InvalidOperationException("Membership not found!");
+
+            await this.DeleteAsync(entity);
+        }
+
+        private async Task DeleteAsync(Membership entity)
+        {
             var archiveEntity = new MembershipArchive()
             {
                 MembershipId = entity.Id,

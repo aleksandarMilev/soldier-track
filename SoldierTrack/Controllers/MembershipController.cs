@@ -45,7 +45,7 @@
             var viewModel = new CreateMembershipViewModel()
             {
                 AthleteId = athleteId.Value,
-                StartDate = DateTime.Now.Date
+                StartDate = DateTime.Now
             };
 
             return this.View(viewModel);

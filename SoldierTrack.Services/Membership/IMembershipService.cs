@@ -23,7 +23,7 @@
 
         Task EditAsync(EditMembershipServiceModel serviceModel);
 
-        Task DeleteAsync(int id);
+        Task DeleteByIdAsync(int id);
 
         Task DeleteByAthleteIdAsync(int athleteId);
     }

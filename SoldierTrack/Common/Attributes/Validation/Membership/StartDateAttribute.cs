@@ -7,10 +7,11 @@
         public override bool IsValid(object? value)
         {
             var startDate = (DateTime?)value;
+            var todayLocal = DateTime.Now.Date;
 
-            if (startDate.HasValue && startDate.Value < DateTime.Today.Date)
+            if (startDate.HasValue && startDate.Value.Date != todayLocal)
             {
-                this.ErrorMessage = $"Membership can not start before {DateTime.Today.Date:dd/MM/yyyy}!";
+                this.ErrorMessage = $"Membership start date should be today!";
                 return false;
             }
 

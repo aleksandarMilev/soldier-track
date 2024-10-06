@@ -1,5 +1,7 @@
 ﻿namespace SoldierTrack.Web.Common.Extensions
 {
+    using System.Configuration;
+
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using SoldierTrack.Data;
@@ -9,6 +11,8 @@
     using SoldierTrack.Services.Athlete.MapperProfile;
     using SoldierTrack.Services.Category;
     using SoldierTrack.Services.Category.MapperProfile;
+    using SoldierTrack.Services.Email;
+    using SoldierTrack.Services.Email.Models;
     using SoldierTrack.Services.Exercise;
     using SoldierTrack.Services.Exercise.MapperProfile;
     using SoldierTrack.Services.Food;
@@ -21,8 +25,11 @@
 
     public static class ServiceCollection
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
+            services.Configure<SmtpSettings>(configuration.GetSection("SmtpSettings"));
+
+            services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IWorkoutService, WorkoutService>();
             services.AddTransient<IAthleteService, AthleteService>();
             services.AddTransient<IMembershipService, MembershipService>();
