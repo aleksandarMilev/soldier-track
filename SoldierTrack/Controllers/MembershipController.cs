@@ -37,7 +37,7 @@
             var userId = this.User.GetId();
             var athleteId = await this.athleteService.GetIdByUserIdAsync(userId!);
 
-            if (await this.athleteService.AthleteHasMembershipByAthleteIdAsync(athleteId.Value))
+            if (await this.membershipService.MembershipExistsByAthleteIdAsync(athleteId.Value))
             {
                 return this.RedirectToAction("Details", "Athlete", new { id = athleteId });
             }

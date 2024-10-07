@@ -8,12 +8,24 @@
 
 <div class="container h-100">
     <div class="row h-100 justify-content-center align-items-center">
-        <div class="col-md-12">
-            <h2>Request Membership</h2>
+        <div class="col-md-8">
+            <!-- Set a maximum width for the content -->
+            <h2 class="text-center">Request Membership</h2>
+            <div class="mb-4">
+                <!-- Add margin at the bottom -->
+                <form asp-area="" asp-controller="Membership" asp-action="RequestMembership" method="post" class="form-horizontal">
+                    <div class="text text-danger" asp-validation-summary="All"></div>
+                    <partial name="_FormPartial" model="Model" />
+                    <div class="form-group" style="margin-top: 1em">
+                        <button type="submit" class="btn btn-primary">Request</button>
+                        <a asp-area="" asp-controller="Home" asp-action="Index" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
             <div class="card mb-4 shadow-sm">
                 <div class="card-header" style="background-color: #edd7d5;">
-                    <h4>Membership Terms</h4>
-                    <h6>Please read them before making a request</h6>
+                    <h4 class="text-center">Membership Terms</h4> <!-- Centered header -->
+                    <h6 class="text-center">Please read them before making a request</h6> <!-- Centered sub-header -->
                 </div>
                 <div class="card-body" style="background-color: #dbcdcc;">
                     <p>
@@ -41,7 +53,6 @@
                             Users can choose a participation count ranging from <strong>1 to 30</strong>.
                             To request it, do <strong>not</strong> click the 'I Want Monthly Membership' button; instead, select the workout count you desire.
                             Necessary data will be filled automatically, and you <strong>should not</strong> modify anything else.
-                            <p></p>
                         </li>
                         <li>
                             The price will also be auto-calculated.
@@ -61,15 +72,6 @@
                     </ul>
                 </div>
             </div>
-        </div>
-        <div class="col-md-6">
-            <form asp-area="" asp-controller="Membership" asp-action="RequestMembership" method="post" class="form-horizontal">
-                <partial name="_FormPartial" model="Model" />
-                <div class="form-group" style="margin-top: 1em">
-                    <button type="submit" class="btn btn-primary">Request</button>
-                    <a asp-area="" asp-controller="Home" asp-action="Index" class="btn btn-secondary">Cancel</a>
-                </div>
-            </form>
         </div>
     </div>
 </div>

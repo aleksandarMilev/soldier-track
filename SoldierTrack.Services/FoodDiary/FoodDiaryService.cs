@@ -8,7 +8,6 @@
     using SoldierTrack.Data.Models.Enums;
     using SoldierTrack.Services.Common;
     using SoldierTrack.Services.FoodDiary.Models;
-    using System.Linq;
 
     public class FoodDiaryService : IFoodDiaryService
     {
@@ -21,40 +20,12 @@
             this.mapper = mapper;
         }
 
-        public async Task<FoodDiaryServiceModel?> GetByDateAndAthleteIdAsync(int athleteId, DateTime date)
+        public async Task<FoodDiaryServiceModel?> GetModelByDateAndAthleteIdAsync(int athleteId, DateTime date)
         {
             return await this.data
                 .AllDeletableAsNoTracking<FoodDiary>()
                 .ProjectTo<FoodDiaryServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(fd => fd.AthleteId == athleteId && date == fd.Date);
-        }
-
-        public async Task<FoodDiaryServiceModel> CreateForDateAsync(int athleteId, DateTime date)
-        {
-            var athleteEntity = await this.data
-                .AllDeletable<Athlete>()
-                .FirstOrDefaultAsync(a => a.Id == athleteId)
-               ?? throw new InvalidOperationException("Athlete not found!");
-
-            var foodDiaryEntity = new FoodDiary()
-            {
-                AthleteId = athleteId,
-                Date = date,
-                Meals = new List<Meal>
-                {
-                    new() { MealType = MealType.Breakfast },
-                    new() { MealType = MealType.Lunch },
-                    new() { MealType = MealType.Dinner },
-                    new() { MealType = MealType.Snacks }
-                }
-            };
-
-            foodDiaryEntity.Athlete = athleteEntity;
-
-            this.data.Add(foodDiaryEntity);
-            await this.data.SaveChangesAsync();
-
-            return this.mapper.Map<FoodDiaryServiceModel>(foodDiaryEntity);
         }
 
         public async Task<FoodDiaryDetailsServiceModel?> GetDetailsByIdAsync(int diaryId)
@@ -66,9 +37,36 @@
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<FoodDiaryServiceModel> CreateForDateAsync(int athleteId, DateTime date)
+        {
+            var athlete = await this.data
+                .AllDeletable<Athlete>()
+                .FirstOrDefaultAsync(a => a.Id == athleteId)
+               ?? throw new InvalidOperationException("Athlete not found!");
+
+            var foodDiary = new FoodDiary()
+            {
+                AthleteId = athleteId,
+                Date = date,
+                Meals = new List<Meal>
+                {
+                    new() { MealType = MealType.Breakfast },
+                    new() { MealType = MealType.Lunch },
+                    new() { MealType = MealType.Dinner },
+                    new() { MealType = MealType.Snacks }
+                },
+                Athlete = athlete
+            };
+
+            this.data.Add(foodDiary);
+            await this.data.SaveChangesAsync();
+
+            return this.mapper.Map<FoodDiaryServiceModel>(foodDiary);
+        }
+
         public async Task<FoodDiaryServiceModel> AddFoodAsync(int foodId, int foodDiaryId, string mealType, int quantity)
         {
-            var diaryEntity = await this.data
+            var diary = await this.data
                 .AllDeletable<FoodDiary>()
                 .Include(fd => fd.Meals)
                 .FirstOrDefaultAsync(fd => fd.Id == foodDiaryId)
@@ -76,7 +74,7 @@
 
             if (Enum.TryParse(mealType, true, out MealType parsedMealType))
             {
-                var meal = diaryEntity
+                var meal = diary
                     .Meals
                     .FirstOrDefault(m => m.MealType == parsedMealType)
                     ?? throw new InvalidOperationException("The meal does not exist!");
@@ -86,7 +84,7 @@
                     .FirstOrDefaultAsync(f => f.Id == foodId)
                     ?? throw new InvalidOperationException("The food is not found!");
 
-                this.UpdateNutritionalValues(meal, food, diaryEntity, quantity, (x, y) => x + y);
+                UpdateNutritionalValues(meal, food, diary, quantity, (x, y) => x + y);
 
                 var mapEntity = await this.data
                     .MealsFoods
@@ -102,7 +100,7 @@
                 this.data.Add(mapEntity);
                 await this.data.SaveChangesAsync();
 
-                return this.mapper.Map<FoodDiaryServiceModel>(diaryEntity);
+                return this.mapper.Map<FoodDiaryServiceModel>(diary);
             }
 
             throw new InvalidOperationException("The meal type is not valid!");
@@ -133,7 +131,7 @@
                     .FirstOrDefaultAsync(mf => mf.FoodId == foodId && mf.MealId == meal.Id)
                      ?? throw new InvalidOperationException("The map entity is not found!");
 
-                this.UpdateNutritionalValues(meal, food, diaryEntity, mapEntity.Quantity, (x, y) => x - y);
+                UpdateNutritionalValues(meal, food, diaryEntity, mapEntity.Quantity, (x, y) => x - y);
 
                 this.data.Remove(mapEntity);
                 await this.data.SaveChangesAsync();
@@ -144,7 +142,7 @@
             }
         }
 
-        private void UpdateNutritionalValues(Meal meal, Food food, FoodDiary foodDiary, int quantity, Func<decimal, decimal, decimal> operation)
+        private static void UpdateNutritionalValues(Meal meal, Food food, FoodDiary foodDiary, int quantity, Func<decimal, decimal, decimal> operation)
         {
             var quantityFactor = (decimal)quantity / 100;
 

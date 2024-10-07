@@ -1,4 +1,4 @@
-namespace SoldierTrack
+namespace SoldierTrack.Web
 {
     using Microsoft.AspNetCore.Mvc;
     using SoldierTrack.Web.Common.Extensions;

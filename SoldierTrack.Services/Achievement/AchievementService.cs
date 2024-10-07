@@ -38,7 +38,7 @@
                 .FirstOrDefaultAsync(a => a.Id == id);
         }
 
-        public async Task<bool> AcheivementIsAlreadyAdded(int exerciseId, int athleteId)
+        public async Task<bool> AcheivementIsAlreadyAddedAsync(int exerciseId, int athleteId)
         {
             return await this.data
                 .Achievements
@@ -46,44 +46,43 @@
                 .AnyAsync(a => a.ExerciseId == exerciseId && a.AthleteId == athleteId);
         }
 
-        public async Task CreateAsync(AchievementServiceModel model)
+        public async Task CreateAsync(AchievementServiceModel serviceModel)
         {
             var exercise = await this.data
                 .Exercises
                 .AsNoTracking()
-                .FirstOrDefaultAsync(e => e.Id == model.ExerciseId)
+                .FirstOrDefaultAsync(e => e.Id == serviceModel.ExerciseId)
                 ?? throw new InvalidOperationException("Exercise not found!");
-
 
             var athlete = await this.data
                 .AllDeletableAsNoTracking<Athlete>()
-                .FirstOrDefaultAsync(a => a.Id == model.AthleteId)
+                .FirstOrDefaultAsync(a => a.Id == serviceModel.AthleteId)
                 ?? throw new InvalidOperationException("Athlete not found!");
 
-            var achievementEntity = this.mapper.Map<Achievement>(model);
-            this.data.Add(achievementEntity);
+            var achievement = this.mapper.Map<Achievement>(serviceModel);
+            this.data.Add(achievement);
             await this.data.SaveChangesAsync();
         }
 
-        public async Task EditAsync(AchievementServiceModel model)
+        public async Task EditAsync(AchievementServiceModel serviceModel)
         {
-            var entity = await this.data
+            var achievement = await this.data
                 .Achievements
-                .FirstOrDefaultAsync(a => a.Id == model.Id)
+                .FirstOrDefaultAsync(a => a.Id == serviceModel.Id)
                 ?? throw new InvalidOperationException("Achievement not found!");
 
-            this.mapper.Map(model, entity);
+            this.mapper.Map(serviceModel, achievement);
             await this.data.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
         {
-            var entity = await this.data
+            var achievement = await this.data
               .Achievements
               .FirstOrDefaultAsync(a => a.Id == id)
               ?? throw new InvalidOperationException("Achievement not found!");
 
-            this.data.Remove(entity);
+            this.data.Remove(achievement);
             await this.data.SaveChangesAsync();
         }
     }

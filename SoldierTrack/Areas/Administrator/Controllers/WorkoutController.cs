@@ -48,22 +48,22 @@
 
             var serviceModel = this.mapper.Map<WorkoutServiceModel>(viewModel);
 
-            if (await this.workoutService.IsAnotherWorkoutScheduledAtThisDateAndTimeAsync(serviceModel.Date, serviceModel.Time))
+            if (await this.workoutService.AnotherWorkoutExistsAtThisDateAndTimeAsync(serviceModel.Date, serviceModel.Time))
             {
                 this.ModelState.AddModelError(nameof(serviceModel.Time), string.Format(WorkoutAlreadyListed, serviceModel.Time.ToString("hh\\:mm")));
                 return await this.ReturnWorkoutViewWithCategoriesLoaded(viewModel);
             }
 
-            await this.workoutService.CreateAsync(serviceModel);
+            var workoutCreatedId = await this.workoutService.CreateAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = WorkoutCreated;
-            return this.RedirectToAction("GetAll", "Workout", new { area = "" });
+            return this.RedirectToAction("Details", "Workout", new { area = "", id = workoutCreatedId });
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var serviceModel = await this.workoutService.GetByIdAsync(id);
+            var serviceModel = await this.workoutService.GetEditModelByIdAsync(id);
 
             if (serviceModel == null)
             {
@@ -85,7 +85,7 @@
 
             var serviceModel = this.mapper.Map<EditWorkoutServiceModel>(viewModel);
 
-            if (await this.workoutService.IsAnotherWorkoutScheduledAtThisDateAndTimeAsync(serviceModel.Date, serviceModel.Time, serviceModel.Id))
+            if (await this.workoutService.AnotherWorkoutExistsAtThisDateAndTimeAsync(serviceModel.Date, serviceModel.Time, serviceModel.Id))
             {
                 this.ModelState.AddModelError(nameof(serviceModel.Time), string.Format(WorkoutAlreadyListed, serviceModel.Time.ToString("hh\\:mm")));
                 return await this.ReturnWorkoutViewWithCategoriesLoaded(viewModel);

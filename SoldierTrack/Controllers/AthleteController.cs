@@ -79,7 +79,7 @@
         [AthleteAuthorization]
         public async Task<IActionResult> Edit(int id)
         {
-            var serviceModel = await this.athleteService.GetEditServiceModelByIdAsync(id);
+            var serviceModel = await this.athleteService.GetEditModelByIdAsync(id);
 
             if (serviceModel == null)
             {

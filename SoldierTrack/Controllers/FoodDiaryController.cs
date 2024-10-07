@@ -31,7 +31,7 @@
         public async Task<IActionResult> MyDiary(int athleteId, DateTime? date, string? searchTerm = null, int pageIndex = 1, int pageSize = 2)
         {
             date ??= DateTime.UtcNow.Date; 
-            var model = await this.foodDiaryService.GetByDateAndAthleteIdAsync(athleteId, date.Value);
+            var model = await this.foodDiaryService.GetModelByDateAndAthleteIdAsync(athleteId, date.Value);
 
             if (model != null && model.AthleteId != await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!))
             {

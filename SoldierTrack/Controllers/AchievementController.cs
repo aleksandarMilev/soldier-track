@@ -57,9 +57,9 @@
         [HttpPost]
         public async Task<IActionResult> Create(CreateAchievementViewModel viewModel)
         {
-            if (!this.ModelState.IsValid || await this.achievementService.AcheivementIsAlreadyAdded(viewModel.ExerciseId, viewModel.AthleteId))
+            if (!this.ModelState.IsValid || await this.achievementService.AcheivementIsAlreadyAddedAsync(viewModel.ExerciseId, viewModel.AthleteId))
             {
-                if (await this.achievementService.AcheivementIsAlreadyAdded(viewModel.ExerciseId, viewModel.AthleteId))
+                if (await this.achievementService.AcheivementIsAlreadyAddedAsync(viewModel.ExerciseId, viewModel.AthleteId))
                 {
                     this.ModelState.AddModelError("", AchievementAlreadyAdded);
                 }

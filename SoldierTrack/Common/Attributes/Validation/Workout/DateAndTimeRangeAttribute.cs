@@ -1,8 +1,8 @@
 ﻿namespace SoldierTrack.Web.Common.Attributes.Validation.Workout
 {
     using System.ComponentModel.DataAnnotations;
-    using SoldierTrack.Web.Common.Constants.WorkoutTimes;
 
+    using SoldierTrack.Web.Common.Constants.WorkoutTimes;
 
     public class DateAndTimeRangeAttribute : ValidationAttribute
     {

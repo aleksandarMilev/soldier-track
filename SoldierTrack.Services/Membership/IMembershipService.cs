@@ -13,7 +13,11 @@
 
         Task<MembershipArchivePageServiceModel> GetArchiveByAthleteIdAsync(int athleteId, int pageIndex, int pageSize);
 
-        Task<bool> MembershipIsExpired(int id);
+        Task<bool> MembershipExistsByAthleteIdAsync(int athleteId);
+
+        Task<bool> MembershipIsApprovedByAthleteIdAsync(int athleteId);
+
+        Task<bool> MembershipIsExpiredByAthleteIdAsync (int athleteId);
 
         Task<int> GetPendingCountAsync();
 
@@ -26,5 +30,11 @@
         Task DeleteByIdAsync(int id);
 
         Task DeleteByAthleteIdAsync(int athleteId);
+
+        Task UpdateMembershipOnWorkoutDeletionAsync(int? membershipId);
+
+        Task UpdateMembershipOnJoinByAthleteIdAsync(int athleteId);
+
+        Task UpdateMembershipOnLeaveByAthleteIdAsync(int athleteId);
     }
 }

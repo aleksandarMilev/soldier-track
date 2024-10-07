@@ -1,7 +1,4 @@
 ﻿@using SoldierTrack.Services.Athlete.Models
-@using SoldierTrack.Services.Membership
-
-@inject IMembershipService membershipService;
 
 @model AthletePageServiceModel
 
@@ -58,42 +55,40 @@
                             Details
                         </a>
 
-                        @if (athlete.Membership != null && athlete.Membership.IsPending)
+                        @if (athlete.Membership != null)
                         {
-                            <button class="btn btn-sm btn-warning me-1" onclick="toggleApprovalButtons(@athlete.Id)">
-                                Membership is pending
-                            </button>
+                            @if (athlete.Membership.IsPending)
+                            {
+                                <button class="btn btn-sm btn-warning me-1" onclick="toggleApprovalButtons(@athlete.Id)">
+                                    Membership is pending
+                                </button>
 
-                            <div id="approvalButtons-@athlete.Id" style="display: none; margin-top: 5px;">
-                                <form asp-area="Administrator"
-                                      asp-controller="Membership"
-                                      asp-action="Approve"
-                                      asp-route-membershipId="@athlete.MembershipId"
-                                      asp-route-athleteId="@athlete.Id"
-                                      method="post"
-                                      class="d-inline">
-                                    <button type="submit" class="btn btn-sm btn-success me-1" onclick="return confirmApproval()">
-                                        Approve
-                                    </button>
-                                </form>
-                                <form asp-area="Administrator"
-                                      asp-controller="Membership"
-                                      asp-action="Reject"
-                                      asp-route-membershipId="@athlete.MembershipId"
-                                      asp-route-athleteId="@athlete.Id"
-                                      method="post"
-                                      class="d-inline">
-                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirmRejection()">
-                                        Reject
-                                    </button>
-                                </form>
-                            </div>
-                        }
-                        else if (athlete.Membership != null && !athlete.Membership.IsPending)
-                        {
-                            var membershipIsExpired = await this.membershipService.MembershipIsExpired(athlete.MembershipId!.Value);
-
-                            if(!membershipIsExpired)
+                                <div id="approvalButtons-@athlete.Id" style="display: none; margin-top: 5px;">
+                                    <form asp-area="Administrator"
+                                          asp-controller="Membership"
+                                          asp-action="Approve"
+                                          asp-route-membershipId="@athlete.MembershipId"
+                                          asp-route-athleteId="@athlete.Id"
+                                          method="post"
+                                          class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-success me-1" onclick="return confirmApproval()">
+                                            Approve
+                                        </button>
+                                    </form>
+                                    <form asp-area="Administrator"
+                                          asp-controller="Membership"
+                                          asp-action="Reject"
+                                          asp-route-membershipId="@athlete.MembershipId"
+                                          asp-route-athleteId="@athlete.Id"
+                                          method="post"
+                                          class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirmRejection()">
+                                            Reject
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                            else
                             {
                                 <a asp-area="Administrator"
                                    asp-controller="Athlete"
@@ -104,6 +99,7 @@
                                 </a>
                             }
                         }
+                       
                     </td>
                 </tr>
             }

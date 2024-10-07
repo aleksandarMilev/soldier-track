@@ -1,9 +1,10 @@
 ﻿namespace SoldierTrack.Services.Email
 {
-    using Microsoft.Extensions.Options;
-    using SoldierTrack.Services.Email.Models;
     using System.Net;
     using System.Net.Mail;
+
+    using Microsoft.Extensions.Options;
+    using SoldierTrack.Services.Email.Models;
 
     public class EmailService : IEmailService
     {
@@ -14,6 +15,7 @@
         public async Task SendEmailAsync(string to, string subject, string body)
         {
             using var mail = new MailMessage();
+
             mail.From = new MailAddress(this.smtpSettings.Username);
             mail.To.Add(to);
             mail.Subject = subject;

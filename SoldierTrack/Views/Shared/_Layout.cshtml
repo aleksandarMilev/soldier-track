@@ -81,7 +81,7 @@
                                         <a class="nav-link" asp-route-id="@athleteId" asp-area="" asp-controller="Athlete" asp-action="Details">My Profile</a>
                                     </li>
 
-                                    var athleteHasMembership = await this.athleteService.AthleteHasMembershipByAthleteIdAsync(athleteId.Value);
+                                    var athleteHasMembership = await this.membershipService.MembershipExistsByAthleteIdAsync(athleteId.Value);
 
                                     if (!athleteHasMembership)
                                     {

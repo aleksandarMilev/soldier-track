@@ -18,13 +18,7 @@
 
         Task<int?> GetIdByUserIdAsync(string userId);
 
-        Task<bool> AthleteHasMembershipByAthleteIdAsync(int id);
-
-        Task<bool> AthleteHasApprovedMembershipByAthleteIdAsync(int id);
-
-        Task<bool> AthleteMembershipIsExpiredByIdAsync(int athleteId);
-
-        Task<EditAthleteServiceModel?> GetEditServiceModelByIdAsync(int id);
+        Task<EditAthleteServiceModel?> GetEditModelByIdAsync(int id);
 
         Task EditAsync(EditAthleteServiceModel serviceModel);
 
@@ -33,5 +27,9 @@
         Task JoinAsync(int athleteId, int workoutId);
 
         Task LeaveAsync(int athleteId, int workoutId);
+
+        Task SendMailForApproveMembershipAsync(int athleteId);
+
+        Task SendMailOnWorkoutDeletionByAthleteIdAsync(int athleteId, string workoutTitle, string workoutDate, string workoutTime);
     }
 }

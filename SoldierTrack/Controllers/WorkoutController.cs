@@ -41,7 +41,7 @@
         [Authorize]
         public async Task<IActionResult> Details(int id)
         {
-            var model = await this.workoutService.GetDetailsByIdAsync(id);
+            var model = await this.workoutService.GetDetailsModelByIdAsync(id);
 
             if (model == null)
             {
@@ -69,7 +69,7 @@
             }
 
             this.ViewBag.AthleteId = athleteId;
-            var model = await this.workoutService.GetArchiveByAthleteIdAsync(athleteId, pageIndex, pageSize);
+            var model = await this.workoutService.GetArchiveAsync(athleteId, pageIndex, pageSize);
             return this.View(model);
         }
 
@@ -77,15 +77,15 @@
         {
             var athleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
 
-            if (!await this.athleteService.AthleteHasMembershipByAthleteIdAsync(athleteId.Value))
+            if (!await this.membershipService.MembershipExistsByAthleteIdAsync(athleteId.Value))
             {
                 return;
             }
 
             this.ViewBag.AthleteId = athleteId.Value;
 
-            var athleteHasApprovedMembership = await this.athleteService.AthleteHasApprovedMembershipByAthleteIdAsync(athleteId.Value);
-            var athleteMembershipIsExpried = await this.athleteService.AthleteMembershipIsExpiredByIdAsync(athleteId.Value);
+            var athleteHasApprovedMembership = await this.membershipService.MembershipIsApprovedByAthleteIdAsync(athleteId.Value);
+            var athleteMembershipIsExpried = await this.membershipService.MembershipIsExpiredByAthleteIdAsync(athleteId.Value);
 
             if (athleteMembershipIsExpried)
             {
@@ -105,7 +105,7 @@
                 model.ShowLeaveButton = true;
             }
 
-            var athleteHasMembership = await this.athleteService.AthleteHasMembershipByAthleteIdAsync(athleteId.Value);
+            var athleteHasMembership = await this.membershipService.MembershipExistsByAthleteIdAsync(athleteId.Value);
             model.AthleteHasMembership = athleteHasMembership;
         }
     }

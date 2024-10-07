@@ -1,7 +1,5 @@
 ﻿namespace SoldierTrack.Web.Common.Extensions
 {
-    using System.Configuration;
-
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using SoldierTrack.Data;
@@ -29,15 +27,25 @@
         {
             services.Configure<SmtpSettings>(configuration.GetSection("SmtpSettings"));
 
-            services.AddTransient<IEmailService, EmailService>();
-            services.AddTransient<IWorkoutService, WorkoutService>();
             services.AddTransient<IAthleteService, AthleteService>();
+            services.AddTransient(provider =>
+            {
+                return new Lazy<IAthleteService>(() => provider.GetRequiredService<IAthleteService>());
+            });
+
             services.AddTransient<IMembershipService, MembershipService>();
+            services.AddTransient(provider =>
+            {
+                return new Lazy<IMembershipService>(() => provider.GetRequiredService<IMembershipService>());
+            });
+
+            services.AddTransient<IExcerciseService, ExcerciseService>();
+            services.AddTransient<IWorkoutService, WorkoutService>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IAchievementService, AchievementService>();
-            services.AddTransient<IExcerciseService, ExcerciseService>();
             services.AddTransient<IFoodService, FoodService>();
             services.AddTransient<IFoodDiaryService, FoodDiaryService>();
+            services.AddTransient<IEmailService, EmailService>();
 
             return services;
         }

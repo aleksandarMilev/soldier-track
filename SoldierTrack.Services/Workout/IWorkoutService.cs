@@ -4,19 +4,19 @@
 
     public interface IWorkoutService
     {
-        Task<WorkoutDetailsServiceModel?> GetDetailsByIdAsync(int id);
+        Task<WorkoutDetailsServiceModel?> GetDetailsModelByIdAsync(int id);
 
-        Task<WorkoutArchivePageServiceModel> GetArchiveByAthleteIdAsync(int athleteId, int pageIndex, int pageSize);
+        Task<WorkoutArchivePageServiceModel> GetArchiveAsync(int athleteId, int pageIndex, int pageSize);
 
-        Task<EditWorkoutServiceModel?> GetByIdAsync(int id);
+        Task<EditWorkoutServiceModel?> GetEditModelByIdAsync(int id);
 
         Task<WorkoutPageServiceModel> GetAllAsync(DateTime? date, int pageIndex, int pageSize);
 
         Task<EditWorkoutServiceModel?> GetByDateAndTimeAsync(DateTime date, TimeSpan time);
 
-        Task<bool> IsAnotherWorkoutScheduledAtThisDateAndTimeAsync(DateTime date, TimeSpan time, int? id = null);
+        Task<bool> AnotherWorkoutExistsAtThisDateAndTimeAsync(DateTime date, TimeSpan time, int? id = null);
 
-        Task CreateAsync(WorkoutServiceModel model);
+        Task<int> CreateAsync(WorkoutServiceModel model);
 
         Task EditAsync(EditWorkoutServiceModel model);
 
