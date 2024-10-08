@@ -10,6 +10,8 @@
         {
             this.CreateMap<ExerciseServiceModel, Exercise>()
                 .ReverseMap();
+
+            this.CreateMap<Exercise, ExerciseDetailsServiceModel>();
         }
     }
 }

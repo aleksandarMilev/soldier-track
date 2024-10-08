@@ -1,9 +1,8 @@
 ﻿namespace SoldierTrack.Services.Exercise.Models
 {
-    public class ExerciseServiceModel
-    {
-        public int Id { get; init; }
+    using SoldierTrack.Services.Exercise.Models.Base;
 
-        public string Name { get; set; } = null!;
+    public class ExerciseServiceModel : ExerciseBaseModel
+    {
     }
 }

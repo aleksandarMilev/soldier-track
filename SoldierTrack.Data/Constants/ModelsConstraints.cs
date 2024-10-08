@@ -29,7 +29,7 @@ namespace SoldierTrack.Data.Constants
             public const int FullDescriptionMaxLength = 2_000;
 
             public const int ImageUrlMinLength = 10;
-            public const int ImageUrlMaxLength = 255;
+            public const int ImageUrlMaxLength = 2_000;
 
             public const int ParticipantsMinValue = 1;
             public const int ParticipantsMaxValue = 15;
@@ -54,6 +54,8 @@ namespace SoldierTrack.Data.Constants
         public static class ExerciseConstraints
         {
             public const int NameMaxLength = 50;
+            public const int UrlMaxLength = 2_000;
+            public const int DescriptionMaxLength = 1_000;
         }
 
         public static class FoodConstraints

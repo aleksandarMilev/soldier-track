@@ -11,7 +11,6 @@
     using SoldierTrack.Web.Models.Achievement;
 
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
-    using static SoldierTrack.Web.Common.Constants.WebConstants;
 
 
     [AthleteAuthorization]
@@ -40,35 +39,6 @@
             var athleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
             var models = await this.achievementService.GetAllByAthleteIdAsync(athleteId.Value);
             return this.View(models);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetAllExercises(string? searchTerm = null, int pageIndex = 1, int pageSize = 5)
-        {
-            pageSize = Math.Min(pageSize, MaxPageSize);
-            pageSize = Math.Max(pageSize, MinPageSize);
-
-            this.ViewBag.AthleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
-            var model = await this.exerciseService.GetPageModelsAsync(searchTerm, pageIndex, pageSize);
-            return this.View(model);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Details(int exerciseId, int athleteId)
-        {
-            var model = await this.achievementService.GetModelByNameAndAthleteIdAsync(exerciseId, athleteId);
-
-            if(model == null)
-            {
-                return this.RedirectToAction(nameof(Create), new { exerciseId, athleteId });
-            }
-
-            if (model != null && model.AthleteId != await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!))
-            {
-                return this.Unauthorized();
-            }
-
-            return this.View(model);
         }
 
         [HttpGet]

@@ -91,11 +91,11 @@
 
             if (achievement.Repetitions <= 10)
             {
-                achievement.OneRepMax = CalculateUsingEpleyFormula(achievement.WeightLifted, achievement.Repetitions);
+                achievement.OneRepMax = CalculateSmallReps(achievement.WeightLifted, achievement.Repetitions);
             }
             else 
             {
-                achievement.OneRepMax = CalculateUsingLombardiFormula(achievement.WeightLifted, achievement.Repetitions);
+                achievement.OneRepMax = CalculateBigReps(achievement.WeightLifted, achievement.Repetitions);
             }
 
             this.data.Add(achievement);
@@ -124,8 +124,8 @@
             await this.data.SaveChangesAsync();
         }
 
-        private static double CalculateUsingEpleyFormula(double weightLifted, int repetitions) => weightLifted * (1 + 0.0333 * repetitions);
+        private static double CalculateBigReps(double weightLifted, int repetitions) => weightLifted * (1 + 0.0333 * repetitions);
 
-        private static double CalculateUsingLombardiFormula(double weightLifted, int repetitions) => weightLifted * Math.Pow(repetitions, 0.1);
+        private static double CalculateSmallReps(double weightLifted, int repetitions) => weightLifted * Math.Pow(repetitions, 0.1);
     }
 }

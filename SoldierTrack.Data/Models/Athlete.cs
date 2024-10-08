@@ -41,5 +41,7 @@
         public ICollection<AthleteWorkout> AthletesWorkouts { get; set; } = new List<AthleteWorkout>();
 
         public ICollection<Achievement> Achievements { get; set; } = new List<Achievement>();
+
+        public ICollection<Exercise> Exercises { get; set; } = new List<Exercise>();
     }
 }

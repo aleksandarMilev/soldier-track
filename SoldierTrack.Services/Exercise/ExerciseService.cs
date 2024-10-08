@@ -18,18 +18,6 @@
             this.mapper = mapper;
         }
 
-        public async Task<IEnumerable<ExerciseServiceModel>> GetAllAsync()
-        {
-            var exercises = await this.data
-                .Exercises
-                .AsNoTracking()
-                .ProjectTo<ExerciseServiceModel>(this.mapper.ConfigurationProvider)
-                .ToListAsync();
-
-            exercises.ForEach(x => x.Name = x.Name.SplitPascalCase());
-            return exercises;
-        }
-
         public async Task<string> GetNameByIdAsync(int id)
         {
             var name = await this.data
@@ -40,6 +28,15 @@
                 ?? throw new InvalidOperationException("Exercise is not found!");
 
             return name.SplitPascalCase();
+        }
+
+        public async Task<ExerciseDetailsServiceModel?> GetDetailsById(int id)
+        {
+            return await this.data
+                .Exercises
+                .AsNoTracking()
+                .ProjectTo<ExerciseDetailsServiceModel>(this.mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(e => e.Id == id);
         }
 
         public async Task<ExercisePageServiceModel> GetPageModelsAsync(string? searchTerm, int pageIndex, int pageSize)
@@ -75,6 +72,5 @@
 
             return pageViewModel;
         }
-
     }
 }
