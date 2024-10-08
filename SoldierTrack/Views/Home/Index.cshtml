@@ -1,5 +1,6 @@
-﻿﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using SoldierTrack.Web.Common.Extensions
+﻿@{
+    this.ViewData["Title"] = "Home Page";
 }
 
 @if(this.TempData["SuccessMessage"] != null)
@@ -81,7 +82,10 @@
                         </div>
                         <div id="full-info-3" class="d-none">
                             <p>As a member, you'll receive a discount on the regular price, with further details available on the request form.</p>
-                            <a asp-controller="Membership" asp-action="RequestMembership" class="btn btn-info">Request Membership</a>
+                            @if (this.User != null && !this.User.IsAdmin())
+                            {
+                                <a asp-controller="Membership" asp-action="RequestMembership" class="btn btn-info">Request Membership</a>
+                            }
                         </div>
                     </div>
                 </div>
@@ -97,7 +101,10 @@
                         </div>
                         <div id="full-info-4" class="d-none">
                             <p>Progressive overload is essential ideology in all sports, track your here!</p>
-                            <a asp-controller="Achievement" asp-action="GetAll" class="btn btn-info">My Achievements</a>
+                            @if (this.User != null && !this.User.IsAdmin())
+                            {
+                                <a asp-controller="Achievement" asp-action="GetAll" class="btn btn-info">My Achievements</a>
+                            }
                         </div>
                     </div>
                 </div>

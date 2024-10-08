@@ -234,7 +234,7 @@
             this.fixture.ResetDb();
             await this.SeedDbWithAchievementAsync();
 
-            var result = await this.service.AcheivementIsAlreadyAddedAsync(2, 3);
+            var result = await this.service.AchievementIsAlreadyAddedAsync(2, 3);
 
             result.Should().BeFalse();
         }
@@ -245,7 +245,7 @@
             this.fixture.ResetDb();
             await this.SeedDbWithAchievementAsync();
 
-            var result = await this.service.AcheivementIsAlreadyAddedAsync(1, 1);
+            var result = await this.service.AchievementIsAlreadyAddedAsync(1, 1);
 
             result.Should().BeTrue();
         }

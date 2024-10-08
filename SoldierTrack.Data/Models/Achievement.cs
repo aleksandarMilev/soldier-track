@@ -6,9 +6,13 @@
 
     public class Achievement : BaseModel<int>
     {
+        public DateTime DateAchieved { get; set; }
+
         public double WeightLifted { get; set; }
 
-        public DateTime? DateAchieved { get; set; }
+        public int Repetitions { get; set; }
+
+        public double OneRepMax { get; set; }
 
         [ForeignKey(nameof(Athlete))]
         public int AthleteId { get; set; }

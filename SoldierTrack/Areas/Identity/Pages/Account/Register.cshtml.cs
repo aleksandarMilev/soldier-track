@@ -62,7 +62,7 @@ namespace SoldierTrack.Web.Areas.Identity.Pages.Account
 
             if (this.ModelState.IsValid)
             {
-                var user = this.CreateUser();
+                var user = new IdentityUser();
                 await this.userStore.SetUserNameAsync(user, this.Input.Email, CancellationToken.None);
                 var result = await this.userManager.CreateAsync(user, this.Input.Password);
 
@@ -70,15 +70,8 @@ namespace SoldierTrack.Web.Areas.Identity.Pages.Account
                 {
                     this.logger.LogInformation("User created a new account with password.");
 
-                    if (this.userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return this.RedirectToPage("RegisterConfirmation", new { email = this.Input.Email, returnUrl });
-                    }
-                    else
-                    {
-                        await this.signInManager.SignInAsync(user, isPersistent: false);
-                        return this.LocalRedirect(returnUrl);
-                    }
+                    await this.signInManager.SignInAsync(user, isPersistent: true);
+                    return this.LocalRedirect(returnUrl);
                 }
 
                 foreach (var error in result.Errors)
@@ -88,20 +81,6 @@ namespace SoldierTrack.Web.Areas.Identity.Pages.Account
             }
 
             return this.Page();
-        }
-
-        private IdentityUser CreateUser()
-        {
-            try
-            {
-                return Activator.CreateInstance<IdentityUser>();
-            }
-            catch
-            {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(IdentityUser)}'. " +
-                    $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
-            }
         }
     }
 }

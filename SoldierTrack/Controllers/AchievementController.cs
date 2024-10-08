@@ -2,7 +2,6 @@
 {
     using AutoMapper;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Rendering;
     using SoldierTrack.Services.Achievement;
     using SoldierTrack.Services.Achievement.Models;
     using SoldierTrack.Services.Athlete;
@@ -12,18 +11,20 @@
     using SoldierTrack.Web.Models.Achievement;
 
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
+    using static SoldierTrack.Web.Common.Constants.WebConstants;
+
 
     [AthleteAuthorization]
     public class AchievementController : Controller
     {
         private readonly IAchievementService achievementService;
-        private readonly IExcerciseService exerciseService;
+        private readonly IExerciseService exerciseService;
         private readonly IAthleteService athleteService;
         private readonly IMapper mapper;
 
         public AchievementController(
             IAchievementService achievementService,
-            IExcerciseService exerciseService,
+            IExerciseService exerciseService,
             IAthleteService athleteService,
             IMapper mapper)
         {
@@ -36,36 +37,59 @@
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            if (this.User.IsAdmin())
-            {
-                this.TempData["FailureMessage"] = AdminGetAchievement;
-                return this.RedirectToAction("Index", "Home");
-            }
-
             var athleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
             var models = await this.achievementService.GetAllByAthleteIdAsync(athleteId.Value);
             return this.View(models);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> GetAllExercises(string? searchTerm = null, int pageIndex = 1, int pageSize = 5)
         {
-            var model = await this.GetFormViewModel();
+            pageSize = Math.Min(pageSize, MaxPageSize);
+            pageSize = Math.Max(pageSize, MinPageSize);
+
+            this.ViewBag.AthleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
+            var model = await this.exerciseService.GetPageModelsAsync(searchTerm, pageIndex, pageSize);
+            return this.View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int exerciseId, int athleteId)
+        {
+            var model = await this.achievementService.GetModelByNameAndAthleteIdAsync(exerciseId, athleteId);
+
+            if(model == null)
+            {
+                return this.RedirectToAction(nameof(Create), new { exerciseId, athleteId });
+            }
+
+            if (model != null && model.AthleteId != await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!))
+            {
+                return this.Unauthorized();
+            }
+
+            return this.View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Create(int exerciseId, int athleteId)
+        {
+            if (athleteId != await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!))
+            {
+                return this.Unauthorized();
+            }
+
+            var exerciseName = await this.exerciseService.GetNameByIdAsync(exerciseId);
+            var model = new CreateAchievementViewModel(athleteId, exerciseId, exerciseName, DateTime.Now);
             return this.View(model);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(CreateAchievementViewModel viewModel)
         {
-            if (!this.ModelState.IsValid || await this.achievementService.AcheivementIsAlreadyAddedAsync(viewModel.ExerciseId, viewModel.AthleteId))
+            if (!this.ModelState.IsValid)
             {
-                if (await this.achievementService.AcheivementIsAlreadyAddedAsync(viewModel.ExerciseId, viewModel.AthleteId))
-                {
-                    this.ModelState.AddModelError("", AchievementAlreadyAdded);
-                }
-
-                var updatedViewModel = await this.GetFormViewModel(viewModel);
-                return this.View(updatedViewModel);
+                return this.View(viewModel);
             }
 
             var serviceModel = this.mapper.Map<AchievementServiceModel>(viewModel);
@@ -126,30 +150,6 @@
 
             this.TempData["SuccessMessage"] = AchievementDeleted;
             return this.RedirectToAction(nameof(GetAll));
-        }
-
-        private async Task<CreateAchievementViewModel> GetFormViewModel(CreateAchievementViewModel? viewModel = null)
-        {
-            var athleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
-            var exercises = await this.exerciseService.GetAllAsycn();
-
-            var exerciseSelectList = exercises
-                .Select(c => new SelectListItem()
-                {
-                    Value = c.Id.ToString(),
-                    Text = c.Name
-                });
-
-            viewModel ??= new CreateAchievementViewModel
-            {
-                AthleteId = athleteId.Value,
-                DateAchieved = DateTime.Now.Date,
-            };
-
-            viewModel.Exercises = exerciseSelectList;
-            viewModel.AthleteId = athleteId.Value;
-
-            return viewModel;
         }
     }
 }

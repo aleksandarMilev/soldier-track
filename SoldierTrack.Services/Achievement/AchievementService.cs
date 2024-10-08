@@ -21,24 +21,52 @@
 
         public async Task<IEnumerable<AchievementServiceModel>> GetAllByAthleteIdAsync(int athleteId)
         {
-            return await this.data
+            var achievements = await this.data
                 .Achievements
                 .AsNoTracking()
                 .Where(a => a.AthleteId == athleteId)
                 .ProjectTo<AchievementServiceModel>(this.mapper.ConfigurationProvider)
                 .ToListAsync();
+
+            achievements.ForEach(a => a.ExerciseName = a.ExerciseName.SplitPascalCase());
+            return achievements;
         }
 
         public async Task<AchievementServiceModel?> GetByIdAsync(int id)
         {
-            return await this.data
+            var achievement = await this.data
                 .Achievements
                 .AsNoTracking()
                 .ProjectTo<AchievementServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (achievement == null)
+            {
+                return null;
+            }
+
+            achievement.ExerciseName = achievement.ExerciseName.SplitPascalCase();
+            return achievement;
         }
 
-        public async Task<bool> AcheivementIsAlreadyAddedAsync(int exerciseId, int athleteId)
+        public async Task<AchievementServiceModel?> GetModelByNameAndAthleteIdAsync(int exerciseId, int athleteId)
+        {
+            var achievement = await this.data
+                .Achievements
+                 .AsNoTracking()
+                 .ProjectTo<AchievementServiceModel>(this.mapper.ConfigurationProvider)
+                 .FirstOrDefaultAsync(a => a.ExerciseId == exerciseId && a.AthleteId == athleteId);
+
+            if (achievement == null)
+            {
+                return null;
+            }
+
+            achievement.ExerciseName = achievement.ExerciseName.SplitPascalCase();
+            return achievement;
+        }
+
+        public async Task<bool> AchievementIsAlreadyAddedAsync(int exerciseId, int athleteId)
         {
             return await this.data
                 .Achievements
@@ -60,6 +88,16 @@
                 ?? throw new InvalidOperationException("Athlete not found!");
 
             var achievement = this.mapper.Map<Achievement>(serviceModel);
+
+            if (achievement.Repetitions <= 10)
+            {
+                achievement.OneRepMax = CalculateUsingEpleyFormula(achievement.WeightLifted, achievement.Repetitions);
+            }
+            else 
+            {
+                achievement.OneRepMax = CalculateUsingLombardiFormula(achievement.WeightLifted, achievement.Repetitions);
+            }
+
             this.data.Add(achievement);
             await this.data.SaveChangesAsync();
         }
@@ -85,5 +123,9 @@
             this.data.Remove(achievement);
             await this.data.SaveChangesAsync();
         }
+
+        private static double CalculateUsingEpleyFormula(double weightLifted, int repetitions) => weightLifted * (1 + 0.0333 * repetitions);
+
+        private static double CalculateUsingLombardiFormula(double weightLifted, int repetitions) => weightLifted * Math.Pow(repetitions, 0.1);
     }
 }

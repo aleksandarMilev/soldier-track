@@ -23,6 +23,8 @@
 
         public const string WorkoutNotFound = "Workout is not found!";
 
+        public const string WorkoutEdited = "Workout is now edited!";
+
         //athlete
         public const string AthleteWithSameNumberExists = "An athlete with number {0} is already registered!";
 
@@ -32,7 +34,7 @@
 
         public const string AthleteDeleteHimself = "Your profile was deleted successfully!";
 
-        public const string AthleteAreadyJoined = "Athlete has already joined in {0}!";
+        public const string AthleteAlreadyJoined = "Athlete has already joined in {0}!";
 
         //membership
         public const string MembershipRequested = "You have successfully requested yor membership!";
@@ -65,7 +67,9 @@
         public const string AdminGetAchievement = "Admins have not achievements";
 
         //achievement
-        public const string InvalidRecordValue = "Weight lifted should be between {1} and {2} kilos!";
+        public const string InvalidWeightLiftedValue = "Weight lifted should be between {1} and {2} kilos!";
+
+        public const string InvalidRepetitionsValue = "Repetitions should be between {1} and {2}!";
 
         public const string PRSuccessfullyAdded = "PR successfully added!";
 

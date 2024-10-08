@@ -49,8 +49,11 @@ namespace SoldierTrack.Web.Common.Constants
 
         public static class AchievementConstants
         {
-            public const double RecordValueMinValue = 1;
-            public const double RecordValueMaxValue = 500;
+            public const double WeightLiftedMinValue = 1;
+            public const double WeightLiftedMaxValue = 500;
+
+            public const int RepetitionsMinValue = 1;
+            public const int RepetitionsMaxValue = 30;
         }
     }
 }

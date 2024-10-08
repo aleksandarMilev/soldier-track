@@ -28,12 +28,6 @@
         [HttpGet]
         public async Task<IActionResult> RequestMembership()
         {
-            if (this.User.IsAdmin())
-            {
-                this.TempData["FailureMessage"] = AdminRequestMembership;
-                return this.RedirectToAction("Index", "Home");
-            }
-
             var userId = this.User.GetId();
             var athleteId = await this.athleteService.GetIdByUserIdAsync(userId!);
 

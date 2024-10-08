@@ -39,7 +39,7 @@
                 return new Lazy<IMembershipService>(() => provider.GetRequiredService<IMembershipService>());
             });
 
-            services.AddTransient<IExcerciseService, ExcerciseService>();
+            services.AddTransient<IExerciseService, ExerciseService>();
             services.AddTransient<IWorkoutService, WorkoutService>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IAchievementService, AchievementService>();
@@ -73,12 +73,11 @@
             IConfiguration configuration,
             IHostEnvironment environment)
         {
-            string connectionString = configuration
+            var connectionString = configuration
                 .GetConnectionString("DefaultConnection")
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-            services
-            .AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(connectionString);
             });

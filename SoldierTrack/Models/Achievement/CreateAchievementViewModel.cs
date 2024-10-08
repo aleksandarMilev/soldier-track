@@ -1,11 +1,17 @@
 ﻿namespace SoldierTrack.Web.Models.Achievement
 {
-    using Microsoft.AspNetCore.Mvc.Rendering;
     using SoldierTrack.Web.Models.Achievement.Base;
 
     public class CreateAchievementViewModel : AchievementBaseFormModel
     {
-        public IEnumerable<SelectListItem> Exercises { get; set; } = new List<SelectListItem>();
+        public CreateAchievementViewModel() {}
 
+        public CreateAchievementViewModel(int athleteId, int exerciseId, string exerciseName, DateTime dateAchieved)
+        {
+            this.AthleteId = athleteId;
+            this.ExerciseId = exerciseId;
+            this.ExerciseName = exerciseName;
+            this.DateAchieved = dateAchieved;
+        }
     }
 }

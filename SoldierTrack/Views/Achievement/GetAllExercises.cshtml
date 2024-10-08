@@ -1,0 +1,120 @@
+﻿@using SoldierTrack.Services.Exercise.Models
+
+@model ExercisePageServiceModel
+
+@{
+    this.ViewData["Title"] = "Exercises";
+
+    var exercises = this.Model.Exercises;
+    var pageIndex = this.Model.PageIndex;
+    var totalPages = this.Model.TotalPages;
+    var pageSize = this.Model.PageSize;
+}
+
+<h1 class="text-center mb-4">@this.ViewData["Title"]</h1>
+
+@if (this.TempData["Message"] != null)
+{
+    <div class="alert alert-success">
+        <p>@this.TempData["Message"]</p>
+    </div>
+}
+
+<div class="row mb-4">
+    <div class="col-md-6 offset-md-3">
+        <form method="get" asp-action="GetAllExercises" class="d-flex">
+            <input type="text" id="searchTerm" name="searchTerm" class="form-control me-2" placeholder="Search exercise..." />
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+</div>
+
+@if (exercises.Count() > 0)
+{
+    <div class="d-flex justify-content-center">
+        <div class="col-md-6">
+            <table class="table table-hover table-sm table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col" class="text-center">Exercise</th>
+                        <th scope="col" class="text-center">Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var exercise in exercises)
+                    {
+                        <tr>
+                            <td class="text-center">@exercise.Name</td>
+                            <td class="text-center">
+                                <a asp-action="Details" asp-route-exerciseId="@exercise.Id" asp-route-athleteId="@this.ViewBag.AthleteId" class="btn btn-info">Details</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+   
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            @if (pageIndex > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="GetAllExercises" asp-route-pageIndex="@(pageIndex - 1)" asp-route-pageSize="@pageSize">Previous</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <span class="page-link">Previous</span>
+                </li>
+            }
+
+            @if (pageIndex > 3)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="GetAllExercises" asp-route-pageIndex="1" asp-route-pageSize="@pageSize">1</a>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+            }
+
+            @for (int i = Math.Max(1, pageIndex - 2); i <= Math.Min(totalPages, pageIndex + 2); i++)
+            {
+                <li class="page-item @(i == pageIndex ? "active" : "")">
+                    <a class="page-link" asp-action="GetAllExercises" asp-route-pageIndex="@i" asp-route-pageSize="@pageSize">@i</a>
+                </li>
+            }
+
+            @if (pageIndex < totalPages - 2)
+            {
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" asp-action="GetAllExercises" asp-route-pageIndex="@totalPages" asp-route-pageSize="@pageSize">@totalPages</a>
+                </li>
+            }
+
+            @if (pageIndex < totalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="GetAllExercises" asp-route-pageIndex="@(pageIndex + 1)" asp-route-pageSize="@pageSize">Next</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <span class="page-link">Next</span>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+else
+{
+    <p class="text-danger text-center">No exercises found</p>
+}
+

@@ -70,7 +70,6 @@
                 return this.NotFound();
             }
 
-            //we should map it because the partial view we use for create/edit forms works with WorkoutBaseFormViewModel
             var viewModel = this.mapper.Map<EditWorkoutViewModel>(serviceModel);
             return await this.ReturnWorkoutViewWithCategoriesLoaded(viewModel);
         }
@@ -92,7 +91,9 @@
             }
 
             await this.workoutService.EditAsync(serviceModel);
-            return this.RedirectToAction("Index", "Home", new { area = "" });
+
+            this.TempData["SuccessMessage"] = WorkoutEdited;
+            return this.RedirectToAction("Details", "Workout", new { area = "", id = viewModel.Id });
         }
 
         [HttpPost]

@@ -57,7 +57,7 @@
 
             if (await this.athleteService.AthleteAlreadyJoinedByIdAsync(model.AthleteId, workout.Id))
             {
-                this.ModelState.AddModelError("", string.Format(AthleteAreadyJoined, workout.Title));
+                this.ModelState.AddModelError("", string.Format(AthleteAlreadyJoined, workout.Title));
                 return this.View(model);
             }
 

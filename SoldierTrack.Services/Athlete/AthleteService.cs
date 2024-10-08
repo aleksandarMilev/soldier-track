@@ -59,7 +59,7 @@
 
             foreach (var athlete in athletes)
             {
-                if (await this.membershipService.Value.MembershipIsExpiredByAthleteIdAsync(athlete.Id))
+                if (athlete.MembershipId != null && await this.membershipService.Value.MembershipIsExpiredByAthleteIdAsync(athlete.Id))
                 {
                     await this.membershipService.Value.DeleteByAthleteIdAsync(athlete.Id);
                 }

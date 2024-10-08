@@ -6,9 +6,11 @@
     {
         Task<IEnumerable<AchievementServiceModel>> GetAllByAthleteIdAsync(int athleteId);
 
-        Task<bool> AcheivementIsAlreadyAddedAsync(int exerciseId, int athleteId);
+        Task<bool> AchievementIsAlreadyAddedAsync(int exerciseId, int athleteId);
 
         Task<AchievementServiceModel?> GetByIdAsync(int id);
+
+        Task<AchievementServiceModel?> GetModelByNameAndAthleteIdAsync(int exerciseId, int athleteId);
 
         Task CreateAsync(AchievementServiceModel model);
 

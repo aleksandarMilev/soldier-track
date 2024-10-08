@@ -11,31 +11,37 @@
         <div class="col-md-6 col-lg-5">
             <div class="text-center mb-5 p-4 bg-light text-dark rounded">
                 <h1 class="display-5">Add New PR</h1>
-                <p class="lead">Log your new personal records and track your progress.</p>
+                <p class="lead">Calculate your 1RM and track your progress</p>
             </div>
 
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4">
                     <form asp-action="Create">
-                        <div asp-validation-summary="All" class="text text-danger"></div>
                         <input asp-for="AthleteId" type="hidden" />
+                        <input asp-for="ExerciseId" type="hidden" />
                         <div class="form-group">
-                            <label asp-for="ExerciseId" class="control-label">Exercise</label>
-                            <select asp-for="ExerciseId" asp-items="Model.Exercises" class="form-control"></select>
+                            <input asp-for="ExerciseName" class="form-control"  readonly />
                         </div>
 
                         <div class="form-group">
                             <label asp-for="WeightLifted" class="control-label">Weight Lifted (in kilos)</label>
                             <input asp-for="WeightLifted" class="form-control" type="number" step="any" />
+                            <span asp-validation-for="WeightLifted" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
-                            <label asp-for="DateAchieved" class="control-label">Date Achieved</label>
+                            <label asp-for="Repetitions" class="control-label"></label>
+                            <input asp-for="Repetitions" class="form-control" type="number" step="any" />
+                            <span asp-validation-for="Repetitions" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="DateAchieved" class="control-label"></label>
                             <input asp-for="DateAchieved" class="form-control" type="date" />
                         </div>
 
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary">Add Achievement</button>
+                            <button type="submit" class="btn btn-primary">Calculate</button>
                             <a asp-action="GetAll" class="btn btn-secondary">Back to List</a>
                         </div>
                     </form>
