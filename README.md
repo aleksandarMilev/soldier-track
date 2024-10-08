@@ -23,9 +23,12 @@ This project is built using the following technologies and tools:
 
 ---
 
+## Table of Contents
+- [Login](#login)
+- [Memberships](#memberships)
 ## Features
 
-### Login
+## Login
 
 SoldierTrack requires users to log in to access most features. If a user is not logged in, they can only view the home page, with no access to workouts, memberships, or other features.
 
@@ -37,7 +40,7 @@ SoldierTrack requires users to log in to access most features. If a user is not 
 
   ![Become Athlete](https://github.com/aleksandarMilev/SoldierTrack/blob/master/%2C%20screenshots/become-athlete.png)
 
-### Administrator
+## Administrator
 
 Users with the role of **Administrator** have the ability to perform **CRUD (Create, Read, Update, Delete)** operations on athletes, workouts, and memberships. Their responsibilities include:
 
@@ -52,11 +55,11 @@ It’s important to note that administrators do not have access to athletes' ach
   - **Email**: admin@mail.com
   - **Password**: admin1234
 
-### Membership Management
+## Memberships
 
-#### Athletes
+### Athletes
 
-The **Membership Management** feature allows athletes to request and manage their memberships:
+The **Membership** feature allows athletes to request and use their memberships:
 
 - **Request Membership**: Athletes can request a membership through the homepage's carousel section labeled **"Memberships"** or by clicking the **"Request Membership"** button in the navigation bar.
 
@@ -98,7 +101,7 @@ An important note here is that if the athlete decides to leave a workout and the
 
 This concludes the most important aspects of the memberships from the athlete's perspective.
 
-#### Administrators
+### Administrators
 
 Administrators cannot create memberships themselves. They can only approve or reject membership requests and edit them if necessary. When an athlete requests a membership, the admin will see a **Pending Memberships** button in the navigation, which redirects them to a dedicated page for managing these requests:
 
@@ -122,7 +125,26 @@ If a valid workout is found, the athlete will be added successfully, and the adm
 
 Once an athlete has been added to a workout, the administrator has the option to remove them from the list below the workout information. 
 
-To remove an athlete, the admin can simply click the **"Remove"** button next to the athlete's name in the workout details. This action will effectively unassign the athlete from the workout.
-
 ![Remove Athlete Success](https://github.com/aleksandarMilev/SoldierTrack/blob/master/%2C%20screenshots/admin-remove.png)
 
+## Workouts
+
+Workouts are created by admins, who can perform all CRUD operations on them later. Athletes can only view workouts and join or leave them. Admin users will see a **Create Workout** button in the navigation menu. A workout will not be created if:
+
+- The selected date and time are not within the range of today to one month from today.
+- A workout is already scheduled for the selected date and time.
+- The **Brief**, **Full Description**, and **ImageUrl** fields are optional; however, **Categories** and **Times** are predefined and must be selected from the dropdown menu.
+
+If the workout is created successfully, the admin will be redirected to the Workout Details page
+
+![Workout create success](https://github.com/aleksandarMilev/SoldierTrack/blob/master/%2C%20screenshots/wrk-cr-s.png)
+
+Otherwise, they will receive an error message
+
+![Workout create fail](https://github.com/aleksandarMilev/SoldierTrack/blob/master/%2C%20screenshots/wrk-cr-f.png)
+
+When admins navigate to the **Get All Workouts** page, they will see **Edit** and **Delete** buttons for managing workouts.
+
+![Workout edit delete](https://github.com/aleksandarMilev/SoldierTrack/blob/master/%2C%20screenshots/wrk-ed-del.png)
+
+Admins can also delete workouts that have athletes already joined if necessary. In this case, the athletes will receive an email notification regarding the deletion.
