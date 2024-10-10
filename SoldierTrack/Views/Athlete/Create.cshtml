@@ -3,7 +3,7 @@
 @model CreateAthleteViewModel
 
 @{
-    ViewData["Title"] = "Become Athlete";
+    this.ViewData["Title"] = "Become Athlete";
 }
 
 <div class="container h-100">
@@ -12,7 +12,7 @@
             <h2>Become Athlete</h2>
             <h6 style="margin-bottom: 1em; margin-top: -0.2em;">And join in our community!</h6>
             <form asp-area="" asp-controller="Athlete" asp-action="Create" method="post" class="form-horizontal">
-                <partial name="_FormPartial" model="Model" />
+                <partial name="_FormPartial" model="this.Model" />
                 <p style="margin-top: 0.75em; margin-bottom:-0.5em;" class="text text-info">Fields marked with '*' are required</p>
                 <div class="form-group" style="margin-top: 1em">
                     <button type="submit" class="btn btn-primary">Become</button>
