@@ -12,6 +12,8 @@
 
         Task<AchievementServiceModel?> GetModelByNameAndAthleteIdAsync(int exerciseId, int athleteId);
 
+        Task<int?> GetAchievementIdAsync(int athleteId, int exerciseId);
+
         Task CreateAsync(AchievementServiceModel model);
 
         Task EditAsync(AchievementServiceModel model);

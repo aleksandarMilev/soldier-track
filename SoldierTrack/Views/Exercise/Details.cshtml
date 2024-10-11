@@ -3,27 +3,32 @@
 @model ExerciseDetailsServiceModel
 
 @{
-    ViewData["Title"] = "Exercise Details";
+    this.ViewData["Title"] = "Exercise Details";
+}
+
+@if (this.TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        <p>@this.TempData["SuccessMessage"]</p>
+    </div>
 }
 
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-lg-8 col-md-10">
-            <!-- Exercise Card -->
             <div class="card shadow-lg border-0 rounded-3">
-                <!-- Exercise Image -->
-                <img src="@Model.ImageUrl" alt="@Model.Name" class="card-img-top img-fluid" style="max-height: 350px; object-fit: cover; border-top-left-radius: .5rem; border-top-right-radius: .5rem;">
-
+                <img 
+                    src="@this.Model.ImageUrl" 
+                    alt="@this.Model.Name" 
+                    class="card-img-top img-fluid" 
+                    style="max-height: 350px; object-fit: cover; border-top-left-radius: .5rem; border-top-right-radius: .5rem;">
                 <div class="card-body">
-                    <!-- Exercise Title and Category -->
-                    <h2 class="card-title text-center fw-bold text-primary">@Model.Name</h2>
+                    <h2 class="card-title text-center fw-bold text-primary">@this.Model.Name</h2>
                     <p class="text-center text-muted mb-3">
-                        Category: <span class="fw-semibold">@Model.Category</span>
+                        Category: <span class="fw-semibold">@this.Model.Category</span>
                     </p>
-
-                    <!-- Beginner/Advanced Tag -->
                     <div class="text-center mb-3">
-                        @if (Model.IsForBeginners)
+                        @if (this.Model.IsForBeginners)
                         {
                             <span class="badge bg-success fs-6 px-4 py-2">Beginner-Friendly</span>
                         }
@@ -32,7 +37,32 @@
                             <span class="badge bg-danger fs-6 px-4 py-2">Advanced</span>
                         }
                     </div>
-                    <p class="card-text text-center text-muted mb-4 fs-5">@Model.Description</p>
+                    <p class="card-text text-center text-muted mb-4 fs-5">@this.Model.Description</p>
+                    @if (this.ViewBag.ShowCreateButton != null)
+                    {
+                        <div class="d-flex justify-content-center gap-3 mt-4">
+                            <a 
+                                asp-controller="Achievement"
+                                asp-route-exerciseId="@this.Model.Id"
+                                asp-route-athleteId="@this.ViewBag.AthleteId"
+                                asp-action="Create"
+                                class="btn btn-secondary btn-lg px-5">
+                                    Create Achievement
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="d-flex justify-content-center gap-3 mt-4">
+                            <a 
+                                asp-controller="Achievement" 
+                                asp-route-id="@this.ViewBag.AchievementId"
+                                asp-action="Edit" 
+                                class="btn btn-secondary btn-lg px-5">
+                                    Update Achievement
+                            </a>
+                        </div>
+                    }
                     <div class="d-flex justify-content-center gap-3 mt-4">
                         <a asp-action="GetAll" class="btn btn-secondary btn-lg px-5">Back</a>
                     </div>

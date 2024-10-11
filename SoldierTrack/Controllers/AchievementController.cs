@@ -12,7 +12,6 @@
 
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
 
-
     [AthleteAuthorization]
     public class AchievementController : Controller
     {
@@ -34,10 +33,9 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(int athleteId)
         {
-            var athleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
-            var models = await this.achievementService.GetAllByAthleteIdAsync(athleteId.Value);
+            var models = await this.achievementService.GetAllByAthleteIdAsync(athleteId);
             return this.View(models);
         }
 

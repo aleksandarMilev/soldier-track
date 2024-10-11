@@ -49,7 +49,7 @@
                             <td class="text-center">@exercise.Category</td>
                             <td class="text-center">@(exercise.IsForBeginners ? "Yes" : "No")</td>
                             <td class="text-center">
-                                <a asp-controller="Exercise" asp-action="Details" asp-route-id="@exercise.Id" class="btn btn-info">Details</a>
+                                <a asp-controller="Exercise" asp-action="Details" asp-route-exerciseId="@exercise.Id" class="btn btn-info">Details</a>
                             </td>
                         </tr>
                     }

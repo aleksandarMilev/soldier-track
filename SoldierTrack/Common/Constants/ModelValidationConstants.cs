@@ -55,5 +55,14 @@ namespace SoldierTrack.Web.Common.Constants
             public const int RepetitionsMinValue = 1;
             public const int RepetitionsMaxValue = 30;
         }
+
+        public static class ExerciseConstraints
+        {
+            public const int NameMinLength = 5;
+            public const int NameMaxLength = 50;
+
+            public const int DescriptionMinLength = 10;
+            public const int DescriptionMaxLength = 1_000;
+        }
     }
 }

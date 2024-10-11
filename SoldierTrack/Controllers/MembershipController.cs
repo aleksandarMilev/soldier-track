@@ -26,19 +26,16 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> RequestMembership()
+        public async Task<IActionResult> RequestMembership(int athleteId)
         {
-            var userId = this.User.GetId();
-            var athleteId = await this.athleteService.GetIdByUserIdAsync(userId!);
-
-            if (await this.membershipService.MembershipExistsByAthleteIdAsync(athleteId.Value))
+            if (await this.membershipService.MembershipExistsByAthleteIdAsync(athleteId))
             {
                 return this.RedirectToAction("Details", "Athlete", new { id = athleteId });
             }
 
             var viewModel = new CreateMembershipViewModel()
             {
-                AthleteId = athleteId.Value,
+                AthleteId = athleteId,
                 StartDate = DateTime.Now
             };
 

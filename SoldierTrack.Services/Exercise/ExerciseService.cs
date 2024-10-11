@@ -4,6 +4,7 @@
     using AutoMapper.QueryableExtensions;
     using Microsoft.EntityFrameworkCore;
     using SoldierTrack.Data;
+    using SoldierTrack.Data.Models;
     using SoldierTrack.Services.Common;
     using SoldierTrack.Services.Exercise.Models;
 
@@ -71,6 +72,16 @@
             };
 
             return pageViewModel;
+        }
+
+        public async Task<int> CreateAsync(ExerciseDetailsServiceModel model)
+        {
+            var exercise = this.mapper.Map<Exercise>(model);
+
+            this.data.Add(exercise);
+            await this.data.SaveChangesAsync();
+
+            return exercise.Id;
         }
     }
 }

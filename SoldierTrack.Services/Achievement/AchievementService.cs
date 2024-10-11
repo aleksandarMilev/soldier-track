@@ -55,6 +55,23 @@
                 .AnyAsync(a => a.ExerciseId == exerciseId && a.AthleteId == athleteId);
         }
 
+        public async Task<int?> GetAchievementIdAsync(int athleteId, int exerciseId)
+        {
+            var achievementId = await this.data
+                .Achievements
+                .AsNoTracking()
+                .Where(a => a.AthleteId == athleteId && a.ExerciseId == exerciseId)
+                .Select(a => a.Id)
+                .FirstOrDefaultAsync();
+
+            if (achievementId == 0)
+            {
+                return null;
+            }
+
+            return achievementId;
+        }
+
         public async Task CreateAsync(AchievementServiceModel serviceModel)
         {
             var exercise = await this.data

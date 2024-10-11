@@ -1,4 +1,4 @@
-﻿namespace SoldierTrack.Data.Models.Enums
+﻿namespace SoldierTrack.Web.Models.Exercise
 {
     public enum ExerciseCategory
     {

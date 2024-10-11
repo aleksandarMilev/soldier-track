@@ -78,5 +78,8 @@
         public const string AchievementEdited = "You have successfully edited your achievement!";
 
         public const string AchievementDeleted = "You have successfully reset your achievement!";
+
+        //exercise
+        public const string ExerciseCreated = "Exercise is successfully created!";
     }
 }

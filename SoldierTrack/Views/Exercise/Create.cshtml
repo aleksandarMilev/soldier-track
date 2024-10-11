@@ -1,0 +1,55 @@
+﻿@using SoldierTrack.Web.Models.Exercise
+
+@model CreateExerciseViewModel
+
+@{
+    this.ViewData["Title"] = "Create Exercise";
+}
+
+<div class="container h-100">
+    <div class="row h-100 justify-content-center align-items-center">
+        <div class="col-md-6">
+            <h2>Create Exercise</h2>
+            <form asp-action="Create" method="post">
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Category" class="control-label"></label>
+                    <select asp-for="Category" asp-items="this.Html.GetEnumSelectList<ExerciseCategory>()" class="form-control">
+                        <option value="">-- Select Category --</option>
+                    </select>
+                    <span asp-validation-for="Category" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ImageUrl" class="control-label"></label>
+                    <input asp-for="ImageUrl" class="form-control" />
+                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <textarea asp-for="Description" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IsForBeginners" class="control-label"></label>
+                    <input asp-for="IsForBeginners" class="form-check-input" type="checkbox" />
+                    <span asp-validation-for="IsForBeginners" class="text-danger"></span>
+                </div>
+                <input asp-for="AthleteId" type="hidden" />
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a asp-asp-controller="Achievement" asp-action="GetAll" asp-route-athleteid="@this.Model.AthleteId" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
