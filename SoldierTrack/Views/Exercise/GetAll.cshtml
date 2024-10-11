@@ -9,6 +9,8 @@
     var pageIndex = this.Model.PageIndex;
     var totalPages = this.Model.TotalPages;
     var pageSize = this.Model.PageSize;
+    var searchTerm = ViewData["searchTerm"]?.ToString();
+    var includeMine = ViewData["includeMine"]?.ToString() ?? "false";
 }
 
 <h1 class="text-center mb-4">@this.ViewData["Title"]</h1>
@@ -23,11 +25,16 @@
 <div class="row mb-4">
     <div class="col-md-6 offset-md-3">
         <form method="get" asp-action="GetAll" class="d-flex">
-            <input type="text" id="searchTerm" name="searchTerm" class="form-control me-2" placeholder="Search exercise..." />
+            <input type="text" id="searchTerm" name="searchTerm" value="@searchTerm" class="form-control me-2" placeholder="Search exercise..." />
+            <div class="form-check me-2">
+                <input type="checkbox" class="form-check-input" id="includeMine" name="includeMine" value="true" @(includeMine == "true" ? "checked" : "") />
+                <label class="form-check-label" for="includeMine">Include my exercises</label>
+            </div>
             <button type="submit" class="btn btn-primary">Search</button>
         </form>
     </div>
 </div>
+
 @if (exercises.Count() > 0)
 {
     <div class="d-flex justify-content-center">
@@ -62,7 +69,8 @@
             @if (pageIndex > 1)
             {
                 <li class="page-item">
-                    <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@(pageIndex - 1)" asp-route-pageSize="@pageSize">Previous</a>
+                    <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@(pageIndex - 1)" asp-route-pageSize="@pageSize"
+                       asp-route-searchTerm="@searchTerm" asp-route-includeMine="@includeMine">Previous</a>
                 </li>
             }
             else
@@ -75,7 +83,8 @@
             @if (pageIndex > 3)
             {
                 <li class="page-item">
-                    <a class="page-link" asp-action="GetAll" asp-route-pageIndex="1" asp-route-pageSize="@pageSize">1</a>
+                    <a class="page-link" asp-action="GetAll" asp-route-pageIndex="1" asp-route-pageSize="@pageSize"
+                       asp-route-searchTerm="@searchTerm" asp-route-includeMine="@includeMine">1</a>
                 </li>
                 <li class="page-item disabled">
                     <span class="page-link">...</span>
@@ -85,7 +94,8 @@
             @for (int i = Math.Max(1, pageIndex - 2); i <= Math.Min(totalPages, pageIndex + 2); i++)
             {
                 <li class="page-item @(i == pageIndex ? "active" : "")">
-                    <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@i" asp-route-pageSize="@pageSize">@i</a>
+                    <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@i" asp-route-pageSize="@pageSize"
+                       asp-route-searchTerm="@searchTerm" asp-route-includeMine="@includeMine">@i</a>
                 </li>
             }
 
@@ -95,14 +105,16 @@
                     <span class="page-link">...</span>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@totalPages" asp-route-pageSize="@pageSize">@totalPages</a>
+                    <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@totalPages" asp-route-pageSize="@pageSize"
+                       asp-route-searchTerm="@searchTerm" asp-route-includeMine="@includeMine">@totalPages</a>
                 </li>
             }
 
             @if (pageIndex < totalPages)
             {
                 <li class="page-item">
-                    <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@(pageIndex + 1)" asp-route-pageSize="@pageSize">Next</a>
+                    <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@(pageIndex + 1)" asp-route-pageSize="@pageSize"
+                       asp-route-searchTerm="@searchTerm" asp-route-includeMine="@includeMine">Next</a>
                 </li>
             }
             else
@@ -118,4 +130,3 @@ else
 {
     <p class="text-danger text-center">No exercises found</p>
 }
-

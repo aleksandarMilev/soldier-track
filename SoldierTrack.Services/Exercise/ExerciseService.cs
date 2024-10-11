@@ -40,11 +40,21 @@
                 .FirstOrDefaultAsync(e => e.Id == id);
         }
 
-        public async Task<ExercisePageServiceModel> GetPageModelsAsync(string? searchTerm, int pageIndex, int pageSize)
+        public async Task<ExercisePageServiceModel> GetPageModelsAsync(string? searchTerm, int athleteId, bool includeMine, int pageIndex, int pageSize)
         {
             var query = this.data
                 .Exercises
+                .AsNoTracking()
                 .ProjectTo<ExerciseServiceModel>(this.mapper.ConfigurationProvider);
+
+            if (includeMine)
+            {
+                query = query.Where(e => e.AthleteId == athleteId || e.AthleteId == null);
+            }
+            else
+            {
+                query = query.Where(e => e.AthleteId == null);
+            }
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
@@ -57,8 +67,6 @@
                 .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
-
-            exercises.ForEach(x => x.Name = x.Name.SplitPascalCase());
 
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 

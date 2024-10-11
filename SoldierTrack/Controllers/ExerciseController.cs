@@ -34,13 +34,18 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(string? searchTerm = null, int pageIndex = 1, int pageSize = 5)
+        public async Task<IActionResult> GetAll(bool includeMine, string? searchTerm = null, int pageIndex = 1, int pageSize = 5)
         {
             pageSize = Math.Min(pageSize, MaxPageSize);
             pageSize = Math.Max(pageSize, MinPageSize);
 
-            this.ViewBag.AthleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
-            var model = await this.exerciseService.GetPageModelsAsync(searchTerm, pageIndex, pageSize);
+            var athleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
+            this.ViewBag.AthleteId = athleteId.Value;
+
+            var model = await this.exerciseService.GetPageModelsAsync(searchTerm, athleteId.Value, includeMine, pageIndex, pageSize);
+            this.ViewData[nameof(searchTerm)] = searchTerm;
+            this.ViewData[nameof(includeMine)] = includeMine.ToString().ToLower();
+
             return this.View(model);
         }
 
