@@ -6,7 +6,9 @@
     using SoldierTrack.Data;
     using SoldierTrack.Data.Models;
     using SoldierTrack.Services.Achievement;
+    using SoldierTrack.Services.Common;
     using SoldierTrack.Services.Exercise.Models;
+    using SoldierTrack.Services.Exercise.Models.Util;
 
     public class ExerciseService : IExerciseService
     {
@@ -36,11 +38,26 @@
 
         public async Task<ExerciseDetailsServiceModel?> GetDetailsById(int id)
         {
-            return await this.data
+            var exercise = await this.data
                 .Exercises
                 .AsNoTracking()
                 .ProjectTo<ExerciseDetailsServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (exercise != null)
+            {
+                exercise.Rankings = await this.data
+                    .Achievements
+                    .AsNoTracking()
+                    .Include(a => a.Athlete)
+                    .Where(a => a.ExerciseId == id)
+                    .ProjectTo<Ranking>(this.mapper.ConfigurationProvider)
+                    .OrderByDescending(a => a.OneRepMax)
+                    .Take(10)
+                    .ToListAsync();
+            }
+
+            return exercise;
         }
 
         public async Task<ExercisePageServiceModel> GetPageModelsAsync(string? searchTerm, int athleteId, bool includeMine, int pageIndex, int pageSize)

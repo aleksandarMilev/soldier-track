@@ -69,11 +69,20 @@
             }
             else
             {
+                //current athlete has already added the exercise as achievement, we take its id because we need it 
                 this.ViewBag.AchievementId = achievementId;
+            }
+
+            if (model.AthleteId == null)
+            {
+                //if exercise is not custom, we should get the current athleteId in the view bag because we will need it in the view
+                this.ViewBag.AthleteId = athleteId.Value; 
+
             }
 
             if (model.AthleteId != null && model.AthleteId == athleteId.Value)
             {
+                //exercise is custom and the current athlete is the creator
                 this.ViewBag.ShowEditButton = true;
                 this.ViewBag.ShowDeleteButton = true;
             }
