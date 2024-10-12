@@ -8,89 +8,148 @@
 
 @if (this.TempData["SuccessMessage"] != null)
 {
-    <div class="alert alert-success">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
         <p>@this.TempData["SuccessMessage"]</p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-lg-8 col-md-10">
-            <div class="card shadow-lg border-0 rounded-3">
-                <img 
-                    src="@this.Model.ImageUrl" 
-                    alt="@this.Model.Name" 
-                    class="card-img-top img-fluid" 
-                    style="max-height: 350px; object-fit: cover; border-top-left-radius: .5rem; border-top-right-radius: .5rem;">
-                <div class="card-body">
-                    <h2 class="card-title text-center fw-bold text-primary">@this.Model.Name</h2>
-                    <p class="text-center text-muted mb-3">
-                        Category: <span class="fw-semibold">@this.Model.Category</span>
-                    </p>
-                    <div class="text-center mb-3">
-                        @if (this.Model.IsForBeginners)
-                        {
-                            <span class="badge bg-success fs-6 px-4 py-2">Beginner-Friendly</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-danger fs-6 px-4 py-2">Advanced</span>
-                        }
+            <div class="card shadow-sm border-0 rounded-4 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="position-relative">
+                        <img 
+                            src="@this.Model.ImageUrl" 
+                            alt="@this.Model.Name" 
+                            class="card-img-top img-fluid rounded-top" 
+                            style="max-height: 400px; object-fit: cover;">
+                        <div class="badge-overlay">
+                            @if (this.Model.IsForBeginners)
+                            {
+                                <span class="badge bg-primary badge-lg">Beginner-Friendly</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger badge-lg">Advanced</span>
+                            }
+                        </div>
                     </div>
-                    <p class="card-text text-center text-muted mb-4 fs-5">@this.Model.Description</p>
-                    @if (this.ViewBag.ShowCreateButton != null)
-                    {
-                        <div class="d-flex justify-content-center gap-3 mt-4">
+                    <div class="card-body text-center">
+                        <h2 class="card-title fw-bold text-dark mb-3">@this.Model.Name</h2>
+                        <p class="text-muted fs-6">
+                            Category: <span class="fw-semibold text-secondary">@this.Model.Category</span>
+                        </p>
+                        <p class="card-text text-muted fs-5">@this.Model.Description</p>
+                    </div>
+                </div>
+                <div class="card-footer bg-light text-center mt-3">
+                    <div class="d-flex justify-content-center gap-2 flex-wrap">
+                        @if (this.ViewBag.ShowCreateButton != null)
+                        {
                             <a 
                                 asp-controller="Achievement"
                                 asp-route-exerciseId="@this.Model.Id"
                                 asp-route-athleteId="@this.ViewBag.AthleteId"
                                 asp-action="Create"
-                                class="btn btn-secondary btn-lg px-5">
+                                class="btn btn-primary btn-sm">
                                     Create Achievement
                             </a>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="d-flex justify-content-center gap-3 mt-4">
+                        }
+                        else
+                        {
                             <a 
                                 asp-controller="Achievement" 
                                 asp-route-id="@this.ViewBag.AchievementId"
                                 asp-action="Edit" 
-                                class="btn btn-secondary btn-lg px-5">
+                                class="btn btn-outline-primary btn-sm">
                                     Update Achievement
                             </a>
-                        </div>
-                    }
-                    <div class="d-flex justify-content-center gap-3 mt-4">
-                        <a asp-action="GetAll" class="btn btn-secondary btn-lg px-5">Back</a>
+                        }
+
+                        @if (this.ViewBag.ShowEditButton != null)
+                        {
+                            <a asp-controller="Exercise"
+                               asp-route-athleteId="@this.Model.AthleteId"
+                               asp-route-exerciseId="@this.Model.Id"
+                               asp-action="Edit"
+                               class="btn btn-warning btn-sm">
+                                Edit Exercise
+                            </a>
+                        }
+
+                        @if (this.ViewBag.ShowDeleteButton != null)
+                        {
+                            <a asp-controller="Exercise"
+                               asp-route-exerciseId="@this.Model.Id"
+                               asp-route-athleteId="@this.ViewBag.AthleteId"
+                               asp-action="Delete"
+                               class="btn btn-danger btn-sm">
+                                Delete Exercise
+                            </a>
+                        }
+
+                        <a asp-action="GetAll" class="btn btn-outline-secondary btn-sm">Back</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <style>
-    .badge {
-        font-size: 1.2rem;
-        padding: 10px 15px;
+    .card {
+        border-radius: 1rem;
     }
 
     .card-img-top {
-        transition: transform 0.3s ease;
+        transition: transform 0.4s ease-in-out;
+    }
+    .card-img-top:hover {
+        transform: scale(1.03);
     }
 
-        .card-img-top:hover {
-            transform: scale(1.05);
-        }
+    .badge-overlay {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+    }
+
+    .badge-lg {
+        font-size: 1.2rem;
+        padding: 0.8rem 1.2rem;
+        border-radius: 1rem;
+    }
 
     .btn {
-        transition: background-color 0.2s ease, color 0.2s ease;
+        transition: all 0.3s ease;
+    }
+
+    .btn-sm {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
     }
 
     .btn-outline-primary:hover {
         background-color: #0d6efd;
         color: white;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .alert {
+        font-size: 1rem;
+        position: relative;
+        border-radius: .5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-footer {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid rgba(0,0,0,.125);
     }
 </style>

@@ -11,5 +11,7 @@
         Task<string> GetNameByIdAsync(int id);
 
         Task<int> CreateAsync(ExerciseDetailsServiceModel model);
+
+        Task EditAsync(ExerciseDetailsServiceModel model);
     }
 }

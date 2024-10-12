@@ -8,7 +8,8 @@
     {
         public ExerciseProfile()
         {
-            this.CreateMap<CreateExerciseViewModel, ExerciseDetailsServiceModel>();
+            this.CreateMap<CreateExerciseViewModel, ExerciseDetailsServiceModel>()
+                .ReverseMap();
         }
     }
 }

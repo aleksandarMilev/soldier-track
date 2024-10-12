@@ -5,7 +5,6 @@
     using Microsoft.EntityFrameworkCore;
     using SoldierTrack.Data;
     using SoldierTrack.Data.Models;
-    using SoldierTrack.Services.Common;
     using SoldierTrack.Services.Exercise.Models;
 
     public class ExerciseService : IExerciseService
@@ -21,14 +20,12 @@
 
         public async Task<string> GetNameByIdAsync(int id)
         {
-            var name = await this.data
+            return await this.data
                 .Exercises
                 .Where(e => e.Id == id)
                 .Select(e => e.Name)
                 .FirstOrDefaultAsync()
                 ?? throw new InvalidOperationException("Exercise is not found!");
-
-            return name.SplitPascalCase();
         }
 
         public async Task<ExerciseDetailsServiceModel?> GetDetailsById(int id)
@@ -49,11 +46,16 @@
 
             if (includeMine)
             {
-                query = query.Where(e => e.AthleteId == athleteId || e.AthleteId == null);
+                query = query
+                    .Where(e => e.AthleteId == athleteId || e.AthleteId == null)
+                    .OrderBy(e => e.AthleteId == null)
+                    .ThenBy(e => e.Name);
             }
             else
             {
-                query = query.Where(e => e.AthleteId == null);
+                query = query
+                    .Where(e => e.AthleteId == null)
+                    .OrderBy(e => e.Name);
             }
 
             if (!string.IsNullOrEmpty(searchTerm))
@@ -90,6 +92,17 @@
             await this.data.SaveChangesAsync();
 
             return exercise.Id;
+        }
+
+        public async Task EditAsync(ExerciseDetailsServiceModel model)
+        {
+            var exercise = await this.data
+                .Exercises
+                .FirstOrDefaultAsync(e => e.Id == model.Id)
+                ?? throw new InvalidOperationException("Exercise not found!");
+
+            this.mapper.Map(model, exercise);
+            await this.data.SaveChangesAsync();
         }
     }
 }

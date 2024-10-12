@@ -3,16 +3,18 @@
 @model CreateExerciseViewModel
 
 @{
-    this.ViewData["Title"] = "Create Exercise";
+    this.ViewData["Title"] = "Edit Exercise";
+    var exerciseId = this.ViewBag.ExerciseId;
 }
 
 <div class="container h-100">
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-md-6">
-            <h2>Create Exercise</h2>
-            <form asp-action="Create" method="post">
+            <h2>Edit Exercise</h2>
+            <form asp-action="Edit" method="post">
                 <partial name="_FormPartial" model="@this.Model"></partial>
-                <button type="submit" class="btn btn-primary">Create</button>
+                <input asp-for="@exerciseId" type="hidden" />
+                <button type="submit" class="btn btn-primary">Edit</button>
                 <a asp-asp-controller="Achievement" asp-action="GetAll" asp-route-athleteId="@this.Model.AthleteId" class="btn btn-secondary">Cancel</a>
             </form>
         </div>
@@ -22,6 +24,7 @@
 
 @section Scripts {
     @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        await this.Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+

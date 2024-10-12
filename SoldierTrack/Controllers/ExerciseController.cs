@@ -43,8 +43,8 @@
             this.ViewBag.AthleteId = athleteId.Value;
 
             var model = await this.exerciseService.GetPageModelsAsync(searchTerm, athleteId.Value, includeMine, pageIndex, pageSize);
-            this.ViewData[nameof(searchTerm)] = searchTerm;
             this.ViewData[nameof(includeMine)] = includeMine.ToString().ToLower();
+            this.ViewData[nameof(searchTerm)] = searchTerm;
 
             return this.View(model);
         }
@@ -53,9 +53,15 @@
         public async Task<IActionResult> Details(int exerciseId)
         {
             var model = await this.exerciseService.GetDetailsById(exerciseId);
-            var athleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
 
+            if (model == null)
+            {
+                return this.NotFound();
+            }
+
+            var athleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
             var achievementId = await this.achievementService.GetAchievementIdAsync(athleteId.Value, exerciseId);
+
             if (achievementId == null)
             {
                 this.ViewBag.ShowCreateButton = true;
@@ -64,6 +70,12 @@
             else
             {
                 this.ViewBag.AchievementId = achievementId;
+            }
+
+            if (model.AthleteId != null && model.AthleteId == athleteId.Value)
+            {
+                this.ViewBag.ShowEditButton = true;
+                this.ViewBag.ShowDeleteButton = true;
             }
 
             return this.View(model);
@@ -93,6 +105,42 @@
             var exerciseId = await this.exerciseService.CreateAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = ExerciseCreated;
+            return this.RedirectToAction(nameof(Details), new { exerciseId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int exerciseId, int athleteId)
+        {
+            var serviceModel = await this.exerciseService.GetDetailsById(exerciseId);
+
+            if (serviceModel == null)
+            {
+                return this.NotFound();
+            }
+
+            if (serviceModel.AthleteId == null || serviceModel.AthleteId != athleteId)
+            {
+                return this.Unauthorized();
+            }
+
+            var viewModel = this.mapper.Map<CreateExerciseViewModel>(serviceModel);
+            this.ViewBag.ExerciseId = exerciseId; 
+            return this.View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(CreateExerciseViewModel viewModel, int exerciseId)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(viewModel);
+            }
+
+            var serviceModel = this.mapper.Map<ExerciseDetailsServiceModel>(viewModel);
+            serviceModel.Id = exerciseId;
+            await this.exerciseService.EditAsync(serviceModel);
+
+            this.TempData["SuccessMessage"] = ExerciseEdited;
             return this.RedirectToAction(nameof(Details), new { exerciseId });
         }
     }

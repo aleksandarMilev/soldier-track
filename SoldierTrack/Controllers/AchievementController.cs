@@ -64,7 +64,7 @@
             await this.achievementService.CreateAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = PRSuccessfullyAdded;
-            return this.RedirectToAction(nameof(GetAll));
+            return this.RedirectToAction(nameof(GetAll), new { athleteId = viewModel.AthleteId });
         }
 
         [HttpGet]
@@ -103,7 +103,7 @@
             await this.achievementService.EditAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = AchievementEdited;
-            return this.RedirectToAction(nameof(GetAll));
+            return this.RedirectToAction(nameof(GetAll), new { athleteId = viewModel.AthleteId });
         }
 
         [HttpPost]
@@ -117,7 +117,7 @@
             await this.achievementService.DeleteAsync(achievementId);
 
             this.TempData["SuccessMessage"] = AchievementDeleted;
-            return this.RedirectToAction(nameof(GetAll));
+            return this.RedirectToAction(nameof(GetAll), new { athleteId });
         }
     }
 }
