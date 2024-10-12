@@ -13,5 +13,7 @@
         Task<int> CreateAsync(ExerciseDetailsServiceModel model);
 
         Task EditAsync(ExerciseDetailsServiceModel model);
+
+        Task DeleteAsync(int exerciseId, int athleteId);
     }
 }

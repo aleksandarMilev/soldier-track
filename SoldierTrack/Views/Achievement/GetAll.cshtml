@@ -8,8 +8,9 @@
 
 @if (this.TempData["SuccessMessage"] != null)
 {
-    <div class="alert alert-success">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
         <p>@this.TempData["SuccessMessage"]</p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 
@@ -74,7 +75,7 @@
                     <p class="mb-0">Got a new PR? Add it now and track your progress!</p>
                 </div>
                 <div>
-                    <a asp-controller="Exercise" asp-action="GetAll" class="btn btn-success btn-sm mt-0 ms-3">Add PR</a>
+                    <a asp-controller="Exercise" asp-action="GetAll" class="btn btn-success btn-sm mt-0 ms-3">Select Exercise</a>
                 </div>
             </div>
 

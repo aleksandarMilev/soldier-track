@@ -116,6 +116,18 @@
             await this.data.SaveChangesAsync();
         }
 
+        public async Task DeleteAchievementIfNecessaryAsync(int exerciseId)
+        {
+            var achievement = await this.data
+                .Achievements
+                .FirstOrDefaultAsync(a => a.ExerciseId == exerciseId);
+
+            if (achievement != null)
+            {
+                this.data.Remove(achievement);
+            }
+        }
+
         private static double CalculateBigReps(double weightLifted, int repetitions) => weightLifted * (1 + 0.0333 * repetitions);
 
         private static double CalculateSmallReps(double weightLifted, int repetitions) => weightLifted * Math.Pow(repetitions, 0.1);

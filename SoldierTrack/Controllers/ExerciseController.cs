@@ -2,6 +2,7 @@
 {
     using AutoMapper;
     using Microsoft.AspNetCore.Mvc;
+    using SoldierTrack.Data.Models;
     using SoldierTrack.Services.Achievement;
     using SoldierTrack.Services.Athlete;
     using SoldierTrack.Services.Exercise;
@@ -65,7 +66,6 @@
             if (achievementId == null)
             {
                 this.ViewBag.ShowCreateButton = true;
-                this.ViewBag.AthleteId = athleteId;
             }
             else
             {
@@ -142,6 +142,15 @@
 
             this.TempData["SuccessMessage"] = ExerciseEdited;
             return this.RedirectToAction(nameof(Details), new { exerciseId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int exerciseId, int athleteId)
+        {
+            await this.exerciseService.DeleteAsync(exerciseId, athleteId);
+            
+            this.TempData["SuccessMessage"] = ExerciseDeleted;
+            return this.RedirectToAction(nameof(GetAll), new { includeMine = false });
         }
     }
 }

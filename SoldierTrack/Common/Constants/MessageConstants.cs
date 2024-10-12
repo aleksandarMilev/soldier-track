@@ -83,5 +83,7 @@
         public const string ExerciseCreated = "Exercise is successfully created!";
 
         public const string ExerciseEdited = "Exercise is successfully edited!";
+
+        public const string ExerciseDeleted = "Exercise is successfully deleted!";
     }
 }

@@ -2,7 +2,6 @@
 {
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using SoldierTrack.Data.Models;
     using SoldierTrack.Services.Membership;
     using SoldierTrack.Web.Areas.Administrator.Models.Membership;
     using SoldierTrack.Web.Common.CustomMapping;
@@ -35,7 +34,6 @@
                 return this.NotFound();
             }
 
-            //again, like in the other services, we map it because the partial view from the form accepts MembershipBaseFormModel or descendant
             var viewModel = serviceModel.MapToEditMembershipServiceModel();
             viewModel.AthleteId = athleteId;
 

@@ -5,16 +5,22 @@
     using Microsoft.EntityFrameworkCore;
     using SoldierTrack.Data;
     using SoldierTrack.Data.Models;
+    using SoldierTrack.Services.Achievement;
     using SoldierTrack.Services.Exercise.Models;
 
     public class ExerciseService : IExerciseService
     {
         private readonly ApplicationDbContext data;
+        private readonly IAchievementService achievementService;
         private readonly IMapper mapper;
 
-        public ExerciseService(ApplicationDbContext data, IMapper mapper)
+        public ExerciseService(
+            ApplicationDbContext data,
+            IAchievementService achievementService,
+            IMapper mapper)
         {
             this.data = data;
+            this.achievementService = achievementService;
             this.mapper = mapper;
         }
 
@@ -102,6 +108,23 @@
                 ?? throw new InvalidOperationException("Exercise not found!");
 
             this.mapper.Map(model, exercise);
+            await this.data.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int exerciseId, int athleteId)
+        {
+            var exercise = await this.data
+              .Exercises
+              .FirstOrDefaultAsync(e => e.Id == exerciseId)
+              ?? throw new InvalidOperationException("Exercise not found!");
+
+            if (exercise.AthleteId == null || exercise.AthleteId != athleteId)
+            {
+                throw new InvalidOperationException("Exercise's creator Id is not valid!");
+            }
+
+            await this.achievementService.DeleteAchievementIfNecessaryAsync(exerciseId);
+            this.data.Remove(exercise);
             await this.data.SaveChangesAsync();
         }
     }

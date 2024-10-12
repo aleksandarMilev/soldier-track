@@ -7,8 +7,9 @@
 
 @if (this.TempData["SuccessMessage"] != null)
 {
-    <div class="alert alert-success">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
         <p>@this.TempData["SuccessMessage"]</p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 

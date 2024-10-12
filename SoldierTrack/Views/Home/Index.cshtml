@@ -3,17 +3,19 @@
     this.ViewData["Title"] = "Home Page";
 }
 
-@if(this.TempData["SuccessMessage"] != null)
+@if (this.TempData["SuccessMessage"] != null)
 {
-    <div class="alert alert-success">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
         <p>@this.TempData["SuccessMessage"]</p>
-    </div>    
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 }
 
 @if (this.TempData["FailureMessage"] != null)
 {
-    <div class="alert alert-danger">
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
         <p>@this.TempData["FailureMessage"]</p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 

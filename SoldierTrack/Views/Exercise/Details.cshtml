@@ -14,6 +14,15 @@
     </div>
 }
 
+@if (this.ViewBag.ShowDeleteButton != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show mt-4" role="alert">
+        <strong>Important:</strong> If you delete an exercise that has an associated achievement, the achievement will be deleted as well!
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-lg-8 col-md-10">
@@ -81,13 +90,15 @@
 
                         @if (this.ViewBag.ShowDeleteButton != null)
                         {
-                            <a asp-controller="Exercise"
-                               asp-route-exerciseId="@this.Model.Id"
-                               asp-route-athleteId="@this.ViewBag.AthleteId"
-                               asp-action="Delete"
-                               class="btn btn-danger btn-sm">
-                                Delete Exercise
-                            </a>
+                            <form
+                                method="post"
+                                asp-controller="Exercise"
+                                asp-action="Delete"
+                                asp-route-exerciseId="@this.Model.Id"
+                                asp-route-athleteId="@this.Model.AthleteId"
+                                onSubmit="return alert('Are you sure you want to delete this exercise?')">
+                                <button class="btn btn-danger btn-sm">Delete Exercise</button>
+                            </form>
                         }
 
                         <a asp-action="GetAll" class="btn btn-outline-secondary btn-sm">Back</a>

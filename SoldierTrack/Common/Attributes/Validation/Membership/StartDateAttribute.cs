@@ -7,10 +7,11 @@
         public override bool IsValid(object? value)
         {
             var startDate = (DateTime?)value;
+            var today = DateTime.Now.Date;
 
-            if (startDate.HasValue && startDate.Value.Date.ToUniversalTime() != DateTime.UtcNow.Date)
+            if (startDate.HasValue && startDate.Value.Date != today)
             {
-                this.ErrorMessage = $"Membership start date should be today!";
+                this.ErrorMessage = "Membership start date should be today!";
                 return false;
             }
 
