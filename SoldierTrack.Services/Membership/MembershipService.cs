@@ -8,7 +8,6 @@
     using SoldierTrack.Services.Membership.Exceptions;
     using SoldierTrack.Services.Membership.MapTo;
     using SoldierTrack.Services.Membership.Models;
-    using SoldierTrack.Services.Membership.Models.Base;
 
     public class MembershipService : IMembershipService
     {
@@ -59,14 +58,6 @@
             };
 
             return pageViewModel;
-        }
-
-        public async Task<EditMembershipServiceModel?> GetEditModelByIdAsync(int id)
-        {
-            return await this.data
-                .AllDeletableAsNoTracking<Membership>()
-                .MapToEditMembershipServiceModel()
-                .FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task<int> GetPendingCountAsync()
@@ -121,18 +112,6 @@
             athlete.MembershipId = membership.Id;
 
             this.data.Add(membership);
-            await this.data.SaveChangesAsync();
-        }
-
-        public async Task EditAsync(EditMembershipServiceModel model)
-        {
-            var membership = await this.data
-                .AllDeletable<Membership>()
-                .Include(m => m.Athlete)
-                .FirstOrDefaultAsync(m => m.Id == model.Id)
-                ?? throw new InvalidOperationException("Membership not found!");
-
-            membership = model.MapToMembership();
             await this.data.SaveChangesAsync();
         }
 

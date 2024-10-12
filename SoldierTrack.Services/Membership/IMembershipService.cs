@@ -9,8 +9,6 @@
 
         Task<IEnumerable<MembershipPendingServiceModel>> GetAllPendingAsync();
 
-        Task<EditMembershipServiceModel?> GetEditModelByIdAsync(int id);
-
         Task<MembershipArchivePageServiceModel> GetArchiveByAthleteIdAsync(int athleteId, int pageIndex, int pageSize);
 
         Task<bool> MembershipExistsByAthleteIdAsync(int athleteId);
@@ -24,8 +22,6 @@
         Task ApproveAsync(int id);
 
         Task RejectAsync(int id);
-
-        Task EditAsync(EditMembershipServiceModel serviceModel);
 
         Task DeleteByIdAsync(int id);
 

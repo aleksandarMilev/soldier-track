@@ -3,8 +3,6 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using SoldierTrack.Services.Membership;
-    using SoldierTrack.Web.Areas.Administrator.Models.Membership;
-    using SoldierTrack.Web.Common.CustomMapping;
 
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
     using static SoldierTrack.Web.Common.Constants.WebConstants;
@@ -22,37 +20,6 @@
         {
             var models = await this.membershipService.GetAllPendingAsync();
             return this.View(models);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Edit(int id, int athleteId)
-        {
-            var serviceModel = await this.membershipService.GetEditModelByIdAsync(id);
-
-            if (serviceModel == null)
-            {
-                return this.NotFound();
-            }
-
-            var viewModel = serviceModel.MapToEditMembershipServiceModel();
-            viewModel.AthleteId = athleteId;
-
-            return this.View(viewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Edit(EditMembershipViewModel viewModel)
-        {
-            if (!this.ModelState.IsValid)
-            {
-                return this.View(viewModel);
-            }
-
-            var serviceModel = viewModel.MapToEditMembershipViewModel();
-            await this.membershipService.EditAsync(serviceModel);
-
-            this.TempData["SuccessMessage"] = MembershipEdited;
-            return this.RedirectToAction("Details", "Athlete", new { id = viewModel.AthleteId, area = "" } );
         }
 
         [HttpPost]
