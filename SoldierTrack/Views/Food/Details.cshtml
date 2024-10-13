@@ -78,9 +78,9 @@
                         @if (this.ViewBag.ShowButtons != null)
                         {
                             <a asp-controller="Food"
+                               asp-action="Edit"
                                asp-route-athleteId="@athleteId"
                                asp-route-foodId="@this.Model.Id"
-                               asp-action="Edit"
                                class="btn btn-warning btn-sm">
                                 Edit Food
                             </a>

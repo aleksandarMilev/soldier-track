@@ -2,7 +2,7 @@
 {
     public class FoodBaseModel
     {
-        public int Id { get; init; }
+        public int Id { get; set; }
 
         public string ImageUrl { get; init; } = null!;
 

@@ -90,5 +90,9 @@
         public const string RangeErrorMessage = "{0} value should be between {1} and {2}!";
 
         public const string FoodCreated = "Food is successfully created!";
+
+        public const string FoodEdited = "Food is successfully edited!";
+
+        public const string FoodDeleted = "Food is successfully deleted!";
     }
 }

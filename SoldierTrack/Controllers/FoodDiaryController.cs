@@ -1,7 +1,6 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
-    using SoldierTrack.Data.Models;
     using SoldierTrack.Services.Athlete;
     using SoldierTrack.Services.Food;
     using SoldierTrack.Services.FoodDiary;

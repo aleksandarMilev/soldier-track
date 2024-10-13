@@ -13,5 +13,7 @@
         Task<FoodDiaryServiceModel> AddFoodAsync(int foodId, int foodDiaryId, string mealType, int quantity);
 
         Task RemoveFoodAsync(int diaryId, int foodId, string mealType);
+
+        Task DeleteDiariesIfNecessaryAsync(int foodId);
     }
 }

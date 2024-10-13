@@ -6,8 +6,13 @@
     {
         Task<FoodPageServiceModel> GetPageModelsAsync(string? searchTerm, int pageIndex, int pageSize);
 
+        Task<FoodServiceModel?> GetByIdAsync(int id);
+
         Task<int> CreateAsync(FoodServiceModel model);
 
-        Task<FoodServiceModel?> GetByIdAsync(int id);
+        Task EditAsync(FoodServiceModel model);
+
+        Task DeleteAsync(int foodId, int athleteId);
+
     }
 }

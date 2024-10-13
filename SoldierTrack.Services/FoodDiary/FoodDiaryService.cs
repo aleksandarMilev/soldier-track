@@ -142,6 +142,27 @@
             }
         }
 
+        public async Task DeleteDiariesIfNecessaryAsync(int foodId)
+        {
+            var diaries = await this.data
+                .AllDeletable<FoodDiary>()
+                .Include(fd => fd.Meals)
+                .ThenInclude(fd => fd.MealsFoods)
+                .Where(
+                    fd => fd.Meals.Any(
+                        m => m.MealsFoods.Any(
+                            mf => mf.FoodId == foodId
+                    )))
+                .ToListAsync();
+
+            foreach (var diary in diaries)
+            {
+                this.data.SoftDelete(diary);
+            }
+
+            await this.data.SaveChangesAsync();
+        }
+
         private static void UpdateNutritionalValues(Meal meal, Food food, FoodDiary foodDiary, int quantity, Func<decimal, decimal, decimal> operation)
         {
             var quantityFactor = (decimal)quantity / 100;

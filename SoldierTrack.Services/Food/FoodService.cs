@@ -6,15 +6,18 @@
     using SoldierTrack.Data;
     using SoldierTrack.Data.Models;
     using SoldierTrack.Services.Food.Models;
+    using SoldierTrack.Services.FoodDiary;
 
     public class FoodService : IFoodService
     {
         private readonly ApplicationDbContext data;
+        private readonly IFoodDiaryService foodDiaryService;
         private readonly IMapper mapper;
 
-        public FoodService(ApplicationDbContext data, IMapper mapper)
+        public FoodService(ApplicationDbContext data, IFoodDiaryService foodDiaryService, IMapper mapper)
         {
             this.data = data;
+            this.foodDiaryService = foodDiaryService;
             this.mapper = mapper;
         }
 
@@ -68,6 +71,34 @@
                 .AsNoTracking()
                 .ProjectTo<FoodServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(f => f.Id == id);
+        }
+
+        public async Task EditAsync(FoodServiceModel model)
+        {
+            var food = await this.data
+                .Foods
+                .FirstOrDefaultAsync(f => f.Id == model.Id)
+                ?? throw new InvalidOperationException("Food not found!");
+
+            this.mapper.Map(model, food);
+            await this.data.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int foodId, int athleteId)
+        {
+            var food = await this.data
+                 .Foods
+                 .FirstOrDefaultAsync(f => f.Id == foodId)
+                 ?? throw new InvalidOperationException("Food not found!");
+
+            if (food.AthleteId == null || food.AthleteId != athleteId)
+            {
+                throw new InvalidOperationException("Food's creator Id is not valid!");
+            }
+
+            await this.foodDiaryService.DeleteDiariesIfNecessaryAsync(foodId);
+            this.data.Remove(food);
+            await this.data.SaveChangesAsync();
         }
     }
 }
