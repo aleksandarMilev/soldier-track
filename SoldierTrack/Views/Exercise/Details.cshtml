@@ -4,7 +4,7 @@
 
 @{
     this.ViewData["Title"] = "Exercise Details";
-    var athleteId = this.Model.AthleteId ?? this.ViewBag.AthleteId;
+    var athleteId = this.Model.AthleteId ?? this.ViewBag.AthleteId; 
 }
 
 @if (this.TempData["SuccessMessage"] != null)
@@ -22,7 +22,6 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
-
 
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -80,7 +79,7 @@
                                         </tr>
                                     }}
                                 </tbody>
-                            </table>b
+                            </table>
                         </div>
                     </div>
                 }

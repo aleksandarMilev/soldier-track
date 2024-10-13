@@ -6,7 +6,6 @@
     using SoldierTrack.Data;
     using SoldierTrack.Data.Models;
     using SoldierTrack.Services.Achievement;
-    using SoldierTrack.Services.Common;
     using SoldierTrack.Services.Exercise.Models;
     using SoldierTrack.Services.Exercise.Models.Util;
 

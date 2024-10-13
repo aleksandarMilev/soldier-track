@@ -4,6 +4,7 @@
     using AutoMapper.QueryableExtensions;
     using Microsoft.EntityFrameworkCore;
     using SoldierTrack.Data;
+    using SoldierTrack.Data.Models;
     using SoldierTrack.Services.Food.Models;
 
     public class FoodService : IFoodService
@@ -15,6 +16,15 @@
         {
             this.data = data;
             this.mapper = mapper;
+        }
+
+        public async Task<int> CreateAsync(FoodServiceModel model)
+        {
+            var food = this.mapper.Map<Food>(model);
+            this.data.Add(food);
+            await this.data.SaveChangesAsync();
+
+            return food.Id;
         }
 
         public async Task<FoodPageServiceModel> GetPageModelsAsync(string? searchTerm, int pageIndex, int pageSize)
@@ -49,6 +59,15 @@
             };
 
             return pageViewModel;
+        }
+
+        public async Task<FoodServiceModel?> GetByIdAsync(int id)
+        {
+            return await this.data
+                .Foods
+                .AsNoTracking()
+                .ProjectTo<FoodServiceModel>(this.mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(f => f.Id == id);
         }
     }
 }

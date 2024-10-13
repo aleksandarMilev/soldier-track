@@ -43,5 +43,7 @@
         public ICollection<Achievement> Achievements { get; set; } = new List<Achievement>();
 
         public ICollection<Exercise> Exercises { get; set; } = new List<Exercise>();
+
+        public ICollection<Food> Foods { get; set; } = new List<Food>();
     }
 }

@@ -13,7 +13,6 @@ namespace SoldierTrack.Data.Constants
             public const int EmailMinLength = 5;
             public const int EmailMaxLength = 100;
 
-
             public const int UserIdLength = 36;
         }
 
@@ -61,6 +60,7 @@ namespace SoldierTrack.Data.Constants
         public static class FoodConstraints
         {
             public const int NameMaxLength = 100;
+            public const int UrlMaxLength = 2_000;
         }
     }
 }

@@ -1,0 +1,182 @@
+﻿@using SoldierTrack.Services.Food.Models
+@model FoodServiceModel
+
+@{
+    this.ViewData["Title"] = "Exercise Details";
+    var athleteId = this.Model.AthleteId ?? this.ViewBag.AthleteId;
+}
+
+@if (this.TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <p>@this.TempData["SuccessMessage"]</p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (this.ViewBag.ShowButtons != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show mt-4" role="alert">
+        <strong>Important:</strong> If you delete a food that exists in a food diary, the diary will be deleted as well!
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow-sm border-0 rounded-4 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="position-relative">
+                        <img src="@this.Model.ImageUrl"
+                             alt="@this.Model.Name"
+                             class="card-img-top img-fluid rounded-top"
+                             style="max-height: 400px; object-fit: cover;">
+                    </div>
+                    <div class="card-body text-center">
+                        <h2 class="card-title fw-bold text-dark mb-3">@this.Model.Name</h2>
+
+                        <div class="row text-center mb-4">
+                            <div class="col-12">
+                                <div class="macro-box p-3 rounded bg-light">
+                                    <p class="m-0 fw-bold text-uppercase fs-6">Calories</p>
+                                    <p class="text-primary display-6 fw-bold">@this.Model.TotalCalories</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row text-center">
+                            <div class="col-md-4 col-12 mb-3 mb-md-0">
+                                <div class="macro-box p-3 rounded bg-light">
+                                    <i class="bi bi-egg fs-2 text-danger"></i>
+                                    <p class="m-0 fw-bold text-uppercase fs-6">Proteins</p>
+                                    <p class="text-danger fs-5">@this.Model.Proteins g</p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-12 mb-3 mb-md-0">
+                                <div class="macro-box p-3 rounded bg-light">
+                                    <i class="bi bi-bread-slice fs-2 text-warning"></i>
+                                    <p class="m-0 fw-bold text-uppercase fs-6">Carbohydrates</p>
+                                    <p class="text-warning fs-5">@this.Model.Carbohydrates g</p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-12">
+                                <div class="macro-box p-3 rounded bg-light">
+                                    <i class="bi bi-droplet fs-2 text-success"></i>
+                                    <p class="m-0 fw-bold text-uppercase fs-6">Fats</p>
+                                    <p class="text-success fs-5">@this.Model.Fats g</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-light text-center mt-3">
+                    <div class="d-flex justify-content-center gap-2 flex-wrap">
+
+                        @if (this.ViewBag.ShowButtons != null)
+                        {
+                            <a asp-controller="Food"
+                               asp-route-athleteId="@athleteId"
+                               asp-route-foodId="@this.Model.Id"
+                               asp-action="Edit"
+                               class="btn btn-warning btn-sm">
+                                Edit Food
+                            </a>
+
+                            <form method="post"
+                                  asp-controller="Food"
+                                  asp-action="Delete"
+                                  asp-route-athleteId="@athleteId"
+                                  asp-route-foodId="@this.Model.Id"
+                                  onSubmit="return confirm('Are you sure you want to delete this food?')">
+                                <button class="btn btn-danger btn-sm">Delete Food</button>
+                            </form>
+                        }
+                        <a asp-controller="FoodDiary"
+                           asp-action="MyDiary"
+                           asp-route-athleteId="@athleteId"
+                           class="btn btn-secondary">
+                            Back To My Diary
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 1rem;
+    }
+
+    .card-img-top {
+        transition: transform 0.4s ease-in-out;
+    }
+
+    .card-img-top:hover {
+        transform: scale(1.03);
+    }
+
+    .badge-overlay {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+    }
+
+    .badge-lg {
+        font-size: 1.2rem;
+        padding: 0.8rem 1.2rem;
+        border-radius: 1rem;
+    }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+    .btn-sm {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+    }
+
+    .alert {
+        font-size: 1rem;
+        position: relative;
+        border-radius: .5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-footer {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid rgba(0,0,0,.125);
+    }
+
+    .text-muted {
+        color: #6c757d !important; 
+    }
+
+    .row > .col {
+        border-right: 1px solid #e9ecef; 
+    }
+
+    .row > .col:last-child {
+        border-right: none;
+    }
+
+    .macro-box {
+        border: 1px solid rgba(0, 0, 0, 0.1); 
+        transition: all 0.3s ease;
+    }
+
+    .macro-box:hover {
+        transform: scale(1.05); 
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .bi {
+        display: block; 
+        margin-bottom: 0.5rem; 
+    }
+</style>

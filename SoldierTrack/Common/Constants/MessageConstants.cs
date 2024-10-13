@@ -85,5 +85,10 @@
         public const string ExerciseEdited = "Exercise is successfully edited!";
 
         public const string ExerciseDeleted = "Exercise is successfully deleted!";
+
+        //food
+        public const string RangeErrorMessage = "{0} value should be between {1} and {2}!";
+
+        public const string FoodCreated = "Food is successfully created!";
     }
 }

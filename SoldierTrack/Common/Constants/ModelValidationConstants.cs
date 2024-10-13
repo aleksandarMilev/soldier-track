@@ -64,5 +64,23 @@ namespace SoldierTrack.Web.Common.Constants
             public const int DescriptionMinLength = 10;
             public const int DescriptionMaxLength = 1_000;
         }
+
+        public static class FoodConstants
+        {
+            public const int NameMinLength = 3;
+            public const int NameMaxLength = 100;
+
+            public const double CaloriesMinValue = 0.1d;
+            public const double CaloriesMaxValue = 1_000;
+
+            public const double ProteinsMinValue = 0;
+            public const double ProteinsMaxValue = 99.99d;
+
+            public const double CarbohydratesMinValue = 0;
+            public const double CarbohydratesMaxValue = 99.99d;
+
+            public const double FatsMinValue = 0;
+            public const double FatsMaxValue = 99.99d;
+        }
     }
 }

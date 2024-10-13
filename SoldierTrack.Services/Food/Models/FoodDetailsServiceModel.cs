@@ -5,6 +5,5 @@
     public class FoodDetailsServiceModel : FoodBaseModel
     {
         public int Quantity { get; init; }
-
     }
 }

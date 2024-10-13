@@ -17,7 +17,7 @@
 
         public ExerciseCategory Category { get; init; }
 
-        public string? ImageUrl { get; init; } = ExerciseImageDefaultUrl;
+        public string? ImageUrl { get; init; } = ExerciseDefaultImageUrl;
 
         [StringLength(
           DescriptionMaxLength,

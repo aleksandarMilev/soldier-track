@@ -1,15 +1,14 @@
-﻿namespace SoldierTrack.Services.Food.MapProfile
+﻿namespace SoldierTrack.Web.Common.MapProfiles
 {
     using AutoMapper;
-    using SoldierTrack.Data.Models;
     using SoldierTrack.Services.Food.Models;
+    using SoldierTrack.Web.Models.Food;
 
     public class FoodProfile : Profile
     {
         public FoodProfile()
         {
-            this.CreateMap<Food, FoodServiceModel>()
-                .ReverseMap();
+            this.CreateMap<CreateFoodViewModel, FoodServiceModel>();
         }
     }
 }

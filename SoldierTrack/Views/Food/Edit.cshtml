@@ -1,21 +1,19 @@
-﻿@using SoldierTrack.Web.Models.Exercise
+﻿@using SoldierTrack.Web.Models.Food
 
-@model CreateExerciseViewModel
+@model CreateFoodViewModel
 
 @{
-    this.ViewData["Title"] = "Edit Exercise";
-    var exerciseId = this.ViewBag.ExerciseId;
+    this.ViewData["Title"] = "Edit Food";
 }
 
 <div class="container h-100">
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-md-6">
-            <h2>Edit Exercise</h2>
+            <h2>Create Food</h2>
             <form asp-action="Edit" method="post">
                 <partial name="_FormPartial" model="@this.Model"></partial>
-                <input asp-for="@exerciseId" type="hidden" />
                 <button type="submit" class="btn btn-primary">Edit</button>
-                <a asp-controller="Achievement" asp-action="GetAll" asp-route-athleteId="@this.Model.AthleteId" class="btn btn-secondary">Cancel</a>
+                <a asp-controller="FoodDiary" asp-action="MyDiary" asp-route-athleteId="@this.Model.AthleteId" class="btn btn-secondary">Back To My Diary</a>
             </form>
         </div>
     </div>
@@ -27,4 +25,3 @@
         await this.Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-

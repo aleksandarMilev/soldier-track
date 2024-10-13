@@ -2,7 +2,6 @@
 {
     using AutoMapper;
     using Microsoft.AspNetCore.Mvc;
-    using SoldierTrack.Data.Models;
     using SoldierTrack.Services.Achievement;
     using SoldierTrack.Services.Athlete;
     using SoldierTrack.Services.Exercise;
