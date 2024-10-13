@@ -4,10 +4,24 @@ namespace SoldierTrack.Controllers
 
     using Microsoft.AspNetCore.Mvc;
     using SoldierTrack.Models;
+    using SoldierTrack.Services.Athlete;
+    using SoldierTrack.Web.Common.Extensions;
 
     public class HomeController : Controller
     {
-        public IActionResult Index() => this.View();
+        private readonly IAthleteService athleteService;
+
+        public HomeController(IAthleteService athleteService) => this.athleteService = athleteService;
+
+        public async Task<IActionResult> Index()
+        {
+            if (this.User?.Identity?.IsAuthenticated ?? false)
+            {
+                this.ViewBag.AthleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
+            }
+
+            return this.View();
+        }
 
         [ResponseCache(
             Duration = 0,
