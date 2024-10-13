@@ -17,6 +17,7 @@
 
         public ExerciseCategory Category { get; init; }
 
+        [Display(Name = "Image Url")]
         public string? ImageUrl { get; init; } = ExerciseDefaultImageUrl;
 
         [StringLength(
@@ -25,6 +26,7 @@
           ErrorMessage = LengthError)]
         public string? Description { get; init; }
 
+        [Display(Name = "Is For Beginners")]
         public bool IsForBeginners { get; init; }
 
         public int AthleteId { get; set; }

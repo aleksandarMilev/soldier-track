@@ -39,38 +39,17 @@
 
         public async Task<FoodDiaryServiceModel> CreateForDateAsync(int athleteId, DateTime date)
         {
-            var athlete = await this.data
-                .AllDeletable<Athlete>()
-                .FirstOrDefaultAsync(a => a.Id == athleteId)
-               ?? throw new InvalidOperationException("Athlete not found!");
-
-            var foodDiary = new FoodDiary()
-            {
-                AthleteId = athleteId,
-                Date = date,
-                Meals = new List<Meal>
-                {
-                    new() { MealType = MealType.Breakfast },
-                    new() { MealType = MealType.Lunch },
-                    new() { MealType = MealType.Dinner },
-                    new() { MealType = MealType.Snacks }
-                },
-                Athlete = athlete
-            };
-
-            this.data.Add(foodDiary);
-            await this.data.SaveChangesAsync();
-
+            var foodDiary = await CreateDiaryAsync(athleteId, date);
             return this.mapper.Map<FoodDiaryServiceModel>(foodDiary);
         }
 
-        public async Task<FoodDiaryServiceModel> AddFoodAsync(int foodId, int foodDiaryId, string mealType, int quantity)
+        public async Task<FoodDiaryServiceModel> AddFoodAsync(int athleteId, int foodId, DateTime date, string mealType, int quantity)
         {
             var diary = await this.data
                 .AllDeletable<FoodDiary>()
                 .Include(fd => fd.Meals)
-                .FirstOrDefaultAsync(fd => fd.Id == foodDiaryId)
-                ?? throw new InvalidOperationException("Diary not found!");
+                .FirstOrDefaultAsync(fd => fd.AthleteId == athleteId && fd.Date == date)
+                ?? await this.CreateDiaryAsync(athleteId, date);
 
             if (Enum.TryParse(mealType, true, out MealType parsedMealType))
             {
@@ -161,6 +140,32 @@
             }
 
             await this.data.SaveChangesAsync();
+        }
+
+        private async Task<FoodDiary> CreateDiaryAsync(int athleteId, DateTime date)
+        {
+            var athlete = await this.data
+                .AllDeletable<Athlete>()
+                .FirstOrDefaultAsync(a => a.Id == athleteId)
+               ?? throw new InvalidOperationException("Athlete not found!");
+
+            var foodDiary = new FoodDiary()
+            {
+                AthleteId = athleteId,
+                Date = date,
+                Meals = new List<Meal>
+                {
+                    new() { MealType = MealType.Breakfast },
+                    new() { MealType = MealType.Lunch },
+                    new() { MealType = MealType.Dinner },
+                    new() { MealType = MealType.Snacks }
+                },
+                Athlete = athlete
+            };
+
+            this.data.Add(foodDiary);
+            await this.data.SaveChangesAsync();
+            return foodDiary;
         }
 
         private static void UpdateNutritionalValues(Meal meal, Food food, FoodDiary foodDiary, int quantity, Func<decimal, decimal, decimal> operation)

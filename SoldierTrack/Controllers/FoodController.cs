@@ -10,6 +10,7 @@
     using SoldierTrack.Web.Models.Food;
 
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
+    using static SoldierTrack.Web.Common.Constants.WebConstants;
 
     [AthleteAuthorization]
     public class FoodController : Controller
@@ -26,6 +27,18 @@
             this.foodService = foodService;
             this.athleteService = athleteService;
             this.mapper = mapper;
+        }
+
+        public async Task<IActionResult> GetAll(string? searchTerm, int pageIndex = 1, int pageSize = 2)
+        {
+            pageSize = Math.Min(pageSize, MaxPageSize);
+            pageSize = Math.Max(pageSize, MinPageSize);
+
+            this.ViewBag.SearchTerm = searchTerm;
+            this.ViewBag.AthleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
+
+            var model = await this.foodService.GetPageModelsAsync(searchTerm, pageIndex, pageSize);
+            return this.View(model);
         }
 
         [HttpGet]

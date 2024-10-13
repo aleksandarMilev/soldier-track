@@ -15,6 +15,7 @@
            ErrorMessage = LengthError)]
         public string Name { get; init; } = null!;
 
+        [Display(Name = "Image Url")]
         public string ImageUrl { get; init; } = FoodDefaultImageUrl;
 
         [Range(

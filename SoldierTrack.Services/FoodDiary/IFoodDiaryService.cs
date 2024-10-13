@@ -10,7 +10,7 @@
 
         Task<FoodDiaryDetailsServiceModel?> GetDetailsByIdAsync(int diaryId);
 
-        Task<FoodDiaryServiceModel> AddFoodAsync(int foodId, int foodDiaryId, string mealType, int quantity);
+        Task<FoodDiaryServiceModel> AddFoodAsync(int athleteId, int foodId, DateTime date, string mealType, int quantity);
 
         Task RemoveFoodAsync(int diaryId, int foodId, string mealType);
 

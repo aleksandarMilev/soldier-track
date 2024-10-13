@@ -1,33 +1,28 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
+    using Humanizer.DateTimeHumanizeStrategy;
     using Microsoft.AspNetCore.Mvc;
     using SoldierTrack.Services.Athlete;
-    using SoldierTrack.Services.Food;
     using SoldierTrack.Services.FoodDiary;
     using SoldierTrack.Web.Common.Attributes.Filter;
     using SoldierTrack.Web.Common.Extensions;
-
-    using static SoldierTrack.Web.Common.Constants.WebConstants;
 
     [AthleteAuthorization]
     public class FoodDiaryController : Controller
     {
         private readonly IFoodDiaryService foodDiaryService;
         private readonly IAthleteService athleteService;
-        private readonly IFoodService foodService;
 
         public FoodDiaryController(
             IFoodDiaryService foodDiaryService,
-            IAthleteService athleteService,
-            IFoodService foodService)
+            IAthleteService athleteService)
         {
             this.foodDiaryService = foodDiaryService;
             this.athleteService = athleteService;
-            this.foodService = foodService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> MyDiary(int athleteId, DateTime? date, string? searchTerm = null, int pageIndex = 1, int pageSize = 2)
+        public async Task<IActionResult> MyDiary(int athleteId, DateTime? date)
         {
             date ??= DateTime.UtcNow.Date; 
             var model = await this.foodDiaryService.GetModelByDateAndAthleteIdAsync(athleteId, date.Value);
@@ -38,13 +33,6 @@
             }
 
             model ??= await this.foodDiaryService.CreateForDateAsync(athleteId, date.Value);
-
-            pageSize = Math.Min(pageSize, MaxPageSize);
-            pageSize = Math.Max(pageSize, MinPageSize);
-
-            model.Foods = await this.foodService.GetPageModelsAsync(searchTerm, pageIndex, pageSize);
-            this.ViewBag.SearchTerm = searchTerm;
-
             return this.View(model);
         }
 
@@ -67,12 +55,17 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddFood(int foodId, int foodDiaryId, string mealType, int quantity)
+        public async Task<IActionResult> AddFood(int athleteId, int foodId, DateTime date, string mealType, int quantity)
         {
-            var foodDiary = await this.foodDiaryService.AddFoodAsync(foodId, foodDiaryId, mealType, quantity);
+            if (athleteId != await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!))
+            {
+                return this.Unauthorized();
+            }
+
+            var foodDiary = await this.foodDiaryService.AddFoodAsync(athleteId, foodId, date, mealType, quantity);
 
             this.TempData["SuccessMessage"] = "Food successfully added!";
-            return this.RedirectToAction("MyDiary", new { athleteId = foodDiary.AthleteId, date = foodDiary.Date, string.Empty, pageIndex = 1, pageSize = 2 });
+            return this.RedirectToAction("GetAll", "Food");
         }
 
         [HttpPost]
@@ -81,7 +74,7 @@
             await this.foodDiaryService.RemoveFoodAsync(diaryId, foodId, mealType);
 
             this.TempData["SuccessMessage"] = "Food successfully removed!";
-            return this.RedirectToAction("Details", new { diaryId });
+            return this.RedirectToAction(nameof(Details), new { diaryId });
         }
     }
 }

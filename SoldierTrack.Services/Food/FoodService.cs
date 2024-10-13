@@ -55,7 +55,6 @@
             var pageViewModel = new FoodPageServiceModel()
             {
                 Foods = foods,
-                TotalCount = totalCount,
                 PageIndex = pageIndex,
                 TotalPages = totalPages,
                 PageSize = pageSize

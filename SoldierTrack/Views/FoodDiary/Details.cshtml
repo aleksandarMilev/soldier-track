@@ -95,15 +95,7 @@
             </div>
         </div>
     }
-    <a class="btn btn-secondary"
-       asp-action="MyDiary"
-       asp-route-athleteId="@this.Model.AthleteId"
-       asp-route-date="@this.Model.Date.ToString("yyyy-MM-dd")"
-       asp-route-searchTerm="@null"
-       asp-route-pageIndex="1"
-       asp-route-pageSize="2">
-        Back
-    </a>
+    <a class="btn btn-secondary" asp-action="MyDiary" asp-route-athleteId="@this.Model.AthleteId">Back</a>
 </div>
 
 
