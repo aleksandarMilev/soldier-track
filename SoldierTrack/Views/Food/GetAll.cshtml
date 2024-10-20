@@ -11,6 +11,8 @@
     var pageIndex = this.Model.PageIndex;
     var totalPages = this.Model.TotalPages;
     var pageSize = this.Model.PageSize;
+    var searchTerm = this.ViewData["searchTerm"]?.ToString();
+    var includeMine = this.ViewData["includeMine"]?.ToString() ?? "false";
 }
 
 @if (this.TempData["SuccessMessage"] != null)
@@ -28,6 +30,10 @@
                 <div class="col-md-8">
                     <div class="input-group shadow-sm">
                         <input type="text" id="searchTerm" name="searchTerm" class="form-control rounded-start-pill py-2 px-3" placeholder="Search for food..." />
+                        <div class="form-check me-2">
+                            <input type="checkbox" class="form-check-input" id="includeMine" name="includeMine" value="true" @(includeMine == "true" ? "checked" : "") />
+                            <label class="form-check-label" for="includeMine">Include my exercises</label>
+                        </div>
                         <button type="submit" class="btn btn-secondary rounded-end-pill px-4 ms-2 d-flex align-items-center">
                             <i class="bi bi-search me-2"></i> Search
                         </button>
@@ -55,37 +61,41 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <form method="post"
-                                                  asp-controller="FoodDiary"
-                                                  asp-action="AddFood"
-                                                  asp-route-foodId="@food.Id"
-                                                  asp-route-athleteId="@athleteId"
-                                                  class="d-flex flex-wrap justify-content-between gap-3">
-                                                <select id="mealType" name="mealType" class="form-select" style="width: 200px;">
-                                                    @foreach (var mealType in Enum.GetValues(typeof(MealType)).Cast<MealType>())
-                                                    {
-                                                        <option value="@mealType">@mealType</option>
-                                                    }
-                                                </select>
-                                                <input type="date"
-                                                       name="date"
-                                                       value="@DateTime.Now.ToString("yyyy-MM-dd")"
-                                                       required
-                                                       class="form-control"
-                                                       style="width: 200px;" />
+                                            @if (athleteId != null)
+                                            {
+                                                <form 
+                                                      method="post"
+                                                      asp-controller="FoodDiary"
+                                                      asp-action="AddFood"
+                                                      asp-route-foodId="@food.Id"
+                                                      asp-route-athleteId="@athleteId"
+                                                      class="d-flex flex-wrap justify-content-between gap-3">
+                                                        <select id="mealType" name="mealType" class="form-select" style="width: 200px;">
+                                                            @foreach (var mealType in Enum.GetValues(typeof(MealType)).Cast<MealType>())
+                                                            {
+                                                                <option value="@mealType">@mealType</option>
+                                                            }
+                                                        </select>
+                                                        <input type="date"
+                                                               name="date"
+                                                               value="@DateTime.Now.ToString("yyyy-MM-dd")"
+                                                               required
+                                                               class="form-control"
+                                                               style="width: 200px;" />
 
-                                                <input type="number"
-                                                       name="quantity"
-                                                       required
-                                                       min="1"
-                                                       placeholder="grams"
-                                                       class="form-control"
-                                                       style="width: 200px;" />
-                                                <button type="submit" class="btn btn-success" style="width: 100px;">
-                                                    <i class="bi bi-plus-circle"></i> Add
-                                                </button>
-                                            </form>
-
+                                                        <input type="number"
+                                                               name="quantity"
+                                                               required
+                                                               min="1"
+                                                               placeholder="grams"
+                                                               class="form-control"
+                                                               style="width: 200px;" />
+                                                        <button type="submit" class="btn btn-success" style="width: 100px;">
+                                                            <i class="bi bi-plus-circle"></i> Add
+                                                        </button>
+                                                </form>
+                                            }
+                                            <a asp-action="Details" asp-route-id="@food.Id" class="btn btn-primary">Details</a>
                                         </div>
                                     </div>
                                 </li>
@@ -100,17 +110,13 @@
                     </ul>
                 </div>
             </div>
-
-            <nav class="mt-4" aria-label="Page navigation">
+            <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
                     @if (pageIndex > 1)
                     {
                         <li class="page-item">
-                            <a class="page-link"
-                               asp-action="GetAll"
-                               asp-route-searchTerm="@ViewBag.SearchTerm"
-                               asp-route-pageIndex="@(pageIndex - 1)"
-                               asp-route-pageSize="@pageSize">Previous</a>
+                            <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@(pageIndex - 1)" asp-route-pageSize="@pageSize"
+                               asp-route-searchTerm="@searchTerm" asp-route-includeMine="@includeMine">Previous</a>
                         </li>
                     }
                     else
@@ -123,46 +129,38 @@
                     @if (pageIndex > 3)
                     {
                         <li class="page-item">
-                            <a class="page-link"
-                               asp-action="GetAll"
-                               asp-route-searchTerm="@ViewBag.SearchTerm"
-                               asp-route-pageIndex="1"
-                               asp-route-pageSize="@pageSize">1</a>
+                            <a class="page-link" asp-action="GetAll" asp-route-pageIndex="1" asp-route-pageSize="@pageSize"
+                               asp-route-searchTerm="@searchTerm" asp-route-includeMine="@includeMine">1</a>
                         </li>
-                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
                     }
 
                     @for (int i = Math.Max(1, pageIndex - 2); i <= Math.Min(totalPages, pageIndex + 2); i++)
                     {
                         <li class="page-item @(i == pageIndex ? "active" : "")">
-                            <a class="page-link"
-                               asp-action="GetAll"
-                               asp-route-searchTerm="@ViewBag.SearchTerm"
-                               asp-route-pageIndex="@i"
-                               asp-route-pageSize="@pageSize">@i</a>
+                            <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@i" asp-route-pageSize="@pageSize"
+                               asp-route-searchTerm="@searchTerm" asp-route-includeMine="@includeMine">@i</a>
                         </li>
                     }
 
                     @if (pageIndex < totalPages - 2)
                     {
-                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
                         <li class="page-item">
-                            <a class="page-link"
-                               asp-action="GetAll"
-                               asp-route-searchTerm="@ViewBag.SearchTerm"
-                               asp-route-pageIndex="@totalPages"
-                               asp-route-pageSize="@pageSize">@totalPages</a>
+                            <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@totalPages" asp-route-pageSize="@pageSize"
+                               asp-route-searchTerm="@searchTerm" asp-route-includeMine="@includeMine">@totalPages</a>
                         </li>
                     }
 
                     @if (pageIndex < totalPages)
                     {
                         <li class="page-item">
-                            <a class="page-link"
-                               asp-action="GetAll"
-                               asp-route-searchTerm="@ViewBag.SearchTerm"
-                               asp-route-pageIndex="@(pageIndex + 1)"
-                               asp-route-pageSize="@pageSize">Next</a>
+                            <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@(pageIndex + 1)" asp-route-pageSize="@pageSize"
+                               asp-route-searchTerm="@searchTerm" asp-route-includeMine="@includeMine">Next</a>
                         </li>
                     }
                     else
@@ -173,7 +171,6 @@
                     }
                 </ul>
             </nav>
-
         </div>
     </div>
 </div>

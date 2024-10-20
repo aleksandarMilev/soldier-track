@@ -32,6 +32,16 @@
                              alt="@this.Model.Name"
                              class="card-img-top img-fluid rounded-top"
                              style="max-height: 400px; object-fit: cover;">
+                        <div class="badge-overlay">
+                            @if (this.Model.AthleteId == null)
+                            {
+                                <span class="badge bg-primary badge-lg">Approved</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger badge-lg">Custom</span>
+                            }
+                        </div>
                     </div>
                     <div class="card-body text-center">
                         <h2 class="card-title fw-bold text-dark mb-3">@this.Model.Name</h2>
@@ -75,31 +85,34 @@
                 <div class="card-footer bg-light text-center mt-3">
                     <div class="d-flex justify-content-center gap-2 flex-wrap">
 
-                        @if (this.ViewBag.ShowButtons != null)
+                        @if (athleteId != null)
                         {
-                            <a asp-controller="Food"
-                               asp-action="Edit"
-                               asp-route-athleteId="@athleteId"
-                               asp-route-foodId="@this.Model.Id"
-                               class="btn btn-warning btn-sm">
-                                Edit Food
-                            </a>
+                            @if (this.ViewBag.ShowButtons != null)
+                            {
+                                <a asp-controller="Food"
+                                   asp-action="Edit"
+                                   asp-route-athleteId="@athleteId"
+                                   asp-route-foodId="@this.Model.Id"
+                                   class="btn btn-warning btn-sm">
+                                    Edit Food
+                                </a>
 
-                            <form method="post"
-                                  asp-controller="Food"
-                                  asp-action="Delete"
-                                  asp-route-athleteId="@athleteId"
-                                  asp-route-foodId="@this.Model.Id"
-                                  onSubmit="return confirm('Are you sure you want to delete this food?')">
-                                <button class="btn btn-danger btn-sm">Delete Food</button>
-                            </form>
+                                <form method="post"
+                                      asp-controller="Food"
+                                      asp-action="Delete"
+                                      asp-route-athleteId="@athleteId"
+                                      asp-route-foodId="@this.Model.Id"
+                                      onSubmit="return confirm('Are you sure you want to delete this food?')">
+                                    <button class="btn btn-danger btn-sm">Delete Food</button>
+                                </form>
+                            }
+                            <a
+                               asp-action="GetAll"
+                               asp-route-athleteId="@athleteId"
+                               class="btn btn-secondary">
+                                Back
+                            </a>
                         }
-                        <a asp-controller="FoodDiary"
-                           asp-action="MyDiary"
-                           asp-route-athleteId="@athleteId"
-                           class="btn btn-secondary">
-                            Back To My Diary
-                        </a>
                     </div>
                 </div>
             </div>

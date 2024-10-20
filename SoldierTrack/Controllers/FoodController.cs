@@ -1,18 +1,18 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
     using AutoMapper;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using SoldierTrack.Services.Athlete;
     using SoldierTrack.Services.Food;
     using SoldierTrack.Services.Food.Models;
-    using SoldierTrack.Web.Common.Attributes.Filter;
     using SoldierTrack.Web.Common.Extensions;
     using SoldierTrack.Web.Models.Food;
 
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
     using static SoldierTrack.Web.Common.Constants.WebConstants;
-
-    [AthleteAuthorization]
+    
+    [Authorize]
     public class FoodController : Controller
     {
         private readonly IFoodService foodService;
@@ -35,22 +35,21 @@
             pageSize = Math.Max(pageSize, MinPageSize);
 
             this.ViewBag.SearchTerm = searchTerm;
-            this.ViewBag.AthleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
+            this.ViewBag.AthleteId = this.User.GetId();
 
             var model = await this.foodService.GetPageModelsAsync(searchTerm, pageIndex, pageSize);
             return this.View(model);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
-            var athleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
-            var model = new CreateFoodViewModel() { AthleteId = athleteId };
+            var model = new FoodFormModel() { AthleteId = this.User.GetId()! };
             return this.View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateFoodViewModel viewModel)
+        public async Task<IActionResult> Create(FoodFormModel viewModel)
         {
             if (!this.ModelState.IsValid)
             {
@@ -64,7 +63,6 @@
             return this.RedirectToAction(nameof(Details), new { id = foodId });
         }
 
-        
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
@@ -75,23 +73,23 @@
                 return this.NotFound();
             }
 
-            var athleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
+            var athleteId = this.User.GetId();
 
-            if (model.AthleteId != null && model.AthleteId == athleteId.Value)
+            if (model.AthleteId != null && model.AthleteId == athleteId)
             {
                 this.ViewBag.ShowButtons = true;
             }
 
-            if (model.AthleteId == null || (model.AthleteId != null && model.AthleteId != athleteId.Value))
+            if (model.AthleteId == null || (model.AthleteId != null && model.AthleteId != athleteId))
             {
-                model.AthleteId = athleteId.Value;
+                this.ViewBag.AthleteId = athleteId;
             }
 
             return this.View(model);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int foodId, int athleteId)
+        public async Task<IActionResult> Edit(int foodId, string athleteId)
         {
             var serviceModel = await this.foodService.GetByIdAsync(foodId);
 
@@ -105,13 +103,13 @@
                 return this.Unauthorized();
             }
 
-            var viewModel = this.mapper.Map<CreateFoodViewModel>(serviceModel);
+            var viewModel = this.mapper.Map<FoodFormModel>(serviceModel);
             this.ViewBag.FoodId = foodId;
             return this.View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(CreateFoodViewModel viewModel, int foodId)
+        public async Task<IActionResult> Edit(FoodFormModel viewModel, int foodId)
         {
             if (!this.ModelState.IsValid)
             {
@@ -127,7 +125,7 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(int foodId, int athleteId)
+        public async Task<IActionResult> Delete(int foodId, string athleteId)
         {
             await this.foodService.DeleteAsync(foodId, athleteId);
 

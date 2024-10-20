@@ -25,8 +25,12 @@
 
         public const string WorkoutEdited = "Workout is now edited!";
 
+        public const string WorkoutIsFull = "Workout has not any free spots!";
+
         //athlete
-        public const string AthleteWithSameNumberExists = "An athlete with number {0} is already registered!";
+        public const string PhoneDuplicate = "An athlete with number {0} is already registered!";
+
+        public const string EmailDuplicate = "An athlete with email {0} is already registered!";
 
         public const string AthleteSuccessRegister = "You have successfully registered as athlete!";
 
@@ -34,7 +38,7 @@
 
         public const string AthleteDeleteHimself = "Your profile was deleted successfully!";
 
-        public const string AthleteAlreadyJoined = "Athlete has already joined in {0}!";
+        public const string AthleteAlreadyJoined = "Athlete has already joined in the workout!";
 
         //membership
         public const string MembershipRequested = "You have successfully requested yor membership!";
@@ -58,7 +62,7 @@
 
         public const string AdminDeleteAthlete = "Athlete deleted successfully!";
 
-        public const string AdminAddedAthlete = "You have successfully added the athlete in {0}!";
+        public const string AdminAddedAthlete = "You have successfully added the athlete into the workout!";
 
         public const string AdminLeaveSuccess = "You have successfully removed the athlete!";
 

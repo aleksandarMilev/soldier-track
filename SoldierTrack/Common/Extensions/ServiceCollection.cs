@@ -2,13 +2,13 @@
 {
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.DependencyInjection;
     using SoldierTrack.Data;
+    using SoldierTrack.Data.Models;
     using SoldierTrack.Services.Achievement;
     using SoldierTrack.Services.Achievement.MapperProfile;
     using SoldierTrack.Services.Athlete;
     using SoldierTrack.Services.Athlete.MapperProfile;
-    using SoldierTrack.Services.Category;
-    using SoldierTrack.Services.Category.MapperProfile;
     using SoldierTrack.Services.Email;
     using SoldierTrack.Services.Email.Models;
     using SoldierTrack.Services.Exercise;
@@ -18,6 +18,7 @@
     using SoldierTrack.Services.FoodDiary;
     using SoldierTrack.Services.FoodDiary.MapProfile;
     using SoldierTrack.Services.Membership;
+    using SoldierTrack.Services.Membership.MapperProfile;
     using SoldierTrack.Services.Workout;
     using SoldierTrack.Services.Workout.MapperProfile;
 
@@ -41,11 +42,12 @@
 
             services.AddTransient<IExerciseService, ExerciseService>();
             services.AddTransient<IWorkoutService, WorkoutService>();
-            services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IAchievementService, AchievementService>();
             services.AddTransient<IFoodService, FoodService>();
             services.AddTransient<IFoodDiaryService, FoodDiaryService>();
             services.AddTransient<IEmailService, EmailService>();
+
+            services.AddRazorPages();
 
             return services;
         }
@@ -57,7 +59,7 @@
             {
                 cfg.AddProfile<AthleteProfile>();
                 cfg.AddProfile<WorkoutProfile>();
-                cfg.AddProfile<CategoryProfile>();
+                cfg.AddProfile<MembershipProfile>();
                 cfg.AddProfile<ExerciseProfile>();
                 cfg.AddProfile<AchievementProfile>();
                 cfg.AddProfile<FoodProfile>();
@@ -93,16 +95,17 @@
         public static IServiceCollection AddApplicationIdentity(this IServiceCollection services)
         {
 
-            services.AddDefaultIdentity<IdentityUser>(options =>
-            {
-                options.SignIn.RequireConfirmedAccount = false;
-                options.Password.RequireDigit = false;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequireNonAlphanumeric = false;
-            })
-            .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>();
+            services
+                .AddIdentity<Athlete, IdentityRole>(options =>
+                {
+                    options.SignIn.RequireConfirmedAccount = false;
+                    options.Password.RequireDigit = false;
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                })
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
 
             return services;
         }

@@ -2,13 +2,13 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Log in";
+    this.ViewData["Title"] = "Log In";
 }
 
 <div class="container h-100">
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-md-6">
-            <h1>@ViewData["Title"]</h1>
+            <h1>@this.ViewData["Title"]</h1>
             <section>
                 <form id="account" method="post">
                     <hr />
@@ -26,7 +26,7 @@
                     <div class="checkbox mb-3">
                         <label asp-for="Input.RememberMe" class="form-label">
                             <input class="form-check-input" asp-for="Input.RememberMe" />
-                            @Html.DisplayNameFor(m => m.Input.RememberMe)
+                            @this.Html.DisplayNameFor(m => m.Input.RememberMe)
                         </label>
                     </div>
                     <div>

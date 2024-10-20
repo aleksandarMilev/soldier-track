@@ -33,142 +33,128 @@
         {
             var query = this
                 .GetUpcomingsAsNoTrackingAsync()
-                .Include(w => w.CategoryName)
-                .OrderBy(w => w.Date)
-                .ThenBy(w => w.Time)
-                .ProjectTo<EditWorkoutServiceModel>(this.mapper.ConfigurationProvider);
+                .OrderBy(w => w.DateTime)
+                .ProjectTo<WorkoutServiceModel>(this.mapper.ConfigurationProvider);
 
             if (date != null)
             {
-                query = query.Where(w => w.Date == date);
+                var utcStartOfDay = DateTime.SpecifyKind(date.Value.Date, DateTimeKind.Local).ToUniversalTime();
+                var utcEndOfDay = DateTime.SpecifyKind(date.Value.Date.AddDays(1).AddTicks(-1), DateTimeKind.Local).ToUniversalTime();
+                query = query.Where(w => w.Date >= utcStartOfDay && w.Date <= utcEndOfDay);
             }
 
             var totalCount = await query.CountAsync();
-
             var workouts = await query
                 .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-
-            var pageModels = new WorkoutPageServiceModel()
-            {
-                Workouts = workouts,
-                TotalCount = totalCount,
-                PageIndex = pageIndex,
-                TotalPages = totalPages,
-                PageSize = pageSize
-            };
-
-            return pageModels;
+            return new WorkoutPageServiceModel(workouts, pageIndex, totalPages, pageSize);
         }
 
-        public async Task<EditWorkoutServiceModel?> GetByDateAndTimeAsync(DateTime date, TimeSpan time)
-        {
-            return await this
-                .GetUpcomingsAsNoTrackingAsync()
-                .ProjectTo<EditWorkoutServiceModel>(this.mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(w => w.Date == date && w.Time == time);
-        }
-
-        public async Task<WorkoutDetailsServiceModel?> GetDetailsModelByIdAsync(int id)
-        {
-            return await this.data
-                .AllDeletableAsNoTracking<Workout>()
-                .ProjectTo<WorkoutDetailsServiceModel>(this.mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(w => w.Id == id);
-        }
-
-        public async Task<EditWorkoutServiceModel?> GetEditModelByIdAsync(int id)
-        {
-            return await this
-                .GetUpcomingsAsNoTrackingAsync()
-                .ProjectTo<EditWorkoutServiceModel>(this.mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(w => w.Id == id);
-        }
-
-        public async Task<WorkoutArchivePageServiceModel> GetArchiveAsync(int athleteId, int pageIndex, int pageSize)
+        public async Task<WorkoutPageServiceModel> GetArchiveAsync(string athleteId, int pageIndex, int pageSize)
         {
             var query = this.data
-               .AthletesWorkouts 
-               .Where(aw => aw.AthleteId == athleteId && aw.Workout.Date < DateTime.UtcNow) 
+               .AthletesWorkouts
+               .Where(aw => aw.AthleteId == athleteId && aw.Workout.DateTime < DateTime.UtcNow)
                .ProjectTo<WorkoutServiceModel>(this.mapper.ConfigurationProvider);
 
             var totalCount = await query.CountAsync();
-
             var workouts = await query
                 .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+            return new WorkoutPageServiceModel(workouts, pageIndex, totalPages, pageSize);
+        }
 
-            return new WorkoutArchivePageServiceModel()
+        public async Task<WorkoutServiceModel?> GetModelByIdAsync(int id)
+        {
+            return await this
+                .GetUpcomingsAsNoTrackingAsync()
+                .ProjectTo<WorkoutServiceModel>(this.mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(w => w.Id == id);
+        }
+
+        public async Task<WorkoutDetailsServiceModel?> GetDetailsModelByIdAsync(int id, string athleteId)
+        {
+            var model = await
+                this.GetUpcomingsAsNoTrackingAsync()
+                .ProjectTo<WorkoutDetailsServiceModel>(this.mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(w => w.Id == id);
+
+            if (model == null)
             {
-                Workouts = workouts,
-                TotalCount = totalCount,
-                PageIndex = pageIndex,
-                TotalPages = totalPages,
-                PageSize = pageSize
-            };
+                return null;
+            }
+
+            await this.SetDetailsModelButtonsAsync(model, athleteId);
+            return model;
+        }
+
+        public async Task<int?> GetIdByDateAndTimeAsync(DateTime date, TimeSpan time)
+        {
+            var utcDate = GetUtcFromLocalDateAndTime(date, time);
+            var workout = await
+                this.GetUpcomingsAsNoTrackingAsync()
+                 .ProjectTo<WorkoutServiceModel>(this.mapper.ConfigurationProvider)
+                 .FirstOrDefaultAsync(w => w.Date == utcDate);
+
+            return workout?.Id;
         }
 
         public async Task<bool> AnotherWorkoutExistsAtThisDateAndTimeAsync(DateTime date, TimeSpan time, int? id = null)
         {
-            var workoutId = await this
-                .GetUpcomingsAsNoTrackingAsync()
-                .Where(w => w.Time == time && w.Date == date && w.Date >= DateTime.Now.Date)
-                .Select(w => w.Id) 
-                .FirstOrDefaultAsync();
+            var utcDate = GetUtcFromLocalDateAndTime(date, time);
+            var workout = await
+                this.GetUpcomingsAsNoTrackingAsync()
+                .Where(w => w.Id != id)
+                .FirstOrDefaultAsync(w => w.DateTime == utcDate);
 
-            if (workoutId != 0 && id == null)
-            {
-                return true;
-            }
+            return workout != null;
+        }
 
-            if (workoutId != 0 && id.HasValue && id.Value != workoutId)
-            {
-                return true;
-            }
+        public async Task<bool> WorkoutIsFull(int id)
+        {
+            var workout = await this.data
+                .Workouts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(w => w.Id == id)
+                ?? throw new InvalidOperationException("Workout is not found!");
 
-            return false;
+            return workout.CurrentParticipants == workout.MaxParticipants;
         }
 
         public async Task<int> CreateAsync(WorkoutServiceModel model)
         {
-            var category = await this.data
-                .Categories
-                .FirstOrDefaultAsync(c => c.Id == model.CategoryId)
-                ?? throw new InvalidOperationException("Category not found!");
-
             var workout = this.mapper.Map<Workout>(model);
+            workout.DateTime = GetUtcFromLocalDateAndTime(model.Date, model.Time);
+
             this.data.Add(workout);
             await this.data.SaveChangesAsync();
-
             return workout.Id;
         }
 
-        public async Task EditAsync(EditWorkoutServiceModel model)
+        public async Task<int> EditAsync(WorkoutServiceModel model)
         {
-            var category = await this.data
-                .Categories
-                .FirstOrDefaultAsync(c => c.Id == model.CategoryId)
-                ?? throw new InvalidOperationException("Category not found!");
-
-            var workout = await this.data
-                .AllDeletable<Workout>()
+            var workout = await
+                 this.GetUpcomingsAsync()
                 .FirstOrDefaultAsync(w => w.Id == model.Id)
                 ?? throw new InvalidOperationException("Workout not found!");
 
             this.mapper.Map(model, workout);
+            workout.DateTime = GetUtcFromLocalDateAndTime(model.Date, model.Time);
+
             await this.data.SaveChangesAsync();
+            return workout.Id;
         }
 
         public async Task DeleteAsync(int id)
         {
-            var entity = await this.data
-                .AllDeletable<Workout>() 
+            var entity = await
+                this.GetUpcomingsAsync()
                 .FirstOrDefaultAsync(w => w.Id == id)
                 ?? throw new InvalidOperationException("Workout not found!");
 
@@ -186,10 +172,10 @@
 
                 await this.athleteService
                     .SendMailOnWorkoutDeletionByAthleteIdAsync(
-                        mapEntity.AthleteId, 
+                        mapEntity.AthleteId,
                         mapEntity.Workout.Title,
-                        mapEntity.Workout.Date.ToLocalTime().ToString("dd MMM yyyy"),
-                        mapEntity.Workout.Time.ToString(@"hh\:mm"));
+                        mapEntity.Workout.DateTime.ToLocalTime().ToString("dd MMM yyyy"),
+                        mapEntity.Workout.DateTime.ToLocalTime().ToString(@"hh\:mm tt"));
             }
 
             this.data.RemoveRange(mapEntities);
@@ -199,12 +185,43 @@
 
         private IQueryable<Workout> GetUpcomingsAsNoTrackingAsync()
         {
-            var todayDate = DateTime.Now.Date;
-            var todayTime = DateTime.Now.TimeOfDay;
-
             return this.data
                 .AllDeletableAsNoTracking<Workout>()
-                .Where(w => w.Date > todayDate || (w.Date == todayDate && w.Time > todayTime));
+                .Where(w => w.DateTime > DateTime.UtcNow);
+        }
+
+        private IQueryable<Workout> GetUpcomingsAsync()
+        {
+            return this.data
+                .AllDeletable<Workout>()
+                .Where(w => w.DateTime > DateTime.UtcNow);
+        }
+
+        private async Task SetDetailsModelButtonsAsync(WorkoutDetailsServiceModel model, string athleteId)
+        {
+            if (!await this.membershipService.MembershipExistsByAthleteIdAsync(athleteId))
+            {
+                return;
+            }
+
+            model.AthleteHasMembership = true;
+
+            if (await this.membershipService.MembershipIsApprovedByAthleteIdAsync(athleteId))
+            {
+                model.ShowJoinButton = true;
+            }
+
+            if (await this.athleteService.AthleteAlreadyJoinedByIdAsync(athleteId, model.Id))
+            {
+                model.ShowJoinButton = false;
+                model.ShowLeaveButton = true;
+            }
+        }
+
+        private static DateTime GetUtcFromLocalDateAndTime(DateTime dateLocal, TimeSpan timeLocal)
+        {
+            var localDateTime = dateLocal.Date + timeLocal;
+            return localDateTime.ToUniversalTime();
         }
     }
 }

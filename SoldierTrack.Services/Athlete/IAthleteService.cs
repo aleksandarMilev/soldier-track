@@ -6,30 +6,26 @@
     {
         Task<AthletePageServiceModel> GetPageModelsAsync(string? searchTerm, int pageIndex, int pageSize);
 
-        Task CreateAsync(AthleteServiceModel model);
+        Task<AthleteDetailsServiceModel?> GetDetailsModelByIdAsync(string id);
 
-        Task<AthleteDetailsServiceModel?> GetDetailsModelByIdAsync(int id);
+        Task<bool> AthleteWithSameNumberExistsAsync(string phoneNumber, string userId);
 
-        Task<bool> AthleteWithSameNumberExistsAsync(string phoneNumber, int? id = null);
+        Task<bool> AthleteWithSameEmailExistsAsync(string email, string userId);
 
-        Task<bool> UserIsAthleteByUserIdAsync(string userId);
+        Task<bool> AthleteAlreadyJoinedByIdAsync(string athleteId, int workoutId);
 
-        Task<bool> AthleteAlreadyJoinedByIdAsync(int athleteId, int workoutId);
+        Task<AthleteServiceModel?> GetFormModelByIdAsync(string id);
 
-        Task<int?> GetIdByUserIdAsync(string userId);
+        Task EditAsync(AthleteServiceModel model);
 
-        Task<EditAthleteServiceModel?> GetEditModelByIdAsync(int id);
+        Task DeleteAsync(string id);
 
-        Task EditAsync(EditAthleteServiceModel serviceModel);
+        Task JoinAsync(string athleteId, int workoutId);
 
-        Task DeleteAsync(int id);
+        Task LeaveAsync(string athleteId, int workoutId);
 
-        Task JoinAsync(int athleteId, int workoutId);
+        Task SendMailForApproveMembershipAsync(string athleteId);
 
-        Task LeaveAsync(int athleteId, int workoutId);
-
-        Task SendMailForApproveMembershipAsync(int athleteId);
-
-        Task SendMailOnWorkoutDeletionByAthleteIdAsync(int athleteId, string workoutTitle, string workoutDate, string workoutTime);
+        Task SendMailOnWorkoutDeletionByAthleteIdAsync(string athleteId, string workoutTitle, string workoutDate, string workoutTime);
     }
 }

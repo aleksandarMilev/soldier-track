@@ -3,12 +3,9 @@
     using AutoMapper;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Rendering;
-    using SoldierTrack.Services.Category;
     using SoldierTrack.Services.Workout;
     using SoldierTrack.Services.Workout.Models;
     using SoldierTrack.Web.Areas.Administrator.Models.Workout;
-    using SoldierTrack.Web.Areas.Administrator.Models.Workout.Base;
 
     using static SoldierTrack.Web.Common.Constants.WebConstants;
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
@@ -17,43 +14,40 @@
     [Authorize(Roles = AdminRoleName)]
     public class WorkoutController : Controller
     {
-        private readonly ICategoryService categoryService;
         private readonly IWorkoutService workoutService;
         private readonly IMapper mapper;
 
-        public WorkoutController(
-            ICategoryService categoryService,
-            IWorkoutService workoutService,
-            IMapper mapper)
+        public WorkoutController(IWorkoutService workoutService, IMapper mapper)
         {
-            this.categoryService = categoryService;
             this.workoutService = workoutService;
             this.mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
-            var viewModel = new CreateWorkoutViewModel() { Date = DateTime.Now };
-            return await this.ReturnWorkoutViewWithCategoriesLoaded(viewModel);
+            var viewModel = new WorkoutFormModel() { Date = DateTime.Now };
+            return this.View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateWorkoutViewModel viewModel)
+        public async Task<IActionResult> Create(WorkoutFormModel viewModel)
         {
             if (!this.ModelState.IsValid)
             {
-                return await this.ReturnWorkoutViewWithCategoriesLoaded(viewModel);
+                return this.View(viewModel);
+            }
+
+            if (await this.workoutService.AnotherWorkoutExistsAtThisDateAndTimeAsync(viewModel.Date, viewModel.Time))
+            {
+                this.ModelState.AddModelError(
+                    nameof(viewModel.Time),
+                    string.Format(WorkoutAlreadyListed, DateTime.Today.Add(viewModel.Time).ToString("hh:mm tt")));
+
+                return this.View(viewModel);
             }
 
             var serviceModel = this.mapper.Map<WorkoutServiceModel>(viewModel);
-
-            if (await this.workoutService.AnotherWorkoutExistsAtThisDateAndTimeAsync(serviceModel.Date, serviceModel.Time))
-            {
-                this.ModelState.AddModelError(nameof(serviceModel.Time), string.Format(WorkoutAlreadyListed, serviceModel.Time.ToString("hh\\:mm")));
-                return await this.ReturnWorkoutViewWithCategoriesLoaded(viewModel);
-            }
-
             var workoutCreatedId = await this.workoutService.CreateAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = WorkoutCreated;
@@ -63,37 +57,43 @@
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var serviceModel = await this.workoutService.GetEditModelByIdAsync(id);
+            var serviceModel = await this.workoutService.GetModelByIdAsync(id);
 
             if (serviceModel == null)
             {
                 return this.NotFound();
             }
 
-            var viewModel = this.mapper.Map<EditWorkoutViewModel>(serviceModel);
-            return await this.ReturnWorkoutViewWithCategoriesLoaded(viewModel);
+            this.ViewBag.Id = id;
+            var viewModel = this.mapper.Map<WorkoutFormModel>(serviceModel);
+            viewModel.Time = viewModel.Date.ToLocalTime().TimeOfDay;
+
+            return this.View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(EditWorkoutViewModel viewModel)
+        public async Task<IActionResult> Edit(WorkoutFormModel viewModel, int id)
         {
             if (!this.ModelState.IsValid)
             {
-                return await this.ReturnWorkoutViewWithCategoriesLoaded(viewModel);
+                return this.View(viewModel);
             }
 
-            var serviceModel = this.mapper.Map<EditWorkoutServiceModel>(viewModel);
-
-            if (await this.workoutService.AnotherWorkoutExistsAtThisDateAndTimeAsync(serviceModel.Date, serviceModel.Time, serviceModel.Id))
+            if (await this.workoutService.AnotherWorkoutExistsAtThisDateAndTimeAsync(viewModel.Date, viewModel.Time, id))
             {
-                this.ModelState.AddModelError(nameof(serviceModel.Time), string.Format(WorkoutAlreadyListed, serviceModel.Time.ToString("hh\\:mm")));
-                return await this.ReturnWorkoutViewWithCategoriesLoaded(viewModel);
+                this.ModelState.AddModelError(
+                    nameof(viewModel.Time),
+                    string.Format(WorkoutAlreadyListed, DateTime.Today.Add(viewModel.Time).ToString("hh:mm tt")));
+
+                return this.View(viewModel);
             }
 
-            await this.workoutService.EditAsync(serviceModel);
+            var serviceModel = this.mapper.Map<WorkoutServiceModel>(viewModel);
+            serviceModel.Id = id;
+            var workoutCreatedId = await this.workoutService.EditAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = WorkoutEdited;
-            return this.RedirectToAction("Details", "Workout", new { area = "", id = viewModel.Id });
+            return this.RedirectToAction("Details", "Workout", new { area = "", id = workoutCreatedId });
         }
 
         [HttpPost]
@@ -102,22 +102,7 @@
             await this.workoutService.DeleteAsync(id);
 
             this.TempData["SuccessMessage"] = WorkoutDeletedSuccessfully;
-            return this.RedirectToAction("Index", "Home", new { area = "" });
-        }
-
-        private async Task<IActionResult> ReturnWorkoutViewWithCategoriesLoaded(WorkoutBaseFormModel viewModel)
-        {
-            var categories = await this.categoryService.GetAllAsync();
-
-            var categorySelectList = categories
-               .Select(c => new SelectListItem()
-               {
-                   Value = c.Id.ToString(),
-                   Text = c.Name
-               });
-
-            viewModel.Categories = categorySelectList;
-            return this.View(viewModel);
+            return this.RedirectToAction("GetAll", "Workout", new { area = "" });
         }
     }
 }

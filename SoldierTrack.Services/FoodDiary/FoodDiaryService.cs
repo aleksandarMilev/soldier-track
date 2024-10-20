@@ -20,7 +20,7 @@
             this.mapper = mapper;
         }
 
-        public async Task<FoodDiaryServiceModel?> GetModelByDateAndAthleteIdAsync(int athleteId, DateTime date)
+        public async Task<FoodDiaryServiceModel?> GetModelByDateAndAthleteIdAsync(string athleteId, DateTime date)
         {
             return await this.data
                 .AllDeletableAsNoTracking<FoodDiary>()
@@ -37,13 +37,13 @@
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<FoodDiaryServiceModel> CreateForDateAsync(int athleteId, DateTime date)
+        public async Task<FoodDiaryServiceModel> CreateForDateAsync(string athleteId, DateTime date)
         {
             var foodDiary = await CreateDiaryAsync(athleteId, date);
             return this.mapper.Map<FoodDiaryServiceModel>(foodDiary);
         }
 
-        public async Task<FoodDiaryServiceModel> AddFoodAsync(int athleteId, int foodId, DateTime date, string mealType, int quantity)
+        public async Task AddFoodAsync(string athleteId, int foodId, DateTime date, string mealType, int quantity)
         {
             var diary = await this.data
                 .AllDeletable<FoodDiary>()
@@ -56,7 +56,7 @@
                 var meal = diary
                     .Meals
                     .FirstOrDefault(m => m.MealType == parsedMealType)
-                    ?? throw new InvalidOperationException("The meal does not exist!");
+                    ?? await this.CreateMealAsync(diary.Id, parsedMealType);
 
                 var food = await this.data
                     .Foods
@@ -69,20 +69,24 @@
                     .MealsFoods
                     .FirstOrDefaultAsync(mf => mf.FoodId == foodId && mf.MealId == meal.Id);
 
-                mapEntity ??= new MealFood()
+                if (mapEntity == null)
                 {
-                    FoodId = foodId,
-                    MealId = meal.Id,
-                };
+                    mapEntity = new MealFood()
+                    {
+                        FoodId = foodId,
+                        MealId = meal.Id,
+                    };
+
+                    this.data.Add(mapEntity);
+                }
 
                 mapEntity.Quantity = quantity;
-                this.data.Add(mapEntity);
                 await this.data.SaveChangesAsync();
-
-                return this.mapper.Map<FoodDiaryServiceModel>(diary);
             }
-
-            throw new InvalidOperationException("The meal type is not valid!");
+            else
+            {
+                throw new InvalidOperationException("The meal type is not valid!");
+            }
         }
 
         public async Task RemoveFoodAsync(int diaryId, int foodId, string mealType)
@@ -142,33 +146,21 @@
             await this.data.SaveChangesAsync();
         }
 
-        private async Task<FoodDiary> CreateDiaryAsync(int athleteId, DateTime date)
+        private async Task<FoodDiary> CreateDiaryAsync(string athleteId, DateTime date)
         {
-            var athlete = await this.data
-                .AllDeletable<Athlete>()
-                .FirstOrDefaultAsync(a => a.Id == athleteId)
-               ?? throw new InvalidOperationException("Athlete not found!");
-
-            var foodDiary = new FoodDiary()
-            {
-                AthleteId = athleteId,
-                Date = date,
-                Meals = new List<Meal>
-                {
-                    new() { MealType = MealType.Breakfast },
-                    new() { MealType = MealType.Lunch },
-                    new() { MealType = MealType.Dinner },
-                    new() { MealType = MealType.Snacks }
-                },
-                Athlete = athlete
-            };
-
+            var foodDiary = new FoodDiary(athleteId, date);
             this.data.Add(foodDiary);
             await this.data.SaveChangesAsync();
+
             return foodDiary;
         }
 
-        private static void UpdateNutritionalValues(Meal meal, Food food, FoodDiary foodDiary, int quantity, Func<decimal, decimal, decimal> operation)
+        private static void UpdateNutritionalValues(
+            Meal meal,
+            Food food,
+            FoodDiary foodDiary,
+            int quantity,
+            Func<decimal, decimal, decimal> operation)
         {
             var quantityFactor = (decimal)quantity / 100;
 
@@ -181,6 +173,20 @@
             foodDiary.Proteins = operation(foodDiary.Proteins, food.Proteins * quantityFactor);
             foodDiary.Carbohydrates = operation(foodDiary.Carbohydrates, food.Carbohydrates * quantityFactor);
             foodDiary.Fats = operation(foodDiary.Fats, food.Fats * quantityFactor);
+        }
+
+        private async Task<Meal> CreateMealAsync(int diaryId, MealType mealType)
+        {
+            var meal = new Meal()
+            {
+                FoodDiaryId = diaryId,
+                MealType = mealType
+            };
+
+            this.data.Add(meal);
+            await this.data.SaveChangesAsync();
+
+            return meal;
         }
     }
 }

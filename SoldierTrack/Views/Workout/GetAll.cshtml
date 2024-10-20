@@ -1,4 +1,5 @@
 ﻿@using SoldierTrack.Services.Workout.Models
+
 @using static SoldierTrack.Web.Common.Constants.WebConstants;
 
 @model WorkoutPageServiceModel
@@ -20,6 +21,7 @@
     var pageIndex = this.Model.PageIndex;
     var totalPages = this.Model.TotalPages;
     var pageSize = this.Model.PageSize;
+    var date = this.ViewBag.Date;
 }
 
 <div class="container my-5">
@@ -71,9 +73,9 @@
                             {
                                 <tr>
                                     <td>@workout.Title</td>
-                                    <td>@workout.Date.ToString("dd MMM yyyy")</td>
-                                    <td>@workout.Time.ToString(@"hh\:mm")</td>
-                                    <td>@workout.CategoryName</td>
+                                    <td><span class="utc-date" data-utc="@workout.Date.ToString("o")"></span></td>
+                                    <td>@workout.Date.ToLocalTime().ToString("hh:mm tt")</td>
+                                    <td>@workout.Category</td>
                                     <td>@workout.CurrentParticipants / @workout.MaxParticipants</td>
                                     <td>
                                         <div class="btn-group" role="group">
@@ -109,7 +111,8 @@
                         @if (pageIndex > 1)
                         {
                             <li class="page-item">
-                                <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@(pageIndex - 1)" asp-route-pageSize="@pageSize">Previous</a>
+                                <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@(pageIndex - 1)" asp-route-pageSize="@pageSize"
+                                   asp-route-date="@date">Previous</a>
                             </li>
                         }
                         else
@@ -122,7 +125,8 @@
                         @if (pageIndex > 3)
                         {
                             <li class="page-item">
-                                <a class="page-link" asp-action="GetAll" asp-route-pageIndex="1" asp-route-pageSize="@pageSize">1</a>
+                                <a class="page-link" asp-action="GetAll" asp-route-pageIndex="1" asp-route-pageSize="@pageSize"
+                                   asp-route-date="@date">1</a>
                             </li>
                             <li class="page-item disabled">
                                 <span class="page-link">...</span>
@@ -132,7 +136,8 @@
                         @for (int i = Math.Max(1, pageIndex - 2); i <= Math.Min(totalPages, pageIndex + 2); i++)
                         {
                             <li class="page-item @(i == pageIndex ? "active" : "")">
-                                <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@i" asp-route-pageSize="@pageSize">@i</a>
+                                <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@i" asp-route-pageSize="@pageSize"
+                                   asp-route-date="@date">@i</a>
                             </li>
                         }
 
@@ -142,14 +147,16 @@
                                 <span class="page-link">...</span>
                             </li>
                             <li class="page-item">
-                                <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@totalPages" asp-route-pageSize="@pageSize">@totalPages</a>
+                                <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@totalPages" asp-route-pageSize="@pageSize"
+                                   asp-route-date="@date">@totalPages</a>
                             </li>
                         }
 
                         @if (pageIndex < totalPages)
                         {
                             <li class="page-item">
-                                <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@(pageIndex + 1)" asp-route-pageSize="@pageSize">Next</a>
+                                <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@(pageIndex + 1)" asp-route-pageSize="@pageSize"
+                                   asp-route-date="@date">Next</a>
                             </li>
                         }
                         else
@@ -164,3 +171,5 @@
         </div>
     </div>
 </div>
+
+<script src="~/js/convertUtcToLocaleDate.js"></script>

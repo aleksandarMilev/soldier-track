@@ -1,21 +1,18 @@
 ﻿namespace SoldierTrack.Services.Membership
 {
     using SoldierTrack.Services.Membership.Models;
-    using SoldierTrack.Services.Membership.Models.Base;
 
     public interface IMembershipService
     {
-        Task RequestAsync(CreateMembershipServiceModel model);
+        Task RequestAsync(MembershipServiceModel model);
 
-        Task<IEnumerable<MembershipPendingServiceModel>> GetAllPendingAsync();
+        Task<MembershipPageServiceModel> GetArchiveByAthleteIdAsync(string athleteId, int pageIndex, int pageSize);
 
-        Task<MembershipArchivePageServiceModel> GetArchiveByAthleteIdAsync(int athleteId, int pageIndex, int pageSize);
+        Task<bool> MembershipExistsByAthleteIdAsync(string athleteId);
 
-        Task<bool> MembershipExistsByAthleteIdAsync(int athleteId);
+        Task<bool> MembershipIsApprovedByAthleteIdAsync(string athleteId);
 
-        Task<bool> MembershipIsApprovedByAthleteIdAsync(int athleteId);
-
-        Task<bool> MembershipIsExpiredByAthleteIdAsync (int athleteId);
+        Task<bool> MembershipIsExpiredByAthleteIdAsync (string athleteId);
 
         Task<int> GetPendingCountAsync();
 
@@ -25,12 +22,14 @@
 
         Task DeleteByIdAsync(int id);
 
-        Task DeleteByAthleteIdAsync(int athleteId);
+        Task DeleteByAthleteIdAsync(string athleteId);
+
+        Task DeleteIfExpiredAsync(string athleteId);
 
         Task UpdateMembershipOnWorkoutDeletionAsync(int? membershipId);
 
-        Task UpdateMembershipOnJoinByAthleteIdAsync(int athleteId);
+        Task UpdateMembershipOnJoinByAthleteIdAsync(string athleteId);
 
-        Task UpdateMembershipOnLeaveByAthleteIdAsync(int athleteId);
+        Task UpdateMembershipOnLeaveByAthleteIdAsync(string athleteId);
     }
 }

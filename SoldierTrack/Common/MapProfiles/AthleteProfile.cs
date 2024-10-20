@@ -8,11 +8,8 @@
     {
         public AthleteProfile()
         {
-            this.CreateMap<CreateAthleteViewModel, AthleteServiceModel>();
-
-            this.CreateMap<EditAthleteServiceModel, EditAthleteViewModel>()
+            this.CreateMap<AthleteFormModel, AthleteServiceModel>()
                 .ReverseMap();
-
         }
     }
 }

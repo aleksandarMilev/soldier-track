@@ -25,7 +25,7 @@
         public int Price { get; set; }
 
 
-        public int AthleteId { get; set; } 
+        public string AthleteId { get; set; } = null!;
 
 
         public Athlete Athlete { get; set; } = null!;

@@ -24,15 +24,11 @@
 }
 
 @{
+    var athleteId = this.User.GetId();
     var workout = this.Model;
-
-    var workoutIsClosed =
-        workout.Date < DateTime.Now.Date ||
-        (workout.Date == DateTime.Now.Date && workout.Time < DateTime.Now.TimeOfDay);
-
+    var workoutIsClosed = workout.MaxParticipants <= workout.CurrentParticipants;
     var userIsAdmin = this.User.IsAdmin();
     var userIsAthlete = this.User.Identity != null && this.User.Identity.IsAuthenticated && !userIsAdmin;
-
 }
 
 <div class="container mt-4">
@@ -46,11 +42,11 @@
             <table class="table table-sm table-striped">
                 <tr>
                     <th>Date:</th>
-                    <td>@workout.Date.ToString("dd MMM yyyy")</td>
+                    <td><span class="utc-date" data-utc="@workout.Date.ToString("o")"></span></td>
                 </tr>
                 <tr>
                     <th>Time:</th>
-                    <td>@workout.Time.ToString(@"hh\:mm")</td>
+                    <td>@workout.Date.ToLocalTime().ToString("hh:mm tt")</td>
                 </tr>
                 @if (!string.IsNullOrEmpty(workout.BriefDescription))
                 {
@@ -68,7 +64,7 @@
                 }
                 <tr>
                     <th>Category:</th>
-                    <td>@workout.CategoryName.ToString()</td>
+                    <td>@workout.Category.ToString()</td>
                 </tr>
                 <tr>
                     <th>For Beginners:</th>
@@ -86,13 +82,13 @@
 
             @if (userIsAthlete && !workoutIsClosed)
             {
-                if (workout.ShowJoinButton && !(workout.CurrentParticipants == workout.MaxParticipants))
+                if (workout.ShowJoinButton)
                 {
                     <form 
                         asp-area=""
                         asp-controller="Athlete"
                         asp-action="Join"
-                        asp-route-athleteId="@this.ViewBag.AthleteId"
+                        asp-route-athleteId="@athleteId"
                         asp-route-workoutId="@workout.Id"
                         method="post"
                         onsubmit="return confirm('Are you sure you want to join in the workout?')">
@@ -106,7 +102,7 @@
                         asp-area=""
                         asp-controller="Athlete"
                         asp-action="Leave"
-                        asp-route-athleteId="@this.ViewBag.AthleteId"
+                        asp-route-athleteId="@athleteId"
                         asp-route-workoutId="@workout.Id"
                         method="post"
                         onsubmit=
@@ -188,3 +184,5 @@
     </div>
         <a asp-area="" asp-controller="Workout" asp-action="GetAll" class="btn btn-secondary mt-4 narrow-button">Back to List</a>
 </div>
+
+<script src="~/js/convertUtcToLocaleDate.js"></script>

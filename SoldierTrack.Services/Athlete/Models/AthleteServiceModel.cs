@@ -1,8 +1,11 @@
 ﻿namespace SoldierTrack.Services.Athlete.Models
 {
-    using SoldierTrack.Services.Athlete.Models.Base;
-
-    public class AthleteServiceModel : AthleteBaseModel
+    public class AthleteServiceModel
     {
+        public string Id { get; init; } = null!;
+        public string FirstName { get; init; } = null!;
+        public string LastName { get; init; } = null!;
+        public string PhoneNumber { get; init; } = null!;
+        public string Email { get; set; } = null!;
     }
 }

@@ -5,11 +5,11 @@
     using SoldierTrack.Services.Athlete;
     using SoldierTrack.Services.Membership;
     using SoldierTrack.Services.Workout;
-    using SoldierTrack.Services.Workout.Models;
     using SoldierTrack.Web.Common.Extensions;
 
     using static SoldierTrack.Web.Common.Constants.WebConstants;
 
+    [Authorize]
     public class WorkoutController : Controller
     {
         private readonly IWorkoutService workoutService;
@@ -27,43 +27,39 @@
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> GetAll(DateTime? date = null, int pageIndex = 1, int pageSize = 5)
         {
             pageSize = Math.Min(pageSize, MaxPageSize);
             pageSize = Math.Max(pageSize, MinPageSize);
 
+            this.ViewBag.Date = date;
             var model = await this.workoutService.GetAllAsync(date, pageIndex, pageSize);
             return this.View(model);
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> Details(int id)
         {
-            var model = await this.workoutService.GetDetailsModelByIdAsync(id);
+            var athleteId = this.User.GetId()!;
+            await this.membershipService.DeleteIfExpiredAsync(athleteId);
+
+            var model = await this.workoutService.GetDetailsModelByIdAsync(id, athleteId);
 
             if (model == null)
             {
                 return this.NotFound();
             }
 
-            if (await this.athleteService.UserIsAthleteByUserIdAsync(this.User.GetId()!))
-            {
-                await this.SetViewModelButtons(id, model);
-            }
-
             return this.View(model);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetArchive(int athleteId, int pageIndex = 1, int pageSize = 5)
+        public async Task<IActionResult> GetArchive(string athleteId, int pageIndex = 1, int pageSize = 5)
         {
             pageSize = Math.Min(pageSize, MaxPageSize);
             pageSize = Math.Max(pageSize, MinPageSize);
 
-            var currentAthleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
-            if (currentAthleteId != athleteId)
+            if (this.User.GetId() != athleteId)
             {
                 return this.Unauthorized();
             }
@@ -71,42 +67,6 @@
             this.ViewBag.AthleteId = athleteId;
             var model = await this.workoutService.GetArchiveAsync(athleteId, pageIndex, pageSize);
             return this.View(model);
-        }
-
-        private async Task SetViewModelButtons(int workoutId, WorkoutDetailsServiceModel model)
-        {
-            var athleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
-
-            if (!await this.membershipService.MembershipExistsByAthleteIdAsync(athleteId.Value))
-            {
-                return;
-            }
-
-            this.ViewBag.AthleteId = athleteId.Value;
-
-            var athleteHasApprovedMembership = await this.membershipService.MembershipIsApprovedByAthleteIdAsync(athleteId.Value);
-            var athleteMembershipIsExpried = await this.membershipService.MembershipIsExpiredByAthleteIdAsync(athleteId.Value);
-
-            if (athleteMembershipIsExpried)
-            {
-                await this.membershipService.DeleteByAthleteIdAsync(athleteId.Value);
-            }
-
-            if (athleteHasApprovedMembership && !athleteMembershipIsExpried)
-            {
-                model.ShowJoinButton = true;
-            }
-
-            var athleteAlreadyJoined = await this.athleteService.AthleteAlreadyJoinedByIdAsync(athleteId.Value, workoutId);
-
-            if (athleteAlreadyJoined)
-            {
-                model.ShowJoinButton = false;
-                model.ShowLeaveButton = true;
-            }
-
-            var athleteHasMembership = await this.membershipService.MembershipExistsByAthleteIdAsync(athleteId.Value);
-            model.AthleteHasMembership = athleteHasMembership;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿@using SoldierTrack.Web.Areas.Administrator.Models.Workout
 
-@model EditWorkoutViewModel
+@model WorkoutFormModel
 @{
     this.ViewData["Title"] = "Edit Workout";
 }
@@ -9,8 +9,8 @@
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-md-6">
             <h2>Edit Workout</h2>
-            <form asp-area="Administrator" asp-controller="Workout" asp-action="Edit" method="post" class="form-horizontal">
-                <partial name="_WorkoutFormPartial" model="Model" />
+            <form asp-area="Administrator" asp-controller="Workout" asp-action="Edit" asp-route-id="@this.ViewBag.Id" method="post" class="form-horizontal">
+                <partial name="_FormPartial" model="Model" />
                 <div class="form-group" style="margin-top: 1em">
                     <button type="submit" class="btn btn-primary">Edit</button>
                     <a asp-action="GetAll" class="btn btn-secondary">Cancel</a>

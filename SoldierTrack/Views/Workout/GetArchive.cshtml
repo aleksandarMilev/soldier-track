@@ -1,6 +1,6 @@
 ﻿@using SoldierTrack.Services.Workout.Models
 
-@model WorkoutArchivePageServiceModel
+@model WorkoutPageServiceModel
 
 @{
     this.ViewData["Title"] = "Workout Archive";
@@ -41,7 +41,7 @@
                                 <td>
                                     <span class="utc-date" data-utc="@workout.Date.ToString("o")"></span>
                                 </td>
-                                <td>@workout.Time.ToString(@"hh\:mm")</td>
+                                <td>@workout.Date.ToString(@"hh\:mm")</td>
                             </tr>
                         }
                     </tbody>

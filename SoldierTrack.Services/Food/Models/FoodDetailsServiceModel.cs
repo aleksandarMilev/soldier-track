@@ -1,8 +1,6 @@
 ﻿namespace SoldierTrack.Services.Food.Models
 {
-    using SoldierTrack.Services.Food.Models.Base;
-
-    public class FoodDetailsServiceModel : FoodBaseModel
+    public class FoodDetailsServiceModel : FoodServiceModel
     {
         public int Quantity { get; init; }
     }

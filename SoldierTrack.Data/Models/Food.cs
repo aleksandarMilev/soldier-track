@@ -25,7 +25,7 @@
         public string ImageUrl { get; set; } = null!;
 
         [ForeignKey(nameof(Athlete))]
-        public int? AthleteId { get; set; }
+        public string? AthleteId { get; set; }
 
         public Athlete? Athlete { get; set; } 
 

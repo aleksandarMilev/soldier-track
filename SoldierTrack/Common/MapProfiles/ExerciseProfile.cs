@@ -8,7 +8,7 @@
     {
         public ExerciseProfile()
         {
-            this.CreateMap<CreateExerciseViewModel, ExerciseDetailsServiceModel>()
+            this.CreateMap<ExerciseFormModel, ExerciseDetailsServiceModel>()
                 .ReverseMap();
         }
     }

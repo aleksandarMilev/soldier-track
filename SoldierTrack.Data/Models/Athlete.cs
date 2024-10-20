@@ -8,7 +8,7 @@
 
     using static SoldierTrack.Data.Constants.ModelsConstraints.AthleteConstraints;
 
-    public class Athlete : BaseDeletableModel<int>
+    public class Athlete : IdentityUser, IDeletableEntity
     {
         [Required]
         [MaxLength(NamesMaxLength)]
@@ -18,18 +18,9 @@
         [MaxLength(NamesMaxLength)]
         public string LastName { get; set; } = null!;
 
-        [Required]
-        [MaxLength(PhoneLength)]
-        public string PhoneNumber { get; set; } = null!;
+        public bool IsDeleted { get; set; }
 
-        [MaxLength(EmailMaxLength)]
-        public string? Email { get; set; } = null!;
-
-        [Required]
-        [ForeignKey(nameof(User))]
-        public string UserId { get; set; } = null!;
-
-        public IdentityUser User { get; set; } = null!;
+        public DateTime? DeletedOn { get; set; }
 
         [ForeignKey(nameof(Membership))]
         public int? MembershipId { get; set; }

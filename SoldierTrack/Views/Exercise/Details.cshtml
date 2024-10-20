@@ -43,6 +43,14 @@
                             {
                                 <span class="badge bg-danger badge-lg">Advanced</span>
                             }
+                            @if (this.Model.AthleteId == null)
+                            {
+                                <span class="badge bg-primary badge-lg">Approved</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger badge-lg">Custom</span>
+                            }
                         </div>
                     </div>
                     <div class="card-body text-center">
@@ -91,52 +99,51 @@
                 }
                 <div class="card-footer bg-light text-center mt-3">
                     <div class="d-flex justify-content-center gap-2 flex-wrap">
-                        @if (this.ViewBag.ShowCreateButton != null)
+                        @if (athleteId != null)
                         {
-                            <a 
-                                asp-controller="Achievement"
-                                asp-route-athleteId="@athleteId"
-                                asp-route-exerciseId="@this.Model.Id"
-                                asp-action="Create"
-                                class="btn btn-primary btn-sm">
+                            @if (this.ViewBag.ShowCreateButton != null)
+                            {
+                                <a asp-controller="Achievement"
+                                   asp-route-athleteId="@athleteId"
+                                   asp-route-exerciseId="@this.Model.Id"
+                                   asp-action="Create"
+                                   class="btn btn-primary btn-sm">
                                     Create Achievement
-                            </a>
-                        }
-                        else
-                        {
-                            <a 
-                                asp-controller="Achievement" 
-                                asp-route-id="@this.ViewBag.AchievementId"
-                                asp-action="Edit" 
-                                class="btn btn-outline-primary btn-sm">
+                                </a>
+                            }
+                            else
+                            {
+                                <a asp-controller="Achievement"
+                                   asp-route-id="@this.ViewBag.AchievementId"
+                                   asp-action="Edit"
+                                   class="btn btn-outline-primary btn-sm">
                                     Update Achievement
-                            </a>
-                        }
+                                </a>
+                            }
 
-                        @if (this.ViewBag.ShowEditButton != null)
-                        {
-                            <a asp-controller="Exercise"
-                               asp-route-athleteId="@athleteId"
-                               asp-route-exerciseId="@this.Model.Id"
-                               asp-action="Edit"
-                               class="btn btn-warning btn-sm">
+                            @if (this.ViewBag.ShowEditButton != null)
+                            {
+                                <a asp-controller="Exercise"
+                                   asp-route-athleteId="@athleteId"
+                                   asp-route-exerciseId="@this.Model.Id"
+                                   asp-action="Edit"
+                                   class="btn btn-warning btn-sm">
                                     Edit Exercise
-                            </a>
-                        }
+                                </a>
+                            }
 
-                        @if (this.ViewBag.ShowDeleteButton != null)
-                        {
-                            <form
-                                method="post"
-                                asp-controller="Exercise"
-                                asp-action="Delete"
-                                asp-route-athleteId="@athleteId"
-                                asp-route-exerciseId="@this.Model.Id"
-                                onSubmit="return alert('Are you sure you want to delete this exercise?')">
-                                <button class="btn btn-danger btn-sm">Delete Exercise</button>
-                            </form>
+                            @if (this.ViewBag.ShowDeleteButton != null)
+                            {
+                                <form method="post"
+                                      asp-controller="Exercise"
+                                      asp-action="Delete"
+                                      asp-route-athleteId="@athleteId"
+                                      asp-route-exerciseId="@this.Model.Id"
+                                      onSubmit="return alert('Are you sure you want to delete this exercise?')">
+                                    <button class="btn btn-danger btn-sm">Delete Exercise</button>
+                                </form>
+                            }
                         }
-
                         <a asp-action="GetAll" class="btn btn-outline-secondary btn-sm">Back</a>
                     </div>
                 </div>

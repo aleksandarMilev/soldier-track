@@ -8,7 +8,7 @@
     public class AthleteWorkout
     {
         [ForeignKey(nameof(Athlete))]
-        public int AthleteId { get; set; }
+        public string AthleteId { get; set; } = null!;
 
         public Athlete Athlete { get; set; } = null!;
 

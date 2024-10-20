@@ -1,6 +1,7 @@
 ﻿namespace SoldierTrack.Web.Common.Extensions
 {
     using Microsoft.AspNetCore.Identity;
+    using SoldierTrack.Data.Models;
 
     using static SoldierTrack.Web.Common.Constants.WebConstants;
 
@@ -12,7 +13,7 @@
 
             var userManager = scope
                 .ServiceProvider
-                .GetRequiredService<UserManager<IdentityUser>>();
+                .GetRequiredService<UserManager<Athlete>>();
 
             var roleManager = scope
                 .ServiceProvider
@@ -31,8 +32,10 @@
 
                 if (admin == null)
                 {
-                    admin = new IdentityUser()
+                    admin = new Athlete()
                     {
+                        FirstName = AdminRoleName,
+                        LastName = AdminRoleName,
                         UserName = AdminEmail,
                         Email = AdminEmail
                     };

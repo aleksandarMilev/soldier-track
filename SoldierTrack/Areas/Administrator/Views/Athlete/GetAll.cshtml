@@ -60,7 +60,7 @@
                         {
                             @if (athlete.Membership.IsPending)
                             {
-                                <button class="btn btn-sm btn-warning me-1" onclick="toggleApprovalButtons(@athlete.Id)">
+                                <button class="btn btn-sm btn-warning me-1" onclick="toggleApprovalButtons('@athlete.Id')">
                                     Membership is pending
                                 </button>
 
@@ -68,7 +68,7 @@
                                     <form asp-area="Administrator"
                                           asp-controller="Membership"
                                           asp-action="Approve"
-                                          asp-route-membershipId="@athlete.MembershipId"
+                                          asp-route-id="@athlete.MembershipId"
                                           asp-route-athleteId="@athlete.Id"
                                           method="post"
                                           class="d-inline">
@@ -79,7 +79,7 @@
                                     <form asp-area="Administrator"
                                           asp-controller="Membership"
                                           asp-action="Reject"
-                                          asp-route-membershipId="@athlete.MembershipId"
+                                          asp-route-id="@athlete.MembershipId"
                                           asp-route-athleteId="@athlete.Id"
                                           method="post"
                                           class="d-inline">

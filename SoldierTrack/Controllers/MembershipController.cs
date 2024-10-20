@@ -1,39 +1,43 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
+    using AutoMapper;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using SoldierTrack.Services.Athlete;
     using SoldierTrack.Services.Membership;
-    using SoldierTrack.Web.Common.Attributes.Filter;
+    using SoldierTrack.Services.Membership.Models;
     using SoldierTrack.Web.Common.Extensions;
-    using SoldierTrack.Web.Common.CustomMapping;
     using SoldierTrack.Web.Models.Membership;
 
-    using static SoldierTrack.Web.Common.Constants.WebConstants;
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
+    using static SoldierTrack.Web.Common.Constants.WebConstants;
 
-    [AthleteAuthorization]
+    [Authorize]
     public class MembershipController : Controller
     {
         private readonly IMembershipService membershipService;
         private readonly IAthleteService athleteService;
+        private readonly IMapper mapper;
 
         public MembershipController(
             IMembershipService membershipService,
-            IAthleteService athleteService)
+            IAthleteService athleteService,
+            IMapper mapper)
         {
             this.membershipService = membershipService;
             this.athleteService = athleteService;
+            this.mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<IActionResult> RequestMembership(int athleteId)
+        public async Task<IActionResult> RequestMembership(string athleteId)
         {
             if (await this.membershipService.MembershipExistsByAthleteIdAsync(athleteId))
             {
                 return this.RedirectToAction("Details", "Athlete", new { id = athleteId });
             }
 
-            var viewModel = new CreateMembershipViewModel()
+            var viewModel = new MembershipFormModel()
             {
                 AthleteId = athleteId,
                 StartDate = DateTime.Now
@@ -43,14 +47,15 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> RequestMembership(CreateMembershipViewModel viewModel)
+        public async Task<IActionResult> RequestMembership(MembershipFormModel viewModel)
         {
             if (!this.ModelState.IsValid)
             {
                 return this.View(viewModel);
             }
 
-            var serviceModel = viewModel.MapToCreateMembershipServiceModel();
+            viewModel.StartDate = DateTime.UtcNow;
+            var serviceModel = this.mapper.Map<MembershipServiceModel>(viewModel);
             await this.membershipService.RequestAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = MembershipRequested;
@@ -58,13 +63,12 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetArchive(int athleteId, int pageIndex = 1, int pageSize = 5)
+        public async Task<IActionResult> GetArchive(string athleteId, int pageIndex = 1, int pageSize = 5)
         {
             pageSize = Math.Min(pageSize, MaxPageSize);
             pageSize = Math.Max(pageSize, MinPageSize);
 
-            var currentAthleteId = await this.athleteService.GetIdByUserIdAsync(this.User.GetId()!);
-            if (currentAthleteId != athleteId)
+            if (this.User.GetId() != athleteId)
             {
                 return this.Unauthorized();
             }

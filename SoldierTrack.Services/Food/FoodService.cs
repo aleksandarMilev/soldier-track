@@ -14,20 +14,14 @@
         private readonly IFoodDiaryService foodDiaryService;
         private readonly IMapper mapper;
 
-        public FoodService(ApplicationDbContext data, IFoodDiaryService foodDiaryService, IMapper mapper)
+        public FoodService(
+            ApplicationDbContext data,
+            IFoodDiaryService foodDiaryService,
+            IMapper mapper)
         {
             this.data = data;
             this.foodDiaryService = foodDiaryService;
             this.mapper = mapper;
-        }
-
-        public async Task<int> CreateAsync(FoodServiceModel model)
-        {
-            var food = this.mapper.Map<Food>(model);
-            this.data.Add(food);
-            await this.data.SaveChangesAsync();
-
-            return food.Id;
         }
 
         public async Task<FoodPageServiceModel> GetPageModelsAsync(string? searchTerm, int pageIndex, int pageSize)
@@ -44,23 +38,13 @@
             }
 
             var totalCount = await query.CountAsync();
-
             var foods = await query
                 .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-
-            var pageViewModel = new FoodPageServiceModel()
-            {
-                Foods = foods,
-                PageIndex = pageIndex,
-                TotalPages = totalPages,
-                PageSize = pageSize
-            };
-
-            return pageViewModel;
+            return new FoodPageServiceModel(foods, pageIndex, totalPages, pageSize);
         }
 
         public async Task<FoodServiceModel?> GetByIdAsync(int id)
@@ -70,6 +54,15 @@
                 .AsNoTracking()
                 .ProjectTo<FoodServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(f => f.Id == id);
+        }
+
+        public async Task<int> CreateAsync(FoodServiceModel model)
+        {
+            var food = this.mapper.Map<Food>(model);
+            this.data.Add(food);
+            await this.data.SaveChangesAsync();
+
+            return food.Id;
         }
 
         public async Task EditAsync(FoodServiceModel model)
@@ -83,7 +76,7 @@
             await this.data.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int foodId, int athleteId)
+        public async Task DeleteAsync(int foodId, string athleteId)
         {
             var food = await this.data
                  .Foods

@@ -2,6 +2,7 @@
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+
     using SoldierTrack.Data.Models.Base;
     using SoldierTrack.Data.Models.Enums;
 
@@ -26,7 +27,7 @@
         public bool IsForBeginners { get; set; }
 
         [ForeignKey(nameof(Athlete))]
-        public int? AthleteId { get; set; }
+        public string? AthleteId { get; set; }
 
         public Athlete? Athlete { get; set; }
 

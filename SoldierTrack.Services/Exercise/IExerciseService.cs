@@ -6,7 +6,7 @@
     {
         Task<ExerciseDetailsServiceModel?> GetDetailsById(int id);
 
-        Task<ExercisePageServiceModel> GetPageModelsAsync(string? searchTerm, int athleteId, bool includeMine, int pageIndex, int pageSize);
+        Task<ExercisePageServiceModel> GetPageModelsAsync(string? searchTerm, string athleteId, bool includeMine, int pageIndex, int pageSize);
 
         Task<string> GetNameByIdAsync(int id);
 
@@ -14,6 +14,6 @@
 
         Task EditAsync(ExerciseDetailsServiceModel model);
 
-        Task DeleteAsync(int exerciseId, int athleteId);
+        Task DeleteAsync(int exerciseId, string athleteId);
     }
 }

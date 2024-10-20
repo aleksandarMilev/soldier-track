@@ -12,7 +12,7 @@
 
         Task EditAsync(FoodServiceModel model);
 
-        Task DeleteAsync(int foodId, int athleteId);
+        Task DeleteAsync(int foodId, string athleteId);
 
     }
 }

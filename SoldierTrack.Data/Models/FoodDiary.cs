@@ -7,9 +7,17 @@
 
     public class FoodDiary : BaseDeletableModel<int>
     {
+        public FoodDiary()
+        {}
+
+        public FoodDiary(string athleteId, DateTime date)
+        {
+            this.AthleteId = athleteId;
+            this.Date = date;
+        }
 
         [ForeignKey(nameof(Athlete))]
-        public int AthleteId { get; set; }
+        public string AthleteId { get; set; } = null!;
 
         public Athlete Athlete { get; set; } = null!;
 

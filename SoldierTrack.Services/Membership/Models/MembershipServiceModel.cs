@@ -1,15 +1,23 @@
 ﻿namespace SoldierTrack.Services.Membership.Models
 {
-    using SoldierTrack.Services.Membership.Models.Base;
-
-    public class MembershipServiceModel : MembershipBaseModel
+    public class MembershipServiceModel 
     {
-        public bool IsPending { get; init; }
+        public int Id { get; set; }
 
-        public DateTime? EndDate { get; init; }
+        public bool IsMonthly { get; set; }
 
-        public int Price { get; init; }
+        public bool IsPending { get; set; }
 
-        public int? WorkoutsLeft { get; init; }
+        public DateTime StartDate { get; set; }
+
+        public DateTime? EndDate { get; set; }
+
+        public int? TotalWorkoutsCount { get; set; }
+
+        public int? WorkoutsLeft { get; set; }
+
+        public int Price { get; set; }
+
+        public string AthleteId { get; set; } = null!;
     }
 }

@@ -9,23 +9,21 @@
     {
         public WorkoutProfile()
         {
-            this.CreateMap<WorkoutServiceModel, Workout>();
-
-            this.CreateMap<Workout, EditWorkoutServiceModel>()
-                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.CategoryName.Name))
+            this.CreateMap<WorkoutServiceModel, Workout>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.CurrentParticipants, opt => opt.Ignore())
                 .ReverseMap()
-                .ForMember(dest => dest.CategoryName, opt => opt.Ignore());
+                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.DateTime));
 
             this.CreateMap<Workout, WorkoutDetailsServiceModel>()
-                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.CategoryName.Name))
-                .ForMember(dest => dest.Athletes, opt => opt.MapFrom(src => src.AthletesWorkouts.Select(aw => aw.Athlete)));
+                .ForMember(dest => dest.Athletes, opt => opt.MapFrom(src => src.AthletesWorkouts.Select(aw => aw.Athlete)))
+                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.DateTime));
 
-            this.CreateMap<Athlete, AthleteSummaryServiceModel>();
+            this.CreateMap<Athlete, AthleteServiceModel>();
 
             this.CreateMap<AthleteWorkout, WorkoutServiceModel>()
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Workout.Title))
-                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Workout.Date))
-                .ForMember(dest => dest.Time, opt => opt.MapFrom(src => src.Workout.Time));
+                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Workout.DateTime));
         }
     }
 }

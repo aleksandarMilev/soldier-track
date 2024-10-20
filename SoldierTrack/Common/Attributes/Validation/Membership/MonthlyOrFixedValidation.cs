@@ -2,13 +2,13 @@
 {
     using System.ComponentModel.DataAnnotations;
 
-    using SoldierTrack.Web.Models.Membership.Base;
+    using SoldierTrack.Web.Models.Membership;
 
     public class MonthlyOrFixedValidation : ValidationAttribute
     {
         public override bool IsValid(object? value)
         {
-            if (value is not MembershipBaseFormModel model)
+            if (value is not MembershipFormModel model)
             {
                 return false;
             }

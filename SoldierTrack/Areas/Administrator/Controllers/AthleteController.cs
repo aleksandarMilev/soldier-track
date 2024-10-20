@@ -4,10 +4,10 @@
     using Microsoft.AspNetCore.Mvc;
     using SoldierTrack.Services.Athlete;
     using SoldierTrack.Services.Workout;
-    using SoldierTrack.Web.Areas.Administrator.Models;
 
     using static SoldierTrack.Web.Common.Constants.WebConstants;
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
+    using SoldierTrack.Web.Areas.Administrator.Models.Athlete;
 
     [Area(AdminRoleName)]
     [Authorize(Roles = AdminRoleName)]
@@ -33,38 +33,44 @@
         }
 
         [HttpGet]
-        public IActionResult AddToWorkout(int athleteId)
+        public IActionResult AddToWorkout(string athleteId)
         {
-            var model = new AddAthleteToWorkoutViewModel() 
-            { 
+            var model = new AddAthleteToWorkoutModel()
+            {
                 AthleteId = athleteId,
-                WorkoutDate = DateTime.Now 
+                WorkoutDate = DateTime.Now,
             };
 
             return this.View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddToWorkout(AddAthleteToWorkoutViewModel model)
+        public async Task<IActionResult> AddToWorkout(AddAthleteToWorkoutModel model)
         {
-            var workout = await this.workoutService.GetByDateAndTimeAsync(model.WorkoutDate, model.WorkoutTime);
+            var workoutId = await this.workoutService.GetIdByDateAndTimeAsync(model.WorkoutDate, model.WorkoutTime);
 
-            if (workout == null)
+            if (workoutId == null)
             {
                 this.ModelState.AddModelError("", WorkoutNotFound);
                 return this.View(model);
             }
 
-            if (await this.athleteService.AthleteAlreadyJoinedByIdAsync(model.AthleteId, workout.Id))
+            if (await this.athleteService.AthleteAlreadyJoinedByIdAsync(model.AthleteId, workoutId.Value))
             {
-                this.ModelState.AddModelError("", string.Format(AthleteAlreadyJoined, workout.Title));
+                this.ModelState.AddModelError("", AthleteAlreadyJoined);
                 return this.View(model);
             }
 
-            await this.athleteService.JoinAsync(model.AthleteId, workout.Id);
+            if (await this.workoutService.WorkoutIsFull(workoutId.Value))
+            {
+                this.ModelState.AddModelError("", WorkoutIsFull);
+                return this.View(model);
+            }
 
-            this.TempData["SuccessMessage"] = string.Format(string.Format(AdminAddedAthlete, workout.Title));
-            return this.RedirectToAction("Details", "Workout", new { id = workout.Id, area = "" });
+            await this.athleteService.JoinAsync(model.AthleteId, workoutId.Value);
+
+            this.TempData["SuccessMessage"] = AdminAddedAthlete;
+            return this.RedirectToAction("Details", "Workout", new { id = workoutId, area = "" });
         }
     }
 }

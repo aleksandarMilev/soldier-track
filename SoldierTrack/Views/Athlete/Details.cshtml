@@ -12,7 +12,6 @@
     var workouts = this.Model.Workouts;
 
     var userIsAdmin = this.User.IsInRole(AdminRoleName);
-    var userId = this.User.GetId();
 }
 
 @if (this.TempData["SuccessMessage"] != null)
@@ -94,10 +93,11 @@
                         }
                         else
                         {
+                            <a asp-area="" asp-controller="Athlete" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-sm">Edit</a>
                             <a asp-area="" asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary btn-sm">Back</a>
                         }
-                        <a asp-area="" asp-controller="Athlete" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-sm">Edit</a>
-                        <form asp-area="" asp-controller="Athlete" asp-action="Delete" asp-route-id="@this.Model.Id" asp-route-userId="@this.Model.UserId" class="d-inline" method="post" onsubmit="return confirm('Are you sure you want to delete the profile?');">
+                       
+                        <form asp-area="" asp-controller="Athlete" asp-action="Delete" asp-route-id="@this.Model.Id" class="d-inline" method="post" onsubmit="return confirm('Are you sure you want to delete the profile?');">
                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                         </form>
                     </div>
@@ -113,17 +113,22 @@
             </form>
         </div>
     }
-    <div class="text-center mt-4">
-        <a asp-area="" asp-controller="Membership" asp-action="GetArchive" asp-route-athleteId="@this.Model.Id" class="btn btn-outline-secondary btn-sm">Membership Archive</a>
-        <a asp-area="" asp-controller="Workout" asp-action="GetArchive" asp-route-athleteId="@this.Model.Id" class="btn btn-outline-secondary btn-sm">Workout Archive</a>
-    </div>
+
+    @if (!userIsAdmin)
+    {
+        <div class="text-center mt-4">
+            <a asp-area="" asp-controller="Membership" asp-action="GetArchive" asp-route-athleteId="@this.Model.Id" class="btn btn-outline-secondary btn-sm">Membership Archive</a>
+            <a asp-area="" asp-controller="Workout" asp-action="GetArchive" asp-route-athleteId="@this.Model.Id" class="btn btn-outline-secondary btn-sm">Workout Archive</a>
+        </div>
+    }
+    
     @if (workouts.Any())
     {
         <h2 class="text-center mt-5 mb-4">Scheduled Workouts</h2>
         <div class="row">
             @foreach (var workout in workouts)
             {
-                var workoutIsClosed = workout.Date < DateTime.Now.Date || (workout.Date == DateTime.Now.Date && workout.Time < DateTime.Now.TimeOfDay);
+                var workoutIsClosed = workout.Date < DateTime.UtcNow;
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="card h-100 shadow-sm">
                         <div class="card-body">
@@ -131,7 +136,7 @@
                             <p class="card-text">@workout.BriefDescription</p>
                             <hr />
                             <p><strong>Date:</strong> @workout.Date.ToString("dd MMM yyyy")</p>
-                            <p><strong>Time:</strong> @workout.Time.ToString(@"hh\:mm")</p>
+                            <p><strong>Time:</strong> @workout.Date.ToString(@"hh\:mm")</p>
                         </div>
                         <div class="card-footer text-end">
                             <a asp-area="" asp-controller="Workout" asp-action="Details" asp-route-id="@workout.Id" class="btn btn-secondary btn-sm">Details</a>

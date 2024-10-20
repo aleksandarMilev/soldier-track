@@ -17,7 +17,7 @@ namespace SoldierTrack.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -86,6 +86,11 @@ namespace SoldierTrack.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("nvarchar(13)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -137,6 +142,10 @@ namespace SoldierTrack.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator().HasValue("IdentityUser");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -167,12 +176,10 @@ namespace SoldierTrack.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -209,12 +216,10 @@ namespace SoldierTrack.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -232,8 +237,9 @@ namespace SoldierTrack.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AthleteId")
-                        .HasColumnType("int");
+                    b.Property<string>("AthleteId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
@@ -265,67 +271,10 @@ namespace SoldierTrack.Data.Migrations
                     b.ToTable("Achievements");
                 });
 
-            modelBuilder.Entity("SoldierTrack.Data.Models.Athlete", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int?>("MembershipId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MembershipId")
-                        .IsUnique()
-                        .HasFilter("[MembershipId] IS NOT NULL");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Athletes");
-                });
-
             modelBuilder.Entity("SoldierTrack.Data.Models.AthleteWorkout", b =>
                 {
-                    b.Property<int>("AthleteId")
-                        .HasColumnType("int");
+                    b.Property<string>("AthleteId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("WorkoutId")
                         .HasColumnType("int");
@@ -337,30 +286,6 @@ namespace SoldierTrack.Data.Migrations
                     b.ToTable("AthletesWorkouts");
                 });
 
-            modelBuilder.Entity("SoldierTrack.Data.Models.Category", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Categories");
-                });
-
             modelBuilder.Entity("SoldierTrack.Data.Models.Exercise", b =>
                 {
                     b.Property<int>("Id")
@@ -369,8 +294,8 @@ namespace SoldierTrack.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AthleteId")
-                        .HasColumnType("int");
+                    b.Property<string>("AthleteId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Category")
                         .HasColumnType("int");
@@ -414,8 +339,8 @@ namespace SoldierTrack.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AthleteId")
-                        .HasColumnType("int");
+                    b.Property<string>("AthleteId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Carbohydrates")
                         .HasColumnType("decimal(18,2)");
@@ -460,8 +385,9 @@ namespace SoldierTrack.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AthleteId")
-                        .HasColumnType("int");
+                    b.Property<string>("AthleteId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Carbohydrates")
                         .HasColumnType("decimal(18,2)");
@@ -562,8 +488,9 @@ namespace SoldierTrack.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AthleteId")
-                        .HasColumnType("int");
+                    b.Property<string>("AthleteId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
@@ -605,8 +532,8 @@ namespace SoldierTrack.Data.Migrations
 
             modelBuilder.Entity("SoldierTrack.Data.Models.MembershipArchive", b =>
                 {
-                    b.Property<int>("AthleteId")
-                        .HasColumnType("int");
+                    b.Property<string>("AthleteId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("MembershipId")
                         .HasColumnType("int");
@@ -633,7 +560,7 @@ namespace SoldierTrack.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int>("Category")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedOn")
@@ -642,7 +569,7 @@ namespace SoldierTrack.Data.Migrations
                     b.Property<int>("CurrentParticipants")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Date")
+                    b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedOn")
@@ -668,9 +595,6 @@ namespace SoldierTrack.Data.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<TimeSpan>("Time")
-                        .HasColumnType("time");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -678,9 +602,37 @@ namespace SoldierTrack.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
                     b.ToTable("Workouts");
+                });
+
+            modelBuilder.Entity("SoldierTrack.Data.Models.Athlete", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("MembershipId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("MembershipId")
+                        .IsUnique()
+                        .HasFilter("[MembershipId] IS NOT NULL");
+
+                    b.HasDiscriminator().HasValue("Athlete");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -751,23 +703,6 @@ namespace SoldierTrack.Data.Migrations
                     b.Navigation("Athlete");
 
                     b.Navigation("Exercise");
-                });
-
-            modelBuilder.Entity("SoldierTrack.Data.Models.Athlete", b =>
-                {
-                    b.HasOne("SoldierTrack.Data.Models.Membership", "Membership")
-                        .WithOne("Athlete")
-                        .HasForeignKey("SoldierTrack.Data.Models.Athlete", "MembershipId");
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Membership");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SoldierTrack.Data.Models.AthleteWorkout", b =>
@@ -867,33 +802,13 @@ namespace SoldierTrack.Data.Migrations
                     b.Navigation("Membership");
                 });
 
-            modelBuilder.Entity("SoldierTrack.Data.Models.Workout", b =>
-                {
-                    b.HasOne("SoldierTrack.Data.Models.Category", "CategoryName")
-                        .WithMany("Workouts")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CategoryName");
-                });
-
             modelBuilder.Entity("SoldierTrack.Data.Models.Athlete", b =>
                 {
-                    b.Navigation("Achievements");
+                    b.HasOne("SoldierTrack.Data.Models.Membership", "Membership")
+                        .WithOne("Athlete")
+                        .HasForeignKey("SoldierTrack.Data.Models.Athlete", "MembershipId");
 
-                    b.Navigation("AthletesWorkouts");
-
-                    b.Navigation("Exercises");
-
-                    b.Navigation("FoodDiaries");
-
-                    b.Navigation("Foods");
-                });
-
-            modelBuilder.Entity("SoldierTrack.Data.Models.Category", b =>
-                {
-                    b.Navigation("Workouts");
+                    b.Navigation("Membership");
                 });
 
             modelBuilder.Entity("SoldierTrack.Data.Models.Exercise", b =>
@@ -925,6 +840,19 @@ namespace SoldierTrack.Data.Migrations
             modelBuilder.Entity("SoldierTrack.Data.Models.Workout", b =>
                 {
                     b.Navigation("AthletesWorkouts");
+                });
+
+            modelBuilder.Entity("SoldierTrack.Data.Models.Athlete", b =>
+                {
+                    b.Navigation("Achievements");
+
+                    b.Navigation("AthletesWorkouts");
+
+                    b.Navigation("Exercises");
+
+                    b.Navigation("FoodDiaries");
+
+                    b.Navigation("Foods");
                 });
 #pragma warning restore 612, 618
         }

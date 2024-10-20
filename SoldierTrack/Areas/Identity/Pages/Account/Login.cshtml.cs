@@ -7,16 +7,17 @@ namespace SoldierTrack.Web.Areas.Identity.Pages.Account
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
+    using SoldierTrack.Data.Models;
 
     public class LoginModel : PageModel
     {
-        private readonly SignInManager<IdentityUser> signInManager;
-        private readonly ILogger<LoginModel> logger;
+        private readonly UserManager<Athlete> userManager;
+        private readonly SignInManager<Athlete> signInManager;
 
-        public LoginModel(SignInManager<IdentityUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(UserManager<Athlete> userManager, SignInManager<Athlete> signInManager)
         {
+            this.userManager = userManager;
             this.signInManager = signInManager;
-            this.logger = logger;
         }
 
         [BindProperty]
@@ -59,6 +60,13 @@ namespace SoldierTrack.Web.Areas.Identity.Pages.Account
 
             if (this.ModelState.IsValid)
             {
+                var user = await this.userManager.FindByEmailAsync(this.Input.Email);
+                if (user != null && user.IsDeleted)
+                {
+                    this.ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return this.Page();
+                }
+
                 var result = await this.signInManager
                     .PasswordSignInAsync(
                         this.Input.Email, 
@@ -68,25 +76,12 @@ namespace SoldierTrack.Web.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
-                    this.logger.LogInformation("User logged in.");
+                    this.TempData["SuccessMessage"] = "Welcome!";
                     return this.LocalRedirect(returnUrl);
                 }
 
-                if (result.RequiresTwoFactor)
-                {
-                    return this.RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, this.Input.RememberMe });
-                }
-
-                if (result.IsLockedOut)
-                {
-                    this.logger.LogWarning("User account locked out.");
-                    return this.RedirectToPage("./Lockout");
-                }
-                else
-                {
-                    this.ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return this.Page();
-                }
+                this.ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return this.Page();
             }
 
             return this.Page();

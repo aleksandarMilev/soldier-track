@@ -19,7 +19,6 @@
         public DbSet<MembershipArchive> MembershipArchives { get; set; }
         public DbSet<Achievement> Achievements { get; set; }
         public DbSet<Exercise> Exercises { get; set; }
-        public DbSet<Category> Categories { get; set; }
         public DbSet<Food> Foods { get; set; }
         public DbSet<Meal> Meals { get; set; }
         public DbSet<MealFood> MealsFoods { get; set; }
@@ -37,14 +36,18 @@
             return await base.SaveChangesAsync(cancellationToken);
         }
 
-        public void SoftDelete<TEntity>(TEntity entity) 
-            where TEntity : class, IDeletableEntity 
-            => this.ApplySoftDeletionState(entity, true, DateTime.UtcNow.Date);
+        public void SoftDelete<TEntity>(TEntity entity)
+            where TEntity : class, IDeletableEntity
+        {
+            this.ApplySoftDeletionState(entity, true, DateTime.UtcNow.Date);
+        }
 
-        public void Restore<TEntity>(TEntity entity) 
-            where TEntity : class, IDeletableEntity 
-            => this.ApplySoftDeletionState(entity, false, null);
-       
+        public void Restore<TEntity>(TEntity entity)
+            where TEntity : class, IDeletableEntity
+        {
+            this.ApplySoftDeletionState(entity, false, null);
+        }
+
         private void ApplySoftDeletionState<TEntity>(TEntity entity, bool isDeleted, DateTime? deletedOn)
             where TEntity : class, IDeletableEntity
         {
