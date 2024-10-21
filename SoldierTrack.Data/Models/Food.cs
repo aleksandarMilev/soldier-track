@@ -7,7 +7,7 @@
 
     using static SoldierTrack.Data.Constants.ModelsConstraints.FoodConstraints;
 
-    public class Food : BaseModel<int>
+    public class Food : BaseDeletableModel<int>
     {
         [MaxLength(NameMaxLength)]
         public string Name { get; set; } = null!;

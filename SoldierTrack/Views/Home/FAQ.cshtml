@@ -1,0 +1,234 @@
+﻿@{
+    this.ViewData["Title"] = "FAQ";
+}
+
+<h1>@this.ViewData["Title"]</h1>
+
+<div class="faq-container">
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleAnswer(this)">
+            <h3>What is SoldierTrack?</h3>
+        </div>
+        <div class="faq-answer" style="display: none;">
+            <p>
+                SoldierTrack is a platform dedicated to supporting athletes in their daily routines by tracking workouts,
+                progressive overload, and calorie intake. 
+                It also offers memberships that athletes can purchase to join our CrossFit workouts at our facility.
+            </p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleAnswer(this)">
+            <h3>Is SoldierTrack free?</h3>
+        </div>
+        <div class="faq-answer" style="display: none;">
+            <p>
+                Our membership pricing is published under the request membership form. 
+                However, the features for tracking calories and exercises are completely free. 
+                You do not need an active membership to access them.
+            </p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleAnswer(this)">
+            <h3>Should I register to use it?</h3>
+        </div>
+        <div class="faq-answer" style="display: none;">
+            <p>
+                Yes, all functionalities in SoldierTrack are available only to registered users.
+            </p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleAnswer(this)">
+            <h3>Can I activate my membership on a date different from today?</h3>
+        </div>
+        <div class="faq-answer" style="display: none;">
+            <p>No, all memberships begin on the date of request.</p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleAnswer(this)">
+            <h3>When will my membership be approved?</h3>
+        </div>
+        <div class="faq-answer" style="display: none;">
+            <p>
+                Our admin team will approve your request during regular working hours.
+                If your request is submitted outside these hours, it will be processed on the next working day.
+                For example, if you request your membership on October 10th but it is approved on October 11th,
+                the start date will be considered October 11th.
+            </p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleAnswer(this)">
+            <h3>Can I pay it online?</h3>
+        </div>
+        <div class="faq-answer" style="display: none;">
+            <p>
+                No, SoldierTrack does not support online payments yet.
+                Every user is required to pay for their membership at the first workout after approval, at our facility.
+            </p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleAnswer(this)">
+            <h3>Can I create my own exercises and add achievements to them?</h3>
+        </div>
+        <div class="faq-answer" style="display: none;">
+            <p>
+                Yes, you can create your own exercises. This happens from the 'Create Exercise' button in the menu.
+                When you search for exercises, you'll see an 'Include mine' checkbox.
+                Check this option to include your custom exercises in the search results.
+            </p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleAnswer(this)">
+            <h3>Can other users see my exercises and add achievements to them?</h3>
+        </div>
+        <div class="faq-answer" style="display: none;">
+            <p>
+                Yes, every registered user can view all exercises, including custom ones, and create achievements from them.
+                They need to check the 'Include custom' checkbox next to the search bar to see these exercises in the results.
+                However, only you (and admin, if necessary) can edit or delete them.
+            </p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleAnswer(this)">
+            <h3>Can I create my own foods?</h3>
+        </div>
+        <div class="faq-answer" style="display: none;">
+            <p>
+                Yes, and the rules are the same as those for creating a custom exercise.
+            </p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleAnswer(this)">
+            <h3>What does the 'custom' label on some foods and exercises mean?</h3>
+        </div>
+        <div class="faq-answer" style="display: none;">
+            <p>
+                The <strong>'custom'</strong> label indicates that the food or exercise was added by a user, not by our team.
+                This means it may contain incorrect or inaccurate information, especially for foods.
+                Users can edit their custom entries, including macronutrient details, which could result in inaccuracies in your logs.
+                Additionally, both users and admins are free to delete custom entries at any time.
+                If a custom exercise is deleted, any achievements linked to that exercise will also be deleted.
+                Similarly, if a custom food is deleted, all food diary entries containing that item will be removed.
+            </p>
+            <p>
+                We strongly recommend using only <strong>'approved'</strong> foods and exercises,
+                as these have been created and verified by our team for accuracy and support.
+                Our database is extensive, so you're likely to find what you need.
+                However, if you don’t, you’re always welcome to create your own custom entry.
+            </p>
+            <p>
+                To ensure that no custom foods or exercises appear in your search results,
+                simply leave the <strong>'Include custom'</strong> checkbox unchecked when searching.
+            </p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleAnswer(this)">
+            <h3>Is there a limit on the number of custom exercises and foods I can create?</h3>
+        </div>
+        <div class="faq-answer" style="display: none;">
+            <p>
+                Yes, you cannot create more than <strong>50</strong> custom exercises.
+                The same limit applies to custom foods.
+                However, you likely won't need to reach that limit.
+            </p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleAnswer(this)">
+            <h3>In what date range can I create food diaries?</h3>
+        </div>
+        <div class="faq-answer" style="display: none;">
+            <p>
+                You can create food diaries for any date within a range of one month in the past to one month in the future.
+                It's also important to note that SoldierTrack retains food diary data for up to one year.
+                Any diaries older than one year will be automatically deleted.
+            </p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleAnswer(this)">
+            <h3>In what date range can I create achievements?</h3>
+        </div>
+        <div class="faq-answer" style="display: none;">
+            <p>
+                You have no constraints when creating achievements; you can create them for any date.
+            </p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleAnswer(this)">
+            <h3>What will happen if I add the same food to a diary for a meal twice?</h3>
+        </div>
+        <div class="faq-answer" style="display: none;">
+            <p>
+                The second entry will replace the first one, so only the most recent data will be saved and displayed.
+            </p>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        function toggleAnswer(element) {
+            let answer = element.nextElementSibling;
+            if (answer.style.display === "none") {
+                answer.style.display = "block";
+            } else {
+                answer.style.display = "none";
+            }
+        }
+    </script>
+}
+
+<style>
+    .faq-container {
+        margin: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        background-color: #a7a8a8;
+    }
+
+    .faq-item {
+        margin: 10px 0;
+    }
+
+    .faq-question {
+        cursor: pointer;
+        background-color: #b8bfbe;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .faq-answer {
+        margin-top: 5px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #c0d1d1;
+    }
+</style>

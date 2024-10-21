@@ -44,8 +44,13 @@
         {
             var athleteId = this.User.GetId();
             var exerciseName = await this.exerciseService.GetNameByIdAsync(exerciseId);
-            var model = new AchievementFormModel(athleteId!, exerciseId, exerciseName, DateTime.Now);
 
+            if (await this.achievementService.AchievementIsAlreadyAddedAsync(exerciseId, athleteId!))
+            {
+                return this.BadRequest();
+            }
+
+            var model = new AchievementFormModel(athleteId!, exerciseId, exerciseName, DateTime.Now);
             return this.View(model);
         }
 
@@ -68,10 +73,15 @@
         public async Task<IActionResult> Edit(int id)
         {
             var serviceModel = await this.achievementService.GetByIdAsync(id);
-
             if (serviceModel == null)
             {
                 return this.NotFound();
+            }
+
+            if (serviceModel.ExerciseIsDeleted)
+            {
+                this.TempData["FailureMessage"] = CustomExerciseDeleted;
+                return this.RedirectToAction(nameof(GetAll));
             }
 
             if ((serviceModel.AthleteId == null) || (serviceModel.AthleteId != this.User.GetId()!))

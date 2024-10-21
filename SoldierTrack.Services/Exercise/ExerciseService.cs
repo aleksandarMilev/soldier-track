@@ -6,8 +6,10 @@
     using SoldierTrack.Data;
     using SoldierTrack.Data.Models;
     using SoldierTrack.Services.Achievement;
+    using SoldierTrack.Services.Common;
     using SoldierTrack.Services.Exercise.Models;
     using SoldierTrack.Services.Exercise.Models.Util;
+    using System.Reflection.Metadata;
 
     public class ExerciseService : IExerciseService
     {
@@ -29,20 +31,24 @@
            string? searchTerm,
            string athleteId,
            bool includeMine,
+           bool includeCustom,
            int pageIndex,
            int pageSize)
         {
             var query = this.data
-                .Exercises
-                .AsNoTracking()
+                .AllDeletableAsNoTracking<Exercise>()
                 .ProjectTo<ExerciseServiceModel>(this.mapper.ConfigurationProvider);
 
-            if (includeMine)
+            if (includeMine && !includeCustom)
             {
                 query = query
                     .Where(e => e.AthleteId == athleteId || e.AthleteId == null)
                     .OrderBy(e => e.AthleteId == null)
                     .ThenBy(e => e.Name);
+            }
+            else if ((!includeMine && includeCustom) || (includeMine && includeCustom))
+            {
+                query = query.OrderBy(e => e.Name);
             }
             else
             {
@@ -66,43 +72,59 @@
             return new ExercisePageServiceModel(exercises, pageIndex, totalPages, pageSize);
         }
 
+        public async Task<ExerciseServiceModel?> GetByIdAsync(int id)
+        {
+            return await this.data
+                .AllDeletableAsNoTracking<Exercise>()
+                .ProjectTo<ExerciseServiceModel>(this.mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(e => e.Id == id);
+        }
+
         public async Task<string> GetNameByIdAsync(int id)
         {
             return await this.data
-                .Exercises
-                .AsNoTracking()
+                .AllDeletableAsNoTracking<Exercise>()
                 .Where(e => e.Id == id)
                 .Select(e => e.Name)
                 .FirstOrDefaultAsync()
                 ?? throw new InvalidOperationException("Exercise is not found!");
         }
 
-        public async Task<ExerciseDetailsServiceModel?> GetDetailsById(int id)
+        public async Task<ExerciseDetailsServiceModel?> GetDetailsById(int exerciseId, string athleteId)
         {
-            var exercise = await this.data
-                .Exercises
-                .AsNoTracking()
+            var model = await this.data
+                .AllDeletableAsNoTracking<Exercise>()
                 .ProjectTo<ExerciseDetailsServiceModel>(this.mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(e => e.Id == id);
+                .FirstOrDefaultAsync(e => e.Id == exerciseId);
 
-            if (exercise != null)
+            if (model == null)
             {
-                exercise.Rankings = await this.data
-                    .Achievements
-                    .AsNoTracking()
-                    .Include(a => a.Athlete)
-                    .Where(a => a.ExerciseId == id)
-                    .ProjectTo<Ranking>(this.mapper.ConfigurationProvider)
-                    .OrderByDescending(a => a.OneRepMax)
-                    .Take(10)
-                    .ToListAsync();
+                return null;
             }
 
-            return exercise;
+            var achievementId = await this.achievementService.GetAchievementIdAsync(athleteId!, exerciseId);
+            if (achievementId == null)
+            {
+                //current athlete has not achievement for this exercise, so we will show the create button
+                model.ShowCreateButton = true;
+            }
+            else
+            {
+                //else, we take the achievementId, because we will need it for edit/delete functionality
+                model.RelatedAchievementId = achievementId;
+            }
+
+            if (model.AthleteId != null && model.AthleteId == athleteId)
+            {
+                //exercise is custom and the current athlete is the creator
+                model.ShowEditDeleteButtons = true; 
+            }
+
+            model.Rankings = await this.achievementService.GetRankingsAsync(exerciseId);
+            return model;
         }
 
-       
-        public async Task<int> CreateAsync(ExerciseDetailsServiceModel model)
+        public async Task<int> CreateAsync(ExerciseServiceModel model)
         {
             var exercise = this.mapper.Map<Exercise>(model);
             this.data.Add(exercise);
@@ -111,10 +133,10 @@
             return exercise.Id;
         }
 
-        public async Task EditAsync(ExerciseDetailsServiceModel model)
+        public async Task EditAsync(ExerciseServiceModel model)
         {
             var exercise = await this.data
-                .Exercises
+                .AllDeletable<Exercise>()
                 .FirstOrDefaultAsync(e => e.Id == model.Id)
                 ?? throw new InvalidOperationException("Exercise not found!");
 
@@ -125,17 +147,16 @@
         public async Task DeleteAsync(int exerciseId, string athleteId)
         {
             var exercise = await this.data
-              .Exercises
+              .AllDeletable<Exercise>()
               .FirstOrDefaultAsync(e => e.Id == exerciseId)
               ?? throw new InvalidOperationException("Exercise not found!");
 
             if (exercise.AthleteId == null || exercise.AthleteId != athleteId)
             {
-                throw new InvalidOperationException("Exercise's creator Id is not valid!");
+                throw new InvalidOperationException("Unauthorized operation!");
             }
 
-            await this.achievementService.DeleteRelatedAchievements(exerciseId);
-            this.data.Remove(exercise);
+            this.data.SoftDelete(exercise);
             await this.data.SaveChangesAsync();
         }
     }

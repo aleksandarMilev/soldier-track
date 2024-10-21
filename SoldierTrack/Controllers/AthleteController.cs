@@ -121,7 +121,7 @@
         [HttpPost]
         public async Task<IActionResult> Join(string athleteId, int workoutId)
         {
-            await this.athleteService.JoinAsync(athleteId, workoutId);
+            await this.athleteService.JoinAsync(this.User.GetId()!, workoutId);
 
             this.TempData["SuccessMessage"] = JoinSuccess;
             return this.RedirectToAction("Details", "Workout", new { id = workoutId });

@@ -8,7 +8,7 @@
 
     using static SoldierTrack.Data.Constants.ModelsConstraints.ExerciseConstraints;
 
-    public class Exercise : BaseModel<int>
+    public class Exercise : BaseDeletableModel<int>
     {
         [Required]
         [MaxLength(NameMaxLength)]

@@ -88,8 +88,7 @@
                 throw new InvalidOperationException("Food's creator Id is not valid!");
             }
 
-            await this.foodDiaryService.DeleteDiariesIfNecessaryAsync(foodId);
-            this.data.Remove(food);
+            this.data.SoftDelete(food);
             await this.data.SaveChangesAsync();
         }
     }

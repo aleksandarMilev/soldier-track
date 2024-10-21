@@ -11,6 +11,7 @@
     var pageSize = this.Model.PageSize;
     var searchTerm = ViewData["searchTerm"]?.ToString();
     var includeMine = ViewData["includeMine"]?.ToString() ?? "false";
+    var includeCustom = ViewData["includeCustom"]?.ToString() ?? "false";
 }
 
 <h1 class="text-center mb-4">@this.ViewData["Title"]</h1>
@@ -30,6 +31,10 @@
             <div class="form-check me-2">
                 <input type="checkbox" class="form-check-input" id="includeMine" name="includeMine" value="true" @(includeMine == "true" ? "checked" : "") />
                 <label class="form-check-label" for="includeMine">Include my exercises</label>
+            </div>
+            <div class="form-check me-2">
+                <input type="checkbox" class="form-check-input" id="includeCustom" name="includeCustom" value="true" @(includeCustom == "true" ? "checked" : "") />
+                <label class="form-check-label" for="includeCustom">Include custom exercises</label>
             </div>
             <button type="submit" class="btn btn-primary">Search</button>
         </form>
@@ -57,7 +62,11 @@
                             <td class="text-center">@exercise.Category</td>
                             <td class="text-center">@(exercise.IsForBeginners ? "Yes" : "No")</td>
                             <td class="text-center">
-                                <a asp-controller="Exercise" asp-action="Details" asp-route-exerciseId="@exercise.Id" class="btn btn-info">Details</a>
+                                <a 
+                                    class="btn btn-info"
+                                    asp-controller="Exercise"
+                                    asp-action="Details" 
+                                    asp-route-exerciseId="@exercise.Id">Details</a>
                             </td>
                         </tr>
                     }
@@ -70,8 +79,16 @@
             @if (pageIndex > 1)
             {
                 <li class="page-item">
-                    <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@(pageIndex - 1)" asp-route-pageSize="@pageSize"
-                       asp-route-searchTerm="@searchTerm" asp-route-includeMine="@includeMine">Previous</a>
+                    <a 
+                       class="page-link" 
+                       asp-action="GetAll" 
+                       asp-route-pageIndex="@(pageIndex - 1)" 
+                       asp-route-pageSize="@pageSize"
+                       asp-route-searchTerm="@searchTerm" 
+                       asp-route-includeMine="@includeMine" 
+                       asp-route-includeCustom="@includeCustom">
+                            Previous
+                    </a>
                 </li>
             }
             else
@@ -84,8 +101,16 @@
             @if (pageIndex > 3)
             {
                 <li class="page-item">
-                    <a class="page-link" asp-action="GetAll" asp-route-pageIndex="1" asp-route-pageSize="@pageSize"
-                       asp-route-searchTerm="@searchTerm" asp-route-includeMine="@includeMine">1</a>
+                    <a 
+                        class="page-link" 
+                        asp-action="GetAll" 
+                        asp-route-pageIndex="1" 
+                        asp-route-pageSize="@pageSize"
+                        asp-route-searchTerm="@searchTerm" 
+                        asp-route-includeMine="@includeMine"
+                        asp-route-includeCustom="@includeCustom">
+                            1
+                    </a>
                 </li>
                 <li class="page-item disabled">
                     <span class="page-link">...</span>
@@ -95,8 +120,16 @@
             @for (int i = Math.Max(1, pageIndex - 2); i <= Math.Min(totalPages, pageIndex + 2); i++)
             {
                 <li class="page-item @(i == pageIndex ? "active" : "")">
-                    <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@i" asp-route-pageSize="@pageSize"
-                       asp-route-searchTerm="@searchTerm" asp-route-includeMine="@includeMine">@i</a>
+                    <a 
+                        class="page-link" 
+                        asp-action="GetAll" 
+                        asp-route-pageIndex="@i" 
+                        asp-route-pageSize="@pageSize"
+                        asp-route-searchTerm="@searchTerm" 
+                        asp-route-includeMine="@includeMine"
+                        asp-route-includeCustom="@includeCustom">
+                            @i
+                    </a>
                 </li>
             }
 
@@ -106,16 +139,32 @@
                     <span class="page-link">...</span>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@totalPages" asp-route-pageSize="@pageSize"
-                       asp-route-searchTerm="@searchTerm" asp-route-includeMine="@includeMine">@totalPages</a>
+                    <a 
+                        class="page-link" 
+                        asp-action="GetAll" 
+                        asp-route-pageIndex="@totalPages" 
+                        asp-route-pageSize="@pageSize"
+                        asp-route-searchTerm="@searchTerm" 
+                        asp-route-includeMine="@includeMine"
+                        asp-route-includeCustom="@includeCustom">
+                            @totalPages
+                    </a>
                 </li>
             }
 
             @if (pageIndex < totalPages)
             {
                 <li class="page-item">
-                    <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@(pageIndex + 1)" asp-route-pageSize="@pageSize"
-                       asp-route-searchTerm="@searchTerm" asp-route-includeMine="@includeMine">Next</a>
+                    <a 
+                        class="page-link" 
+                        asp-action="GetAll" 
+                        asp-route-pageIndex="@(pageIndex + 1)" 
+                        asp-route-pageSize="@pageSize"
+                        asp-route-searchTerm="@searchTerm" 
+                        asp-route-includeMine="@includeMine"
+                        asp-route-includeCustom="@includeCustom">
+                            Next
+                    </a>
                 </li>
             }
             else

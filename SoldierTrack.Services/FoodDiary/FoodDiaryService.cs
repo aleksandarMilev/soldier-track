@@ -23,7 +23,8 @@
         public async Task<FoodDiaryServiceModel?> GetModelByDateAndAthleteIdAsync(string athleteId, DateTime date)
         {
             return await this.data
-                .AllDeletableAsNoTracking<FoodDiary>()
+                .FoodDiaries
+                .AsNoTracking()
                 .ProjectTo<FoodDiaryServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(fd => fd.AthleteId == athleteId && date == fd.Date);
         }
@@ -31,7 +32,8 @@
         public async Task<FoodDiaryDetailsServiceModel?> GetDetailsByIdAsync(int diaryId)
         {
             return await this.data
-                .AllDeletableAsNoTracking<FoodDiary>()
+                .FoodDiaries
+                .AsNoTracking()
                 .Where(fd => fd.Id == diaryId)
                 .ProjectTo<FoodDiaryDetailsServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
@@ -46,7 +48,7 @@
         public async Task AddFoodAsync(string athleteId, int foodId, DateTime date, string mealType, int quantity)
         {
             var diary = await this.data
-                .AllDeletable<FoodDiary>()
+                .FoodDiaries
                 .Include(fd => fd.Meals)
                 .FirstOrDefaultAsync(fd => fd.AthleteId == athleteId && fd.Date == date)
                 ?? await this.CreateDiaryAsync(athleteId, date);
@@ -92,7 +94,7 @@
         public async Task RemoveFoodAsync(int diaryId, int foodId, string mealType)
         {
             var diaryEntity = await this.data
-                .AllDeletable<FoodDiary>()
+                .FoodDiaries
                 .Include(fd => fd.Meals)
                 .FirstOrDefaultAsync(fd => fd.Id == diaryId)
                 ?? throw new InvalidOperationException("Diary not found!");
@@ -123,27 +125,6 @@
             {
                 throw new InvalidOperationException("The meal type is not valid!");
             }
-        }
-
-        public async Task DeleteDiariesIfNecessaryAsync(int foodId)
-        {
-            var diaries = await this.data
-                .AllDeletable<FoodDiary>()
-                .Include(fd => fd.Meals)
-                .ThenInclude(fd => fd.MealsFoods)
-                .Where(
-                    fd => fd.Meals.Any(
-                        m => m.MealsFoods.Any(
-                            mf => mf.FoodId == foodId
-                    )))
-                .ToListAsync();
-
-            foreach (var diary in diaries)
-            {
-                this.data.SoftDelete(diary);
-            }
-
-            await this.data.SaveChangesAsync();
         }
 
         private async Task<FoodDiary> CreateDiaryAsync(string athleteId, DateTime date)

@@ -1,24 +1,17 @@
 ﻿@using SoldierTrack.Services.Exercise.Models
+@using SoldierTrack.Web.Common.Extensions
 
 @model ExerciseDetailsServiceModel
 
 @{
     this.ViewData["Title"] = "Exercise Details";
-    var athleteId = this.Model.AthleteId ?? this.ViewBag.AthleteId; 
+    var athleteId = this.User.GetId(); 
 }
 
 @if (this.TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         <p>@this.TempData["SuccessMessage"]</p>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
-
-@if (this.ViewBag.ShowDeleteButton != null)
-{
-    <div class="alert alert-warning alert-dismissible fade show mt-4" role="alert">
-        <strong>Important:</strong> If you delete an exercise that has an associated achievement, the achievement will be deleted as well!
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
@@ -101,45 +94,42 @@
                     <div class="d-flex justify-content-center gap-2 flex-wrap">
                         @if (athleteId != null)
                         {
-                            @if (this.ViewBag.ShowCreateButton != null)
+                            @if (this.Model.ShowCreateButton)
                             {
-                                <a asp-controller="Achievement"
-                                   asp-route-athleteId="@athleteId"
-                                   asp-route-exerciseId="@this.Model.Id"
-                                   asp-action="Create"
-                                   class="btn btn-primary btn-sm">
-                                    Create Achievement
+                                <a 
+                                    class="btn btn-primary btn-sm"
+                                    asp-controller="Achievement"
+                                    asp-route-exerciseId="@this.Model.Id"
+                                    asp-action="Create">
+                                        Create Achievement
                                 </a>
                             }
                             else
                             {
-                                <a asp-controller="Achievement"
-                                   asp-route-id="@this.ViewBag.AchievementId"
-                                   asp-action="Edit"
-                                   class="btn btn-outline-primary btn-sm">
-                                    Update Achievement
+                                <a class="btn btn-outline-primary btn-sm"
+                                    asp-controller="Achievement"
+                                    asp-route-id="@this.Model.RelatedAchievementId"
+                                    asp-action="Edit">
+                                        Update Achievement
                                 </a>
                             }
 
-                            @if (this.ViewBag.ShowEditButton != null)
+                            @if (this.Model.ShowEditDeleteButtons)
                             {
-                                <a asp-controller="Exercise"
-                                   asp-route-athleteId="@athleteId"
-                                   asp-route-exerciseId="@this.Model.Id"
-                                   asp-action="Edit"
-                                   class="btn btn-warning btn-sm">
-                                    Edit Exercise
+                                <a 
+                                    class="btn btn-warning btn-sm"
+                                    asp-controller="Exercise"
+                                    asp-route-exerciseId="@this.Model.Id"
+                                    asp-action="Edit">
+                                        Edit Exercise
                                 </a>
-                            }
 
-                            @if (this.ViewBag.ShowDeleteButton != null)
-                            {
-                                <form method="post"
-                                      asp-controller="Exercise"
-                                      asp-action="Delete"
-                                      asp-route-athleteId="@athleteId"
-                                      asp-route-exerciseId="@this.Model.Id"
-                                      onSubmit="return alert('Are you sure you want to delete this exercise?')">
+                                <form 
+                                    method="post"
+                                    asp-controller="Exercise"
+                                    asp-action="Delete"
+                                    asp-route-exerciseId="@this.Model.Id"
+                                    onSubmit="return alert('Are you sure you want to delete this exercise?')">
                                     <button class="btn btn-danger btn-sm">Delete Exercise</button>
                                 </form>
                             }

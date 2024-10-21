@@ -13,7 +13,5 @@
         Task AddFoodAsync(string athleteId, int foodId, DateTime date, string mealType, int quantity);
 
         Task RemoveFoodAsync(int diaryId, int foodId, string mealType);
-
-        Task DeleteDiariesIfNecessaryAsync(int foodId);
     }
 }

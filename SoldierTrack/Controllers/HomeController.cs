@@ -7,7 +7,9 @@ namespace SoldierTrack.Controllers
 
     public class HomeController : Controller
     {
-        public async Task<IActionResult> Index() => this.View();
+        public IActionResult Index() => this.View();
+
+        public IActionResult FAQ() => this.View();
 
         [ResponseCache(
             Duration = 0,

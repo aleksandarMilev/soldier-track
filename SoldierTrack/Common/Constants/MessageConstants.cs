@@ -90,6 +90,11 @@
 
         public const string ExerciseDeleted = "Exercise is successfully deleted!";
 
+        public const string CustomExerciseDeleted = 
+            "Oops! It looks like the exercise creator has deleted this. " +
+            "The achievement will remain in your records, but you won't be able to edit it. " +
+            "However, you can still delete it if you'd like";
+
         //food
         public const string RangeErrorMessage = "{0} value should be between {1} and {2}!";
 

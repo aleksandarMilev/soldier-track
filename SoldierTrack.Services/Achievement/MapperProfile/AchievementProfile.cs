@@ -10,7 +10,8 @@
         {
             this.CreateMap<AchievementServiceModel, Achievement>()
                 .ReverseMap()
-                .ForMember(dest => dest.ExerciseName, opt => opt.MapFrom(src => src.Exercise.Name));
+                .ForMember(dest => dest.ExerciseName, opt => opt.MapFrom(src => src.Exercise.Name))
+                .ForMember(dest => dest.ExerciseIsDeleted, opt => opt.MapFrom(src => src.Exercise.IsDeleted));
         }
     }
 }

@@ -106,6 +106,7 @@
                 .FirstOrDefaultAsync(m => m.Id == id)
                 ?? throw new InvalidOperationException("Membership not found!");
 
+            membership.StartDate = DateTime.UtcNow;
             membership.IsPending = false;
             await this.data.SaveChangesAsync();
 

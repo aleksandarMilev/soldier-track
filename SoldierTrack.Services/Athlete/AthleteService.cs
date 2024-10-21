@@ -194,11 +194,6 @@
 
         public async Task LeaveAsync(string athleteId, int workoutId)
         {
-            var athlete = await this.data
-                .AllDeletable<Athlete>()
-                .FirstOrDefaultAsync(a => a.Id == athleteId)
-                ?? throw new InvalidOperationException("Athlete not found!");
-
             var workout = await this.data
                  .AllDeletable<Workout>()
                  .FirstOrDefaultAsync(a => a.Id == workoutId)
@@ -210,7 +205,6 @@
                 ?? throw new InvalidOperationException("Map entity not found!");
 
             workout.CurrentParticipants--;
-
             await this.membershipService.Value.UpdateMembershipOnLeaveByAthleteIdAsync(athleteId);
 
             this.data.Remove(mapEntity);

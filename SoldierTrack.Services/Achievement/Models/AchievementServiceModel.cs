@@ -12,10 +12,12 @@
 
         public double OneRepMax { get; init; }
 
-        public string? AthleteId { get; init; } 
+        public string? AthleteId { get; init; }
 
         public int ExerciseId { get; init; }
 
         public string ExerciseName { get; set; } = null!;
+
+        public bool ExerciseIsDeleted { get; init; }
     }
 }

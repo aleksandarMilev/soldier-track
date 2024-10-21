@@ -4,9 +4,11 @@
 
     public class ExerciseDetailsServiceModel : ExerciseServiceModel
     {
-        public string ImageUrl { get; init; } = null!;
+        public bool ShowCreateButton { get; set; }
 
-        public string Description { get; init; } = null!;
+        public bool ShowEditDeleteButtons { get; set; }
+
+        public int? RelatedAchievementId { get; set; }
 
         public IEnumerable<Ranking> Rankings { get; set; } = new List<Ranking>();
     }

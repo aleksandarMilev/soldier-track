@@ -3,9 +3,8 @@
     using System.ComponentModel.DataAnnotations.Schema;
 
     using SoldierTrack.Data.Models.Base;
-    using SoldierTrack.Data.Models.Enums;
 
-    public class FoodDiary : BaseDeletableModel<int>
+    public class FoodDiary : BaseModel<int>
     {
         public FoodDiary()
         {}

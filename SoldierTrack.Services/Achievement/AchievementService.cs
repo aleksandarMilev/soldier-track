@@ -6,9 +6,7 @@
     using SoldierTrack.Data;
     using SoldierTrack.Data.Models;
     using SoldierTrack.Services.Achievement.Models;
-    using SoldierTrack.Services.Common;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
+    using SoldierTrack.Services.Exercise.Models.Util;
 
     public class AchievementService : IAchievementService
     {
@@ -74,19 +72,21 @@
             return achievementId;
         }
 
+        public async Task<IEnumerable<Ranking>> GetRankingsAsync(int exerciseId)
+        {
+            return await this.data
+                .Achievements
+                .AsNoTracking()
+                .Include(a => a.Athlete)
+                .Where(a => a.ExerciseId == exerciseId)
+                .ProjectTo<Ranking>(this.mapper.ConfigurationProvider)
+                .OrderByDescending(a => a.OneRepMax)
+                .Take(10)
+                .ToListAsync();
+        }
+
         public async Task CreateAsync(AchievementServiceModel serviceModel)
         {
-            var exercise = await this.data
-                .Exercises
-                .AsNoTracking()
-                .FirstOrDefaultAsync(e => e.Id == serviceModel.ExerciseId)
-                ?? throw new InvalidOperationException("Exercise not found!");
-
-            var athlete = await this.data
-                .AllDeletableAsNoTracking<Athlete>()
-                .FirstOrDefaultAsync(a => a.Id == serviceModel.AthleteId)
-                ?? throw new InvalidOperationException("Athlete not found!");
-
             var achievement = this.mapper.Map<Achievement>(serviceModel);
             CalculateOneRepMax(achievement);
 
@@ -122,23 +122,6 @@
             await this.data.SaveChangesAsync();
         }
 
-        public async Task DeleteRelatedAchievements(int exerciseId)
-        {
-            var achievements = await this.data
-                .Achievements
-                .Where(a => a.ExerciseId == exerciseId)
-                .ToListAsync();
-
-            if (achievements.Count > 0)
-            {
-                this.data.RemoveRange(achievements);
-            }
-        }
-
-        private static double CalculateBigReps(double weightLifted, int repetitions) => weightLifted * (1 + 0.0333 * repetitions);
-
-        private static double CalculateSmallReps(double weightLifted, int repetitions) => weightLifted * Math.Pow(repetitions, 0.1);
-
         private static void CalculateOneRepMax(Achievement achievement)
         {
             if (achievement.Repetitions <= 10)
@@ -150,5 +133,9 @@
                 achievement.OneRepMax = CalculateBigReps(achievement.WeightLifted, achievement.Repetitions);
             }
         }
+
+        private static double CalculateBigReps(double weightLifted, int repetitions) => weightLifted * (1 + 0.0333 * repetitions);
+
+        private static double CalculateSmallReps(double weightLifted, int repetitions) => weightLifted * Math.Pow(repetitions, 0.1);
     }
 }

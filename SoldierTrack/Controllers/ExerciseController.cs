@@ -9,7 +9,7 @@
     using SoldierTrack.Services.Exercise.Models;
     using SoldierTrack.Web.Common.Extensions;
     using SoldierTrack.Web.Models.Exercise;
-
+    
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
     using static SoldierTrack.Web.Common.Constants.WebConstants;
 
@@ -34,7 +34,7 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(bool includeMine, string? searchTerm = null, int pageIndex = 1, int pageSize = 5)
+        public async Task<IActionResult> GetAll(bool includeMine, bool includeCustom, string? searchTerm = null, int pageIndex = 1, int pageSize = 5)
         {
             pageSize = Math.Min(pageSize, MaxPageSize);
             pageSize = Math.Max(pageSize, MinPageSize);
@@ -42,49 +42,10 @@
             var athleteId = this.User.GetId();
             this.ViewBag.AthleteId = athleteId;
 
-            var model = await this.exerciseService.GetPageModelsAsync(searchTerm, athleteId!, includeMine, pageIndex, pageSize);
+            var model = await this.exerciseService.GetPageModelsAsync(searchTerm, athleteId!, includeMine, includeCustom, pageIndex, pageSize);
             this.ViewData[nameof(includeMine)] = includeMine.ToString().ToLower();
+            this.ViewData[nameof(includeCustom)] = includeCustom.ToString().ToLower();
             this.ViewData[nameof(searchTerm)] = searchTerm;
-
-            return this.View(model);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Details(int exerciseId)
-        {
-            var model = await this.exerciseService.GetDetailsById(exerciseId);
-
-            if (model == null)
-            {
-                return this.NotFound();
-            }
-
-            var athleteId = this.User.GetId();
-            var achievementId = await this.achievementService.GetAchievementIdAsync(athleteId!, exerciseId);
-
-            if (achievementId == null)
-            {
-                this.ViewBag.ShowCreateButton = true;
-            }
-            else
-            {
-                //current athlete has already added the exercise as achievement, we take its id because we need it 
-                this.ViewBag.AchievementId = achievementId;
-            }
-
-            if (model.AthleteId == null)
-            {
-                //if exercise is not custom, we should get the current athleteId in the view bag because we will need it in the view
-                this.ViewBag.AthleteId = athleteId; 
-
-            }
-
-            if (model.AthleteId != null && model.AthleteId == athleteId)
-            {
-                //exercise is custom and the current athlete is the creator
-                this.ViewBag.ShowEditButton = true;
-                this.ViewBag.ShowDeleteButton = true;
-            }
 
             return this.View(model);
         }
@@ -108,7 +69,7 @@
                 return this.View(viewModel);
             }
 
-            var serviceModel = this.mapper.Map<ExerciseDetailsServiceModel>(viewModel);
+            var serviceModel = this.mapper.Map<ExerciseServiceModel>(viewModel);
             var exerciseId = await this.exerciseService.CreateAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = ExerciseCreated;
@@ -116,16 +77,27 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int exerciseId, string athleteId)
+        public async Task<IActionResult> Details(int exerciseId)
         {
-            var serviceModel = await this.exerciseService.GetDetailsById(exerciseId);
+            var model = await this.exerciseService.GetDetailsById(exerciseId, this.User.GetId()!);
+            if (model == null)
+            {
+                return this.NotFound();
+            }
 
+            return this.View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int exerciseId)
+        {
+            var serviceModel = await this.exerciseService.GetByIdAsync(exerciseId);
             if (serviceModel == null)
             {
                 return this.NotFound();
             }
 
-            if (serviceModel.AthleteId == null || serviceModel.AthleteId != athleteId)
+            if (serviceModel.AthleteId == null || serviceModel.AthleteId != this.User.GetId()!)
             {
                 return this.Unauthorized();
             }
@@ -152,9 +124,9 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(int exerciseId, string athleteId)
+        public async Task<IActionResult> Delete(int exerciseId)
         {
-            await this.exerciseService.DeleteAsync(exerciseId, athleteId);
+            await this.exerciseService.DeleteAsync(exerciseId, this.User.GetId()!);
             
             this.TempData["SuccessMessage"] = ExerciseDeleted;
             return this.RedirectToAction(nameof(GetAll), new { includeMine = false });
