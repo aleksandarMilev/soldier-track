@@ -95,6 +95,10 @@
             "The achievement will remain in your records, but you won't be able to edit it. " +
             "However, you can still delete it if you'd like";
 
+        public const string MaxExercisesLimit = "You have created 50 exercises. You have reached the limit!";
+
+        public const string ExerciseNameDuplicated = "Exercise with name '{0}' already exist. Please, choose another name.";
+
         //food
         public const string RangeErrorMessage = "{0} value should be between {1} and {2}!";
 

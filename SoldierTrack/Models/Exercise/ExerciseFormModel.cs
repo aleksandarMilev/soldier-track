@@ -20,11 +20,12 @@
         [Display(Name = "Image Url")]
         public string? ImageUrl { get; init; } = ExerciseDefaultImageUrl;
 
+        [Required(ErrorMessage = RequiredError)]
         [StringLength(
           DescriptionMaxLength,
           MinimumLength = DescriptionMinLength,
           ErrorMessage = LengthError)]
-        public string? Description { get; init; }
+        public string Description { get; init; } = null!;
 
         [Display(Name = "Is For Beginners")]
         public bool IsForBeginners { get; init; }

@@ -51,11 +51,18 @@
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var athleteId = this.User.GetId();
+            if (await this.exerciseService.ExerciseLimitReachedAsync(athleteId!))
+            {
+                this.TempData["FailureMessage"] = MaxExercisesLimit;
+                return this.RedirectToAction("GetAll", "Achievement");
+            }
+
             var model = new ExerciseFormModel()
             {
-                AthleteId = this.User.GetId()!
+                AthleteId = athleteId!
             };
 
             return this.View(model);
@@ -66,6 +73,12 @@
         {
             if (!this.ModelState.IsValid)
             {
+                return this.View(viewModel);
+            }
+
+            if (await this.exerciseService.ExerciseWithThisNameExistsAsync(viewModel.Name))
+            {
+                this.ModelState.AddModelError(nameof(viewModel.Name), string.Format(ExerciseNameDuplicated, viewModel.Name));
                 return this.View(viewModel);
             }
 
@@ -115,7 +128,7 @@
                 return this.View(viewModel);
             }
 
-            var serviceModel = this.mapper.Map<ExerciseDetailsServiceModel>(viewModel);
+            var serviceModel = this.mapper.Map<ExerciseServiceModel>(viewModel);
             serviceModel.Id = exerciseId;
             await this.exerciseService.EditAsync(serviceModel);
 

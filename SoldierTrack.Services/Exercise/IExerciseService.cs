@@ -20,6 +20,10 @@
 
         Task<int> CreateAsync(ExerciseServiceModel model);
 
+        Task<bool> ExerciseLimitReachedAsync(string athleteId);
+
+        Task<bool> ExerciseWithThisNameExistsAsync(string name);
+
         Task EditAsync(ExerciseServiceModel model);
 
         Task DeleteAsync(int exerciseId, string athleteId);

@@ -8,8 +8,8 @@
     using SoldierTrack.Services.Achievement;
     using SoldierTrack.Services.Common;
     using SoldierTrack.Services.Exercise.Models;
-    using SoldierTrack.Services.Exercise.Models.Util;
-    using System.Reflection.Metadata;
+
+    using static SoldierTrack.Services.Common.Constants;
 
     public class ExerciseService : IExerciseService
     {
@@ -75,7 +75,8 @@
         public async Task<ExerciseServiceModel?> GetByIdAsync(int id)
         {
             return await this.data
-                .AllDeletableAsNoTracking<Exercise>()
+                .Exercises //we want all, including the deleted one
+                .AsNoTracking()
                 .ProjectTo<ExerciseServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(e => e.Id == id);
         }
@@ -88,6 +89,13 @@
                 .Select(e => e.Name)
                 .FirstOrDefaultAsync()
                 ?? throw new InvalidOperationException("Exercise is not found!");
+        }
+
+        public async Task<bool> ExerciseWithThisNameExistsAsync(string name)
+        {
+            return await this.data
+                .AllDeletableAsNoTracking<Exercise>()
+                .AnyAsync(e => e.Name == name);
         }
 
         public async Task<ExerciseDetailsServiceModel?> GetDetailsById(int exerciseId, string athleteId)
@@ -122,6 +130,16 @@
 
             model.Rankings = await this.achievementService.GetRankingsAsync(exerciseId);
             return model;
+        }
+
+        public async Task<bool> ExerciseLimitReachedAsync(string athleteId)
+        {
+            var count = await this.data
+                .AllDeletableAsNoTracking<Exercise>()
+                .Where(e => e.AthleteId == athleteId)
+                .CountAsync();
+
+            return count > CustomExercisesMaxCount;
         }
 
         public async Task<int> CreateAsync(ExerciseServiceModel model)
