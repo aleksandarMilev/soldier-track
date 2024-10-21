@@ -19,14 +19,24 @@
             this.mapper = mapper;
         }
 
-        public async Task<IEnumerable<AchievementServiceModel>> GetAllByAthleteIdAsync(string athleteId)
+        public async Task<AchievementPageServiceModel> GetAllByAthleteIdAsync(string athleteId, int pageIndex, int pageSize)
         {
-            return await this.data
+            var query = this.data
                 .Achievements
                 .AsNoTracking()
+                .Include(a => a.Exercise)
+                .OrderBy(a => a.Exercise.Name)
                 .Where(a => a.AthleteId == athleteId)
-                .ProjectTo<AchievementServiceModel>(this.mapper.ConfigurationProvider)
+                .ProjectTo<AchievementServiceModel>(this.mapper.ConfigurationProvider);
+
+            var totalCount = await query.CountAsync();
+            var achievements = await query
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+            return new AchievementPageServiceModel(achievements, pageIndex, totalPages, pageSize);
         }
 
         public async Task<AchievementServiceModel?> GetByIdAsync(int id)

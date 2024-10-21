@@ -5,7 +5,7 @@
 
     public interface IAchievementService
     {
-        Task<IEnumerable<AchievementServiceModel>> GetAllByAthleteIdAsync(string athleteId);
+        Task<AchievementPageServiceModel> GetAllByAthleteIdAsync(string athleteId, int pageIndex, int pageSize);
 
         Task<bool> AchievementIsAlreadyAddedAsync(int exerciseId, string athleteId);
 

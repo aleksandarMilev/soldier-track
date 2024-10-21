@@ -11,6 +11,7 @@
     using SoldierTrack.Web.Models.Achievement;
 
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
+    using static SoldierTrack.Web.Common.Constants.WebConstants;
 
     [Authorize]
     public class AchievementController : Controller
@@ -33,9 +34,12 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(int pageIndex = 1, int pageSize = 10)
         {
-            var models = await this.achievementService.GetAllByAthleteIdAsync(this.User.GetId()!);
+            pageSize = Math.Min(pageSize, MaxPageSize);
+            pageSize = Math.Max(pageSize, MinPageSize);
+
+            var models = await this.achievementService.GetAllByAthleteIdAsync(this.User.GetId()!, pageIndex, pageSize);
             return this.View(models);
         }
 
