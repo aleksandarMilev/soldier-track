@@ -29,15 +29,17 @@
             this.mapper = mapper;
         }
 
-        public async Task<IActionResult> GetAll(string? searchTerm, int pageIndex = 1, int pageSize = 2)
+        public async Task<IActionResult> GetAll([FromQuery] FoodSearchParams searchParams)
         {
-            pageSize = Math.Min(pageSize, MaxPageSize);
-            pageSize = Math.Max(pageSize, MinPageSize);
+            searchParams.PageSize = Math.Min(searchParams.PageSize, MaxPageSize);
+            searchParams.PageSize = Math.Max(searchParams.PageSize, MinPageSize);
 
-            this.ViewBag.SearchTerm = searchTerm;
-            this.ViewBag.AthleteId = this.User.GetId();
+            var model = await this.foodService.GetPageModelsAsync(searchParams, this.User.GetId()!, this.User.IsAdmin());
 
-            var model = await this.foodService.GetPageModelsAsync(searchTerm, pageIndex, pageSize);
+            this.ViewData[nameof(searchParams.IncludeMine)] = searchParams.IncludeMine.ToString().ToLower();
+            this.ViewData[nameof(searchParams.IncludeCustom)] = searchParams.IncludeCustom.ToString().ToLower();
+            this.ViewData[nameof(searchParams.SearchTerm)] = searchParams.SearchTerm;
+
             return this.View(model);
         }
 
@@ -73,23 +75,11 @@
                 return this.NotFound();
             }
 
-            var athleteId = this.User.GetId();
-
-            if (model.AthleteId != null && model.AthleteId == athleteId)
-            {
-                this.ViewBag.ShowButtons = true;
-            }
-
-            if (model.AthleteId == null || (model.AthleteId != null && model.AthleteId != athleteId))
-            {
-                this.ViewBag.AthleteId = athleteId;
-            }
-
             return this.View(model);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int foodId, string athleteId)
+        public async Task<IActionResult> Edit(int foodId)
         {
             var serviceModel = await this.foodService.GetByIdAsync(foodId);
 
@@ -98,13 +88,14 @@
                 return this.NotFound();
             }
 
-            if (serviceModel.AthleteId == null || serviceModel.AthleteId != athleteId)
+            if (serviceModel.AthleteId == null || serviceModel.AthleteId != this.User.GetId())
             {
                 return this.Unauthorized();
             }
 
             var viewModel = this.mapper.Map<FoodFormModel>(serviceModel);
             this.ViewBag.FoodId = foodId;
+
             return this.View(viewModel);
         }
 
@@ -125,12 +116,13 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(int foodId, string athleteId)
+        public async Task<IActionResult> Delete(int foodId)
         {
-            await this.foodService.DeleteAsync(foodId, athleteId);
+            var athleteId = this.User.GetId();
+            await this.foodService.DeleteAsync(foodId, athleteId!, this.User.IsAdmin());
 
             this.TempData["SuccessMessage"] = FoodDeleted;
-            return this.RedirectToAction("MyDiary", "FoodDiary", new { athleteId });
+            return this.RedirectToAction(nameof(GetAll));
         }
     }
 }

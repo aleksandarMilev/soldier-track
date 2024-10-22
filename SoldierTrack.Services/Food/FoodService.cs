@@ -5,54 +5,64 @@
     using Microsoft.EntityFrameworkCore;
     using SoldierTrack.Data;
     using SoldierTrack.Data.Models;
+    using SoldierTrack.Services.Common;
     using SoldierTrack.Services.Food.Models;
-    using SoldierTrack.Services.FoodDiary;
 
     public class FoodService : IFoodService
     {
         private readonly ApplicationDbContext data;
-        private readonly IFoodDiaryService foodDiaryService;
         private readonly IMapper mapper;
 
-        public FoodService(
-            ApplicationDbContext data,
-            IFoodDiaryService foodDiaryService,
-            IMapper mapper)
+        public FoodService(ApplicationDbContext data, IMapper mapper)
         {
             this.data = data;
-            this.foodDiaryService = foodDiaryService;
             this.mapper = mapper;
         }
 
-        public async Task<FoodPageServiceModel> GetPageModelsAsync(string? searchTerm, int pageIndex, int pageSize)
+        public async Task<FoodPageServiceModel> GetPageModelsAsync(FoodSearchParams searchParams, string athleteId, bool isAdmin)
         {
             var query = this.data
-                .Foods
-                .AsNoTracking()
-                .OrderBy(a => a.Name)
-                .ProjectTo<FoodServiceModel>(this.mapper.ConfigurationProvider);
+               .AllDeletableAsNoTracking<Food>()
+               .ProjectTo<FoodServiceModel>(this.mapper.ConfigurationProvider);
 
-            if (!string.IsNullOrEmpty(searchTerm))
+            if (isAdmin || (searchParams.IncludeMine && searchParams.IncludeCustom) || (!searchParams.IncludeMine && searchParams.IncludeCustom))
             {
-                query = query.Where(a => a.Name.Contains(searchTerm.ToLower()));
+                query = query.OrderBy(e => e.Name);
+            }
+            else if (searchParams.IncludeMine && !searchParams.IncludeCustom)
+            {
+                query = query
+                    .Where(e => e.AthleteId == athleteId || e.AthleteId == null)
+                    .OrderBy(e => e.AthleteId == null)
+                    .ThenBy(e => e.Name);
+            }
+            else
+            {
+                query = query
+                    .Where(e => e.AthleteId == null)
+                    .OrderBy(e => e.Name);
+            }
+
+            if (!string.IsNullOrEmpty(searchParams.SearchTerm))
+            {
+                query = query.Where(e => e.Name.Contains(searchParams.SearchTerm.ToLower()));
             }
 
             var totalCount = await query.CountAsync();
             var foods = await query
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize)
+                .Skip((searchParams.PageIndex - 1) * searchParams.PageSize)
+                .Take(searchParams.PageSize)
                 .ToListAsync();
 
-            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-            return new FoodPageServiceModel(foods, pageIndex, totalPages, pageSize);
+            var totalPages = (int)Math.Ceiling(totalCount / (double)searchParams.PageSize);
+            return new FoodPageServiceModel(foods, searchParams.PageIndex, totalPages, searchParams.PageSize);
         }
 
         public async Task<FoodServiceModel?> GetByIdAsync(int id)
         {
             return await this.data
-                .Foods
-                .AsNoTracking()
-                .ProjectTo<FoodServiceModel>(this.mapper.ConfigurationProvider)
+                .AllDeletableAsNoTracking<Food>()
+                .ProjectTo<FoodDetailsServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(f => f.Id == id);
         }
 
@@ -68,7 +78,7 @@
         public async Task EditAsync(FoodServiceModel model)
         {
             var food = await this.data
-                .Foods
+                .AllDeletable<Food>()
                 .FirstOrDefaultAsync(f => f.Id == model.Id)
                 ?? throw new InvalidOperationException("Food not found!");
 
@@ -76,16 +86,16 @@
             await this.data.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int foodId, string athleteId)
+        public async Task DeleteAsync(int foodId, string athleteId, bool userIsAdmin)
         {
             var food = await this.data
-                 .Foods
+                 .AllDeletable<Food>()
                  .FirstOrDefaultAsync(f => f.Id == foodId)
                  ?? throw new InvalidOperationException("Food not found!");
 
-            if (food.AthleteId == null || food.AthleteId != athleteId)
+            if (!userIsAdmin && (food.AthleteId == null || food.AthleteId != athleteId))
             {
-                throw new InvalidOperationException("Food's creator Id is not valid!");
+                throw new InvalidOperationException("Unauthorized operation!");
             }
 
             this.data.SoftDelete(food);

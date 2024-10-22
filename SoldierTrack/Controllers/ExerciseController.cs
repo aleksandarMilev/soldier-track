@@ -140,7 +140,7 @@
             await this.exerciseService.DeleteAsync(exerciseId, this.User.GetId()!, this.User.IsAdmin());
             
             this.TempData["SuccessMessage"] = ExerciseDeleted;
-            return this.RedirectToAction(nameof(GetAll), new { includeMine = false });
+            return this.RedirectToAction(nameof(GetAll));
         }
     }
 }

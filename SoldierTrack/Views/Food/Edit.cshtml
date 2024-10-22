@@ -15,13 +15,7 @@
                 <partial name="_FormPartial" model="@this.Model"></partial>
                 <input asp-for="@foodId" type="hidden" />
                 <button type="submit" class="btn btn-primary">Edit</button>
-                <a 
-                    asp-controller="FoodDiary" 
-                    asp-action="MyDiary" 
-                    asp-route-athleteId="@this.Model.AthleteId" 
-                    class="btn btn-secondary">
-                        Back To My Diary
-                </a>
+                <a class="btn btn-secondary" asp-controller="FoodDiary" asp-action="MyDiary">Back To My Diary</a>
             </form>
         </div>
     </div>

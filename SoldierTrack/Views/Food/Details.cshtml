@@ -1,9 +1,9 @@
 ﻿@using SoldierTrack.Services.Food.Models
+@using SoldierTrack.Web.Common.Extensions
 @model FoodServiceModel
 
 @{
     this.ViewData["Title"] = "Exercise Details";
-    var athleteId = this.Model.AthleteId ?? this.ViewBag.AthleteId;
 }
 
 @if (this.TempData["SuccessMessage"] != null)
@@ -84,35 +84,30 @@
                 </div>
                 <div class="card-footer bg-light text-center mt-3">
                     <div class="d-flex justify-content-center gap-2 flex-wrap">
-
-                        @if (athleteId != null)
+                        @if (this.Model.AthleteId != null && this.User.GetId() == this.Model.AthleteId)
                         {
-                            @if (this.ViewBag.ShowButtons != null)
-                            {
-                                <a asp-controller="Food"
-                                   asp-action="Edit"
-                                   asp-route-athleteId="@athleteId"
-                                   asp-route-foodId="@this.Model.Id"
-                                   class="btn btn-warning btn-sm">
+                            <a asp-controller="Food"
+                               asp-action="Edit"
+                               asp-route-foodId="@this.Model.Id"
+                               class="btn btn-warning btn-sm">
                                     Edit Food
-                                </a>
-
-                                <form method="post"
-                                      asp-controller="Food"
-                                      asp-action="Delete"
-                                      asp-route-athleteId="@athleteId"
-                                      asp-route-foodId="@this.Model.Id"
-                                      onSubmit="return confirm('Are you sure you want to delete this food?')">
-                                    <button class="btn btn-danger btn-sm">Delete Food</button>
-                                </form>
-                            }
-                            <a
-                               asp-action="GetAll"
-                               asp-route-athleteId="@athleteId"
-                               class="btn btn-secondary">
-                                Back
                             </a>
                         }
+
+                        @if (
+                            (this.Model.AthleteId != null && this.User.GetId() == this.Model.AthleteId) ||
+                             this.User.IsAdmin())
+                        {  
+                            <form method="post"
+                                    asp-controller="Food"
+                                    asp-action="Delete"
+                                    asp-route-foodId="@this.Model.Id"
+                                    onSubmit="return confirm('Are you sure you want to delete this food?')">
+                                <button class="btn btn-danger btn-sm">Delete Food</button>
+                            </form>
+                        }
+
+                        <a asp-action="GetAll"class="btn btn-secondary">Back</a>
                     </div>
                 </div>
             </div>

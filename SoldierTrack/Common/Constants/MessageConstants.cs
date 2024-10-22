@@ -107,5 +107,8 @@
         public const string FoodEdited = "Food is successfully edited!";
 
         public const string FoodDeleted = "Food is successfully deleted!";
+
+        //food diary
+        public const string FoodDiaryDateError = "Invalid date! You can select dates in the range {0} - {1}";
     }
 }

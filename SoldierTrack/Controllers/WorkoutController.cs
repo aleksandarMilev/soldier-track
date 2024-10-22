@@ -54,18 +54,12 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetArchive(string athleteId, int pageIndex = 1, int pageSize = 5)
+        public async Task<IActionResult> GetArchive(int pageIndex = 1, int pageSize = 5)
         {
             pageSize = Math.Min(pageSize, MaxPageSize);
             pageSize = Math.Max(pageSize, MinPageSize);
 
-            if (this.User.GetId() != athleteId)
-            {
-                return this.Unauthorized();
-            }
-
-            this.ViewBag.AthleteId = athleteId;
-            var model = await this.workoutService.GetArchiveAsync(athleteId, pageIndex, pageSize);
+            var model = await this.workoutService.GetArchiveAsync(this.User.GetId()!, pageIndex, pageSize);
             return this.View(model);
         }
     }

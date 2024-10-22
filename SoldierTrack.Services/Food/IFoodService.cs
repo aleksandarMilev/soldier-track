@@ -4,7 +4,7 @@
 
     public interface IFoodService
     {
-        Task<FoodPageServiceModel> GetPageModelsAsync(string? searchTerm, int pageIndex, int pageSize);
+        Task<FoodPageServiceModel> GetPageModelsAsync(FoodSearchParams searchParams, string athleteId, bool userIsAdmin);
 
         Task<FoodServiceModel?> GetByIdAsync(int id);
 
@@ -12,7 +12,7 @@
 
         Task EditAsync(FoodServiceModel model);
 
-        Task DeleteAsync(int foodId, string athleteId);
+        Task DeleteAsync(int foodId, string athleteId, bool userIsAdmin);
 
     }
 }

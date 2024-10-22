@@ -7,7 +7,6 @@
 @{
     this.ViewData["Title"] = "Foods";
 
-    var athleteId = this.User.GetId();
     var userIsAdmin = this.User.IsAdmin();
     var foods = this.Model.Foods;
     var pageIndex = this.Model.PageIndex;
@@ -15,6 +14,7 @@
     var pageSize = this.Model.PageSize;
     var searchTerm = this.ViewData["searchTerm"]?.ToString();
     var includeMine = this.ViewData["includeMine"]?.ToString() ?? "false";
+    var includeCustom = this.ViewData["includeCustom"]?.ToString() ?? "false";
 }
 
 @if (this.TempData["SuccessMessage"] != null)
@@ -29,20 +29,39 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <form method="get" asp-action="GetAll" class="row justify-content-center mb-4">
-                <div class="col-md-8">
+                <div class="col-md-12">
                     <div class="input-group shadow-sm">
-                        <input type="text" id="searchTerm" name="searchTerm" class="form-control rounded-start-pill py-2 px-3" placeholder="Search for food..." />
-                        <div class="form-check me-2">
-                            <input type="checkbox" class="form-check-input" id="includeMine" name="includeMine" value="true" @(includeMine == "true" ? "checked" : "") />
-                            <label class="form-check-label" for="includeMine">Include my exercises</label>
-                        </div>
-                        <button type="submit" class="btn btn-secondary rounded-end-pill px-4 ms-2 d-flex align-items-center">
-                            <i class="bi bi-search me-2"></i> Search
+                        <input type="text" id="searchTerm" name="searchTerm"
+                               class="form-control rounded-start-pill py-2 px-3"
+                               placeholder="Search for food..." />
+
+                        <button type="submit" class="btn btn-primary rounded-end-pill px-4">
+                            <i class="fas fa-search"></i>
                         </button>
                     </div>
+                    @if (!userIsAdmin)
+                    {
+                        <div class="d-flex align-items-center mt-3">
+                            <div class="form-check" style="margin-right:0.75em">
+                                <input type="checkbox" class="form-check-input"
+                                       id="includeMine" name="includeMine" value="true"
+                                @(includeMine == "true" ? "checked" : "") />
+                                <label class="form-check-label" for="includeMine">
+                                    Include my foods
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input"
+                                       id="includeCustom" name="includeCustom" value="true"
+                                @(includeCustom == "true" ? "checked" : "") />
+                                <label class="form-check-label" for="includeCustom">
+                                    Include custom foods
+                                </label>
+                            </div>
+                        </div>
+                    }
                 </div>
             </form>
-
             <div class="card shadow-sm border-0 rounded-4" style="background-color: #f8f9fa;">
                 <div class="card-body">
                     <h5 class="card-title mb-4 text-center">Foods</h5>
@@ -63,15 +82,13 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            @if (athleteId != null)
+                                            @if(!userIsAdmin)
                                             {
-                                                <form 
-                                                      method="post"
+                                                <form method="post"
+                                                      class="d-flex flex-wrap justify-content-between gap-3"
                                                       asp-controller="FoodDiary"
                                                       asp-action="AddFood"
-                                                      asp-route-foodId="@food.Id"
-                                                      asp-route-athleteId="@athleteId"
-                                                      class="d-flex flex-wrap justify-content-between gap-3">
+                                                      asp-route-foodId="@food.Id">
                                                         <select id="mealType" name="mealType" class="form-select" style="width: 200px;">
                                                             @foreach (var mealType in Enum.GetValues(typeof(MealType)).Cast<MealType>())
                                                             {
@@ -79,24 +96,25 @@
                                                             }
                                                         </select>
                                                         <input type="date"
-                                                               name="date"
-                                                               value="@DateTime.Now.ToString("yyyy-MM-dd")"
-                                                               required
-                                                               class="form-control"
-                                                               style="width: 200px;" />
+                                                                name="date"
+                                                                value="@DateTime.Now.ToString("yyyy-MM-dd")"
+                                                                required
+                                                                class="form-control"
+                                                                style="width: 200px;" />
 
                                                         <input type="number"
-                                                               name="quantity"
-                                                               required
-                                                               min="1"
-                                                               placeholder="grams"
-                                                               class="form-control"
-                                                               style="width: 200px;" />
+                                                                name="quantity"
+                                                                required
+                                                                min="1"
+                                                                placeholder="grams"
+                                                                class="form-control"
+                                                                style="width: 200px;" />
                                                         <button type="submit" class="btn btn-success" style="width: 100px;">
                                                             <i class="bi bi-plus-circle"></i> Add
                                                         </button>
                                                 </form>
                                             }
+                                          
                                             <a asp-action="Details" asp-route-id="@food.Id" class="btn btn-primary">Details</a>
                                         </div>
                                     </div>
@@ -117,8 +135,16 @@
                     @if (pageIndex > 1)
                     {
                         <li class="page-item">
-                            <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@(pageIndex - 1)" asp-route-pageSize="@pageSize"
-                               asp-route-searchTerm="@searchTerm" asp-route-includeMine="@includeMine">Previous</a>
+                            <a 
+                                class="page-link" 
+                                asp-action="GetAll" 
+                                asp-route-pageIndex="@(pageIndex - 1)" 
+                                asp-route-pageSize="@pageSize"
+                                asp-route-searchTerm="@searchTerm" 
+                                asp-route-includeMine="@includeMine"
+                                asp-route-includeCustom="@includeCustom">
+                                    Previous
+                            </a>
                         </li>
                     }
                     else
@@ -131,8 +157,16 @@
                     @if (pageIndex > 3)
                     {
                         <li class="page-item">
-                            <a class="page-link" asp-action="GetAll" asp-route-pageIndex="1" asp-route-pageSize="@pageSize"
-                               asp-route-searchTerm="@searchTerm" asp-route-includeMine="@includeMine">1</a>
+                            <a 
+                                class="page-link" 
+                                asp-action="GetAll" 
+                                asp-route-pageIndex="1" 
+                                asp-route-pageSize="@pageSize"
+                                asp-route-searchTerm="@searchTerm" 
+                                asp-route-includeMine="@includeMine"
+                                asp-route-includeCustom="@includeCustom">
+                                    1
+                            </a>
                         </li>
                         <li class="page-item disabled">
                             <span class="page-link">...</span>
@@ -142,8 +176,16 @@
                     @for (int i = Math.Max(1, pageIndex - 2); i <= Math.Min(totalPages, pageIndex + 2); i++)
                     {
                         <li class="page-item @(i == pageIndex ? "active" : "")">
-                            <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@i" asp-route-pageSize="@pageSize"
-                               asp-route-searchTerm="@searchTerm" asp-route-includeMine="@includeMine">@i</a>
+                            <a 
+                                class="page-link" 
+                                asp-action="GetAll" 
+                                asp-route-pageIndex="@i" 
+                                asp-route-pageSize="@pageSize"
+                                asp-route-searchTerm="@searchTerm" 
+                                asp-route-includeMine="@includeMine"
+                                asp-route-includeCustom="@includeCustom">
+                                    @i
+                            </a>
                         </li>
                     }
 
@@ -153,16 +195,32 @@
                             <span class="page-link">...</span>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@totalPages" asp-route-pageSize="@pageSize"
-                               asp-route-searchTerm="@searchTerm" asp-route-includeMine="@includeMine">@totalPages</a>
+                            <a 
+                               class="page-link" 
+                               asp-action="GetAll" 
+                               asp-route-pageIndex="@totalPages" 
+                               asp-route-pageSize="@pageSize"
+                               asp-route-searchTerm="@searchTerm" 
+                               asp-route-includeMine="@includeMine"
+                               asp-route-includeCustom="@includeCustom">
+                                    @totalPages
+                            </a>
                         </li>
                     }
 
                     @if (pageIndex < totalPages)
                     {
                         <li class="page-item">
-                            <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@(pageIndex + 1)" asp-route-pageSize="@pageSize"
-                               asp-route-searchTerm="@searchTerm" asp-route-includeMine="@includeMine">Next</a>
+                            <a 
+                                class="page-link" 
+                                asp-action="GetAll" 
+                                asp-route-pageIndex="@(pageIndex + 1)" 
+                                asp-route-pageSize="@pageSize"
+                                asp-route-searchTerm="@searchTerm" 
+                                asp-route-includeMine="@includeMine"
+                                asp-route-includeCustom="@includeCustom">
+                                    Next
+                            </a>
                         </li>
                     }
                     else

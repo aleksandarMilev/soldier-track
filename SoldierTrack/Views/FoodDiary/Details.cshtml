@@ -14,8 +14,8 @@
 }
 
 <div class="container mt-5 p-4" style="background-color: #f0f0f0; border-radius: 10px;">
-    <h2 class="text-center mb-5"><span class="utc-date" data-utc="@this.Model.Date.ToString("o")"></span>
-        Food Diary Details for 
+    <h2 class="text-center mb-5" style="font-family: 'Roboto', sans-serif;">
+        <span class="utc-date" data-utc="@this.Model.Date.ToString("o")"></span>
     </h2>
     <div class="card shadow-sm mb-4 border border-light" style="border-radius: 10px; border: 1px solid #d1d1d1; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
         <div class="card-header" style="background-color:#f0dfdf">
@@ -24,16 +24,16 @@
         <div class="card-body" style="background-color: #ded7d7;">
             <div class="row">
                 <div class="col-md-3">
-                    <p style="font-size: 1.15em;" class="lead"><strong>Total Calories:</strong> @this.Model.TotalCalories</p>
+                    <p style="font-size: 1.15em;" class="lead"><i class="fas fa-fire text-danger"></i> <strong>Total Calories:</strong> @this.Model.TotalCalories</p>
                 </div>
                 <div class="col-md-3">
-                    <p style="font-size: 1.15em;" class="lead"><strong>Total Protein:</strong> @this.Model.Proteins g</p>
+                    <p style="font-size: 1.15em;" class="lead"><i class="fas fa-drumstick-bite text-danger"></i> <strong>Total Protein:</strong> @this.Model.Proteins g</p>
                 </div>
                 <div class="col-md-3">
-                    <p style="font-size: 1.15em;" class="lead"><strong>Total Carbohydrates:</strong> @this.Model.Carbohydrates g</p>
+                    <p style="font-size: 1.15em;" class="lead"><i class="fas fa-bread-slice text-warning"></i> <strong>Total Carbohydrates:</strong> @this.Model.Carbohydrates g</p>
                 </div>
                 <div class="col-md-3">
-                    <p style="font-size: 1.15em;" class="lead"><strong>Total Fats:</strong> @this.Model.Fats g</p>
+                    <p style="font-size: 1.15em;" class="lead"><i class="fas fa-bacon text-success"></i> <strong>Total Fats:</strong> @this.Model.Fats g</p>
                 </div>
             </div>
         </div>
@@ -48,19 +48,19 @@
             <div class="card-body" style="background-color: #ded7d7;">
                 <div class="row">
                     <div class="col-md-3">
-                        <p><strong>Total Calories:</strong> @meal.TotalCalories</p>
+                        <p><i class="fas fa-fire text-danger"></i> <strong>Total Calories:</strong> @meal.TotalCalories</p>
                     </div>
                     <div class="col-md-3">
-                        <p><strong>Protein:</strong> @meal.Proteins g</p>
+                        <p><i class="fas fa-drumstick-bite text-danger"></i> <strong>Protein:</strong> @meal.Proteins g</p>
                     </div>
                     <div class="col-md-3">
-                        <p><strong>Carbohydrates:</strong> @meal.Carbohydrates g</p>
+                        <p><i class="fas fa-bread-slice text-warning"></i> <strong>Carbohydrates:</strong> @meal.Carbohydrates g</p>
                     </div>
                     <div class="col-md-3">
-                        <p><strong>Fats:</strong> @meal.Fats g</p>
+                        <p><i class="fas fa-bacon text-success"></i> <strong>Fats:</strong> @meal.Fats g</p>
                     </div>
                 </div>
-                <h6 class="mt-4">Foods Included:</h6>
+                <h6 class="mt-4"><i class="fas fa-utensils"></i> Foods Included:</h6>
                 <ul class="list-group">
                     @foreach (var food in meal.MealsFoods)
                     {
@@ -75,18 +75,17 @@
                                 <span class="text-muted"> @food.Quantity g</span>
                             </div>
                             <div>
-                                <span class="badge bg-info">Calories: @cals</span>
-                                <span class="badge bg-success">Protein: @proteins g</span>
-                                <span class="badge bg-warning text-dark">Carbs: @carbs g</span>
-                                <span class="badge bg-danger">Fat: @fats g</span>
-                                <form 
-                                   method="post"
-                                   style="display: inline;"
-                                   asp-action="RemoveFood"
-                                   asp-route-diaryId="@this.Model.Id"
-                                   asp-route-foodId="@food.Id"
-                                   asp-route-mealType="@meal.MealType">
-                                  <button type="submit" class="btn btn-danger btn-sm ms-3">Remove</button>
+                                <span class="badge bg-info"><i class="fas fa-fire"></i> Calories: @cals</span>
+                                <span class="badge bg-success"><i class="fas fa-drumstick-bite"></i> Protein: @proteins g</span>
+                                <span class="badge bg-warning text-dark"><i class="fas fa-bread-slice"></i> Carbs: @carbs g</span>
+                                <span class="badge bg-danger"><i class="fas fa-bacon"></i> Fat: @fats g</span>
+                                <form method="post"
+                                      style="display: inline;"
+                                      asp-action="RemoveFood"
+                                      asp-route-diaryId="@this.Model.Id"
+                                      asp-route-foodId="@food.Id"
+                                      asp-route-mealType="@meal.MealType">
+                                    <button type="submit" class="btn btn-danger btn-sm ms-3"><i class="fas fa-trash"></i> Remove</button>
                                 </form>
                             </div>
                         </li>
@@ -95,8 +94,7 @@
             </div>
         </div>
     }
-    <a class="btn btn-secondary" asp-action="MyDiary" asp-route-athleteId="@this.Model.AthleteId">Back</a>
+    <a class="btn btn-secondary" asp-action="MyDiary" asp-route-athleteId="@this.Model.AthleteId"><i class="fas fa-arrow-left"></i> Back</a>
 </div>
-
 
 <script src="~/js/convertUtcToLocaleDate.js"></script>

@@ -26,7 +26,7 @@
                 .FoodDiaries
                 .AsNoTracking()
                 .ProjectTo<FoodDiaryServiceModel>(this.mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(fd => fd.AthleteId == athleteId && date == fd.Date);
+                .FirstOrDefaultAsync(fd => fd.AthleteId == athleteId && date == fd.Date.Date);
         }
 
         public async Task<FoodDiaryDetailsServiceModel?> GetDetailsByIdAsync(int diaryId)
@@ -34,9 +34,8 @@
             return await this.data
                 .FoodDiaries
                 .AsNoTracking()
-                .Where(fd => fd.Id == diaryId)
                 .ProjectTo<FoodDiaryDetailsServiceModel>(this.mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(fd => fd.Id == diaryId);
         }
 
         public async Task<FoodDiaryServiceModel> CreateForDateAsync(string athleteId, DateTime date)
@@ -50,7 +49,7 @@
             var diary = await this.data
                 .FoodDiaries
                 .Include(fd => fd.Meals)
-                .FirstOrDefaultAsync(fd => fd.AthleteId == athleteId && fd.Date == date)
+                .FirstOrDefaultAsync(fd => fd.AthleteId == athleteId && fd.Date.Date == date)
                 ?? await this.CreateDiaryAsync(athleteId, date);
 
             if (Enum.TryParse(mealType, true, out MealType parsedMealType))
@@ -61,7 +60,7 @@
                     ?? await this.CreateMealAsync(diary.Id, parsedMealType);
 
                 var food = await this.data
-                    .Foods
+                    .AllDeletable<Food>()
                     .FirstOrDefaultAsync(f => f.Id == foodId)
                     ?? throw new InvalidOperationException("The food is not found!");
 
@@ -82,7 +81,7 @@
                     this.data.Add(mapEntity);
                 }
 
-                mapEntity.Quantity = quantity;
+                mapEntity.Quantity += quantity;
                 await this.data.SaveChangesAsync();
             }
             else
@@ -107,7 +106,7 @@
                     ?? throw new InvalidOperationException("The meal does not exist!");
 
                 var food = await this.data
-                    .Foods
+                    .Foods //we want to include deleted foods too
                     .FirstOrDefaultAsync(f => f.Id == foodId)
                     ?? throw new InvalidOperationException("The food is not found!");
 
