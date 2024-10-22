@@ -1,4 +1,5 @@
 ﻿@using SoldierTrack.Services.Food.Models
+@using SoldierTrack.Web.Common.Extensions
 @using SoldierTrack.Web.Models.Meal
 
 @model FoodPageServiceModel
@@ -6,7 +7,8 @@
 @{
     this.ViewData["Title"] = "Foods";
 
-    var athleteId = this.ViewBag.AthleteId;
+    var athleteId = this.User.GetId();
+    var userIsAdmin = this.User.IsAdmin();
     var foods = this.Model.Foods;
     var pageIndex = this.Model.PageIndex;
     var totalPages = this.Model.TotalPages;

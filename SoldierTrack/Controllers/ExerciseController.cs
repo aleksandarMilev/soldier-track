@@ -34,18 +34,16 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(bool includeMine, bool includeCustom, string? searchTerm = null, int pageIndex = 1, int pageSize = 5)
+        public async Task<IActionResult> GetAll([FromQuery] ExerciseSearchParams searchParams)
         {
-            pageSize = Math.Min(pageSize, MaxPageSize);
-            pageSize = Math.Max(pageSize, MinPageSize);
+            searchParams.PageSize = Math.Min(searchParams.PageSize, MaxPageSize);
+            searchParams.PageSize = Math.Max(searchParams.PageSize, MinPageSize);
 
-            var athleteId = this.User.GetId();
-            this.ViewBag.AthleteId = athleteId;
+            var model = await this.exerciseService.GetPageModelsAsync(searchParams, this.User.GetId()!, this.User.IsAdmin());
 
-            var model = await this.exerciseService.GetPageModelsAsync(searchTerm, athleteId!, includeMine, includeCustom, pageIndex, pageSize);
-            this.ViewData[nameof(includeMine)] = includeMine.ToString().ToLower();
-            this.ViewData[nameof(includeCustom)] = includeCustom.ToString().ToLower();
-            this.ViewData[nameof(searchTerm)] = searchTerm;
+            this.ViewData[nameof(searchParams.IncludeMine)] = searchParams.IncludeMine.ToString().ToLower();
+            this.ViewData[nameof(searchParams.IncludeCustom)] = searchParams.IncludeCustom.ToString().ToLower();
+            this.ViewData[nameof(searchParams.SearchTerm)] = searchParams.SearchTerm;
 
             return this.View(model);
         }
@@ -92,7 +90,7 @@
         [HttpGet]
         public async Task<IActionResult> Details(int exerciseId)
         {
-            var model = await this.exerciseService.GetDetailsById(exerciseId, this.User.GetId()!);
+            var model = await this.exerciseService.GetDetailsById(exerciseId, this.User.GetId()!, this.User.IsAdmin());
             if (model == null)
             {
                 return this.NotFound();
@@ -139,7 +137,7 @@
         [HttpPost]
         public async Task<IActionResult> Delete(int exerciseId)
         {
-            await this.exerciseService.DeleteAsync(exerciseId, this.User.GetId()!);
+            await this.exerciseService.DeleteAsync(exerciseId, this.User.GetId()!, this.User.IsAdmin());
             
             this.TempData["SuccessMessage"] = ExerciseDeleted;
             return this.RedirectToAction(nameof(GetAll), new { includeMine = false });

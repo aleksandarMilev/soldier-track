@@ -6,7 +6,9 @@
     {
         public bool ShowCreateButton { get; set; }
 
-        public bool ShowEditDeleteButtons { get; set; }
+        public bool ShowEditButton { get; set; }
+
+        public bool ShowDeleteButton { get; set; }
 
         public int? RelatedAchievementId { get; set; }
 

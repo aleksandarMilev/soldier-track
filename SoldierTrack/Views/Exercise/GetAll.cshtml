@@ -1,4 +1,5 @@
 ﻿@using SoldierTrack.Services.Exercise.Models
+@using SoldierTrack.Web.Common.Extensions
 
 @model ExercisePageServiceModel
 
@@ -28,14 +29,17 @@
     <div class="col-md-6 offset-md-3">
         <form method="get" asp-action="GetAll" class="d-flex">
             <input type="text" id="searchTerm" name="searchTerm" value="@searchTerm" class="form-control me-2" placeholder="Search exercise..." />
-            <div class="form-check me-2">
-                <input type="checkbox" class="form-check-input" id="includeMine" name="includeMine" value="true" @(includeMine == "true" ? "checked" : "") />
-                <label class="form-check-label" for="includeMine">Include my exercises</label>
-            </div>
-            <div class="form-check me-2">
-                <input type="checkbox" class="form-check-input" id="includeCustom" name="includeCustom" value="true" @(includeCustom == "true" ? "checked" : "") />
-                <label class="form-check-label" for="includeCustom">Include custom exercises</label>
-            </div>
+            @if(!this.User.IsAdmin())
+            {
+                <div class="form-check me-2">
+                    <input type="checkbox" class="form-check-input" id="includeMine" name="includeMine" value="true" @(includeMine == "true" ? "checked" : "") />
+                    <label class="form-check-label" for="includeMine">Include my exercises</label>
+                </div>
+                <div class="form-check me-2">
+                    <input type="checkbox" class="form-check-input" id="includeCustom" name="includeCustom" value="true" @(includeCustom == "true" ? "checked" : "") />
+                    <label class="form-check-label" for="includeCustom">Include custom exercises</label>
+                </div>
+            }
             <button type="submit" class="btn btn-primary">Search</button>
         </form>
     </div>

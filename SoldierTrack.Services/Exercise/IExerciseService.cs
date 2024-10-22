@@ -4,17 +4,11 @@
 
     public interface IExerciseService
     {
-        Task<ExercisePageServiceModel> GetPageModelsAsync(
-          string? searchTerm,
-          string athleteId,
-          bool includeMine,
-          bool includeCustom,
-          int pageIndex,
-          int pageSize);
+        Task<ExercisePageServiceModel> GetPageModelsAsync(ExerciseSearchParams searchParams, string athleteId, bool userIsAdmin);
 
         Task<ExerciseServiceModel?> GetByIdAsync(int id);
 
-        Task<ExerciseDetailsServiceModel?> GetDetailsById(int id, string athleteId);
+        Task<ExerciseDetailsServiceModel?> GetDetailsById(int id, string athleteId, bool userIsAdmin);
 
         Task<string> GetNameByIdAsync(int id);
 
@@ -26,6 +20,6 @@
 
         Task EditAsync(ExerciseServiceModel model);
 
-        Task DeleteAsync(int exerciseId, string athleteId);
+        Task DeleteAsync(int exerciseId, string athleteId, bool userIsAdmin);
     }
 }

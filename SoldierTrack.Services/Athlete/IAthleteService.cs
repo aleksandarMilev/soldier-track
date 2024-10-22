@@ -8,6 +8,8 @@
 
         Task<AthleteDetailsServiceModel?> GetDetailsModelByIdAsync(string id);
 
+        Task<string?> GetNameByIdAsync(string id);
+
         Task<bool> AthleteWithSameNumberExistsAsync(string phoneNumber, string userId);
 
         Task<bool> AthleteWithSameEmailExistsAsync(string email, string userId);

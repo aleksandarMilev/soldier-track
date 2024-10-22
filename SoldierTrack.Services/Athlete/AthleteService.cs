@@ -11,6 +11,7 @@
     using SoldierTrack.Services.Membership;
 
     using static SoldierTrack.Services.Common.Messages;
+    using static SoldierTrack.Services.Common.Constants;
 
     public class AthleteService : IAthleteService
     {
@@ -67,9 +68,25 @@
             return new AthletePageServiceModel(athletes, pageIndex, totalPages, pageSize);
         }
 
+        public async Task<string?> GetNameByIdAsync(string id)
+        {
+            var athlete = await this.data
+                .AllAthletesAsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (athlete == null)
+            {
+                return AdminRoleName;
+            }
+
+            return $"{athlete.FirstName} {athlete.LastName}";
+        }
+
         public async Task<AthleteServiceModel?> GetFormModelByIdAsync(string id)
         {
-            var athlete = await this.data.FindAsync<Athlete>(id);
+            var athlete = await this.data
+                .AllAthletesAsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == id);
 
             if (athlete == null)
             {
@@ -107,7 +124,9 @@
 
         public async Task<bool> AthleteWithSameNumberExistsAsync(string phoneNumber, string id)
         {
-            var athlete = await this.data.FindAsync<Athlete>(id)
+            var athlete = await this.data
+                .AllAthletesAsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == id)
                 ?? throw new InvalidOperationException("User is not found!");
 
             if (athlete.Id != id)
@@ -120,7 +139,9 @@
 
         public async Task<bool> AthleteWithSameEmailExistsAsync(string email, string id)
         {
-            var athlete = await this.data.FindAsync<Athlete>(id)
+            var athlete = await this.data
+                .AllAthletesAsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == id)
                 ?? throw new InvalidOperationException("User is not found!");
 
             if (athlete.Id != id)

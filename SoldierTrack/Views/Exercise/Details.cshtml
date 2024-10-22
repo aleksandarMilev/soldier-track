@@ -5,7 +5,6 @@
 
 @{
     this.ViewData["Title"] = "Exercise Details";
-    var athleteId = this.User.GetId(); 
 }
 
 @if (this.TempData["SuccessMessage"] != null)
@@ -92,47 +91,47 @@
                 }
                 <div class="card-footer bg-light text-center mt-3">
                     <div class="d-flex justify-content-center gap-2 flex-wrap">
-                        @if (athleteId != null)
+                        @if (this.Model.ShowCreateButton)
                         {
-                            @if (this.Model.ShowCreateButton)
-                            {
-                                <a 
-                                    class="btn btn-primary btn-sm"
-                                    asp-controller="Achievement"
-                                    asp-route-exerciseId="@this.Model.Id"
-                                    asp-action="Create">
-                                        Create Achievement
-                                </a>
-                            }
-                            else
-                            {
-                                <a class="btn btn-outline-primary btn-sm"
-                                    asp-controller="Achievement"
-                                    asp-route-id="@this.Model.RelatedAchievementId"
-                                    asp-action="Edit">
-                                        Update Achievement
-                                </a>
-                            }
+                            <a 
+                                class="btn btn-primary btn-sm"
+                                asp-controller="Achievement"
+                                asp-route-exerciseId="@this.Model.Id"
+                                asp-action="Create">
+                                    Create Achievement
+                            </a>
+                        }
+                        else if(!this.User.IsAdmin())
+                        {
+                            <a class="btn btn-outline-primary btn-sm"
+                                asp-controller="Achievement"
+                                asp-route-id="@this.Model.RelatedAchievementId"
+                                asp-action="Edit">
+                                    Update Achievement
+                            </a>
+                        }
 
-                            @if (this.Model.ShowEditDeleteButtons)
-                            {
-                                <a 
-                                    class="btn btn-warning btn-sm"
-                                    asp-controller="Exercise"
-                                    asp-route-exerciseId="@this.Model.Id"
-                                    asp-action="Edit">
-                                        Edit Exercise
-                                </a>
+                        @if (this.Model.ShowEditButton)
+                        {
+                            <a 
+                                class="btn btn-warning btn-sm"
+                                asp-controller="Exercise"
+                                asp-route-exerciseId="@this.Model.Id"
+                                asp-action="Edit">
+                                    Edit Exercise
+                            </a>
+                        }
 
-                                <form 
-                                    method="post"
-                                    asp-controller="Exercise"
-                                    asp-action="Delete"
-                                    asp-route-exerciseId="@this.Model.Id"
-                                    onSubmit="return alert('Are you sure you want to delete this exercise?')">
-                                    <button class="btn btn-danger btn-sm">Delete Exercise</button>
-                                </form>
-                            }
+                        @if (this.Model.ShowDeleteButton)
+                        {
+                            <form 
+                                method="post"
+                                asp-controller="Exercise"
+                                asp-action="Delete"
+                                asp-route-exerciseId="@this.Model.Id"
+                                onSubmit="return alert('Are you sure you want to delete this exercise?')">
+                                <button class="btn btn-danger btn-sm">Delete Exercise</button>
+                            </form>
                         }
                         <a asp-action="GetAll" class="btn btn-outline-secondary btn-sm">Back</a>
                     </div>
