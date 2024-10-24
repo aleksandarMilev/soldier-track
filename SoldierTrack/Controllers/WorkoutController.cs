@@ -1,16 +1,15 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using SoldierTrack.Services.Athlete;
     using SoldierTrack.Services.Membership;
     using SoldierTrack.Services.Workout;
     using SoldierTrack.Web.Common.Extensions;
+    using SoldierTrack.Web.Controllers.Base;
 
     using static SoldierTrack.Web.Common.Constants.WebConstants;
 
-    [Authorize]
-    public class WorkoutController : Controller
+    public class WorkoutController : BaseController
     {
         private readonly IWorkoutService workoutService;
         private readonly IAthleteService athleteService;
@@ -27,13 +26,24 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(DateTime? date = null, int pageIndex = 1, int pageSize = 5)
+        public async Task<IActionResult> GetAll(DateTime? date = null, int pageIndex = 1, int pageSize = 10)
         {
             pageSize = Math.Min(pageSize, MaxPageSize);
             pageSize = Math.Max(pageSize, MinPageSize);
 
             this.ViewBag.Date = date;
             var model = await this.workoutService.GetAllAsync(date, pageIndex, pageSize);
+
+            return this.View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetArchive(int pageIndex = 1, int pageSize = 5)
+        {
+            pageSize = Math.Min(pageSize, MaxPageSize);
+            pageSize = Math.Max(pageSize, MinPageSize);
+
+            var model = await this.workoutService.GetArchiveAsync(this.User.GetId()!, pageIndex, pageSize);
             return this.View(model);
         }
 
@@ -50,16 +60,6 @@
                 return this.NotFound();
             }
 
-            return this.View(model);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetArchive(int pageIndex = 1, int pageSize = 5)
-        {
-            pageSize = Math.Min(pageSize, MaxPageSize);
-            pageSize = Math.Max(pageSize, MinPageSize);
-
-            var model = await this.workoutService.GetArchiveAsync(this.User.GetId()!, pageIndex, pageSize);
             return this.View(model);
         }
     }

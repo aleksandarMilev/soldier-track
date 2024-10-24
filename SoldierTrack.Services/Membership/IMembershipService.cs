@@ -4,9 +4,9 @@
 
     public interface IMembershipService
     {
-        Task RequestAsync(MembershipServiceModel model);
-
         Task<MembershipPageServiceModel> GetArchiveByAthleteIdAsync(string athleteId, int pageIndex, int pageSize);
+
+        Task<int> GetPendingCountAsync();
 
         Task<bool> MembershipExistsByAthleteIdAsync(string athleteId);
 
@@ -14,7 +14,7 @@
 
         Task<bool> MembershipIsExpiredByAthleteIdAsync (string athleteId);
 
-        Task<int> GetPendingCountAsync();
+        Task RequestAsync(MembershipServiceModel model);
 
         Task ApproveAsync(int id);
 

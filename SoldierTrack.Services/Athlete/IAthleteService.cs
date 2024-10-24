@@ -16,7 +16,7 @@
 
         Task<bool> AthleteAlreadyJoinedByIdAsync(string athleteId, int workoutId);
 
-        Task<AthleteServiceModel?> GetFormModelByIdAsync(string id);
+        Task<AthleteServiceModel?> GetModelByIdAsync(string id);
 
         Task EditAsync(AthleteServiceModel model);
 

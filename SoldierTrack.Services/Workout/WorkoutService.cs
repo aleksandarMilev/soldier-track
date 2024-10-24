@@ -31,16 +31,14 @@
 
         public async Task<WorkoutPageServiceModel> GetAllAsync(DateTime? date, int pageIndex, int pageSize)
         {
-            var query = this
+            var query = this 
                 .GetUpcomingsAsNoTrackingAsync()
                 .OrderBy(w => w.DateTime)
                 .ProjectTo<WorkoutServiceModel>(this.mapper.ConfigurationProvider);
 
             if (date != null)
             {
-                var utcStartOfDay = DateTime.SpecifyKind(date.Value.Date, DateTimeKind.Local).ToUniversalTime();
-                var utcEndOfDay = DateTime.SpecifyKind(date.Value.Date.AddDays(1).AddTicks(-1), DateTimeKind.Local).ToUniversalTime();
-                query = query.Where(w => w.Date >= utcStartOfDay && w.Date <= utcEndOfDay);
+                query = query.Where(w => w.Date.Date == date.Value.Date);
             }
 
             var totalCount = await query.CountAsync();
@@ -90,7 +88,22 @@
                 return null;
             }
 
-            await this.SetDetailsModelButtonsAsync(model, athleteId);
+            if (await this.membershipService.MembershipExistsByAthleteIdAsync(athleteId))
+            {
+                model.AthleteHasMembership = true;
+
+                if (await this.membershipService.MembershipIsApprovedByAthleteIdAsync(athleteId))
+                {
+                    model.ShowJoinButton = true;
+                }
+
+                if (await this.athleteService.AthleteAlreadyJoinedByIdAsync(athleteId, model.Id))
+                {
+                    model.ShowJoinButton = false;
+                    model.ShowLeaveButton = true;
+                }
+            }
+
             return model;
         }
 
@@ -118,9 +131,8 @@
 
         public async Task<bool> WorkoutIsFull(int id)
         {
-            var workout = await this.data
-                .Workouts
-                .AsNoTracking()
+            var workout = await
+                this.GetUpcomingsAsNoTrackingAsync()
                 .FirstOrDefaultAsync(w => w.Id == id)
                 ?? throw new InvalidOperationException("Workout is not found!");
 
@@ -195,27 +207,6 @@
             return this.data
                 .AllDeletable<Workout>()
                 .Where(w => w.DateTime > DateTime.UtcNow);
-        }
-
-        private async Task SetDetailsModelButtonsAsync(WorkoutDetailsServiceModel model, string athleteId)
-        {
-            if (!await this.membershipService.MembershipExistsByAthleteIdAsync(athleteId))
-            {
-                return;
-            }
-
-            model.AthleteHasMembership = true;
-
-            if (await this.membershipService.MembershipIsApprovedByAthleteIdAsync(athleteId))
-            {
-                model.ShowJoinButton = true;
-            }
-
-            if (await this.athleteService.AthleteAlreadyJoinedByIdAsync(athleteId, model.Id))
-            {
-                model.ShowJoinButton = false;
-                model.ShowLeaveButton = true;
-            }
         }
 
         private static DateTime GetUtcFromLocalDateAndTime(DateTime dateLocal, TimeSpan timeLocal)

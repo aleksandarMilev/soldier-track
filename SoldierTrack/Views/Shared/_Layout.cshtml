@@ -9,7 +9,7 @@
 
 @{
     var athleteId = this.User.GetId();
-    var userIsAdmin = this.User.IsInRole(AdminRoleName);
+    var userIsAdmin = this.User.IsAdmin();
     var userIsLogged = this.User?.Identity?.IsAuthenticated ?? false;
 }
 
@@ -75,11 +75,13 @@
                                     @{
                                         var pendingCount = await this.membershipService.GetPendingCountAsync();
                                     }
-                                    <a class="nav-link"
-                                       asp-area="Administrator"
-                                       asp-controller="Athlete"
-                                       asp-action="GetAll">
-                                        Athletes
+                                    <a 
+                                        class="nav-link"
+                                        asp-area="Administrator"
+                                        asp-controller="Athlete"
+                                        asp-action="GetAll">
+                                            Athletes
+
                                         @if (pendingCount > 0)
                                         {
                                             <span class="badge bg-danger" style="font-size: 0.75em; padding: 0.2em 0.5em; margin-left: 0.5em;">
@@ -115,8 +117,7 @@
                                         class="nav-link" 
                                         asp-area="" 
                                         asp-controller="Athlete" 
-                                        asp-action="Details"
-                                        asp-route-id="@athleteId">
+                                        asp-action="Details">
                                             My Profile
                                     </a>
                                 </li>
@@ -127,8 +128,7 @@
                                         <a class="nav-link"
                                            asp-area=""
                                            asp-controller="Membership"
-                                           asp-action="RequestMembership"
-                                           asp-route-athleteId="@athleteId">
+                                           asp-action="RequestMembership">
                                                 Request Membership
                                         </a>
                                     </li>
@@ -168,7 +168,7 @@
                                     <a
                                         class="nav-link"
                                         asp-area=""
-                                       asp-controller="Food"
+                                        asp-controller="Food"
                                         asp-action="Create">
                                             Create Food
                                     </a>

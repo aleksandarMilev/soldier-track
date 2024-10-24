@@ -151,13 +151,17 @@
 
         public async Task UpdateMembershipOnWorkoutDeletionAsync(int? membershipId)
         {
-            var membershipEntity = await this.data
+            var membership = await this.data
                 .AllDeletable<Membership>()
                 .FirstOrDefaultAsync(m => m.Id == membershipId);
 
-            if (membershipEntity != null && !membershipEntity.IsMonthly)
+            if (membership != null && !membership.IsMonthly)
             {
-                membershipEntity.WorkoutsLeft++;
+                membership.WorkoutsLeft++;
+                if (membership.WorkoutsLeft > membership.TotalWorkoutsCount)
+                {
+                    membership.WorkoutsLeft = membership.TotalWorkoutsCount;
+                }
             }
         }
 
@@ -187,7 +191,7 @@
                .AllDeletable<Membership>()
                .FirstOrDefaultAsync(m => m.AthleteId == athleteId);
 
-            if (membership != null && !membership.IsMonthly)
+            if (membership != null && !membership.IsMonthly && !membership.IsPending)
             {
                 membership.WorkoutsLeft = action(membership.WorkoutsLeft.GetValueOrDefault());
                 await this.data.SaveChangesAsync();

@@ -1,20 +1,19 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
     using AutoMapper;
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using SoldierTrack.Services.Achievement;
     using SoldierTrack.Services.Athlete;
     using SoldierTrack.Services.Exercise;
     using SoldierTrack.Services.Exercise.Models;
     using SoldierTrack.Web.Common.Extensions;
+    using SoldierTrack.Web.Controllers.Base;
     using SoldierTrack.Web.Models.Exercise;
     
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
     using static SoldierTrack.Web.Common.Constants.WebConstants;
 
-    [Authorize]
-    public class ExerciseController : Controller
+    public class ExerciseController : BaseController
     {
         private readonly IExerciseService exerciseService;
         private readonly IAthleteService athleteService;

@@ -1,19 +1,18 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
     using AutoMapper;
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using SoldierTrack.Data.Models;
     using SoldierTrack.Services.Athlete;
     using SoldierTrack.Services.Athlete.Models;
     using SoldierTrack.Web.Common.Extensions;
+    using SoldierTrack.Web.Controllers.Base;
     using SoldierTrack.Web.Models.Athlete;
 
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
 
-    [Authorize]
-    public class AthleteController : Controller
+    public class AthleteController : BaseController
     {
         private readonly IAthleteService athleteService;
         private readonly SignInManager<Athlete> signInManager;
@@ -30,27 +29,22 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details()
         {
-            var model = await this.athleteService.GetDetailsModelByIdAsync(id);
+            var model = await this.athleteService.GetDetailsModelByIdAsync(this.User.GetId()!);
 
             if (model == null)
             {
                 return this.NotFound();
             }
 
-            if (!this.User.IsAdmin() && this.User.GetId() != model.Id)
-            {
-                return this.Unauthorized();
-            }
-
             return this.View(model);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit()
         {
-            var serviceModel = await this.athleteService.GetFormModelByIdAsync(id);
+            var serviceModel = await this.athleteService.GetModelByIdAsync(this.User.GetId()!);
 
             if (serviceModel == null)
             {
@@ -58,12 +52,6 @@
             }
 
             var viewModel = this.mapper.Map<AthleteFormModel>(serviceModel);
-
-            if (!this.User.IsAdmin() && this.User.GetId() != viewModel.Id)
-            {
-                return this.Unauthorized();
-            }
-
             return this.View(viewModel);
         }
 
@@ -73,11 +61,6 @@
             if (!this.ModelState.IsValid)
             {
                 return this.View(viewModel);
-            }
-
-            if (!this.User.IsAdmin() && this.User.GetId() != viewModel.Id)
-            {
-                return this.Unauthorized();
             }
 
             if (await this.athleteService.AthleteWithSameNumberExistsAsync(viewModel.PhoneNumber, viewModel.Id))
@@ -95,31 +78,22 @@
             var serviceModel = this.mapper.Map<AthleteServiceModel>(viewModel);
             await this.athleteService.EditAsync(serviceModel);
 
-            this.TempData["SuccessMessage"] = this.User.IsAdmin() ? AdminEditAthlete : AthleteEditHimself;
+            this.TempData["SuccessMessage"] = AthleteEditHimself;
             return this.RedirectToAction(nameof(Details), new { id = serviceModel.Id });
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete()
         {
-            if (!this.User.IsAdmin() && this.User.GetId() != id)
-            {
-                return this.Unauthorized();
-            }
+            await this.signInManager.SignOutAsync();
+            await this.athleteService.DeleteAsync(this.User.GetId()!);
 
-            if (!this.User.IsAdmin())
-            {
-                await this.signInManager.SignOutAsync();
-            }
-
-            await this.athleteService.DeleteAsync(id);
-
-            this.TempData["SuccessMessage"] = this.User.IsAdmin() ? AdminDeleteAthlete : AthleteDeleteHimself;
+            this.TempData["SuccessMessage"] = AthleteDeleteHimself;
             return this.RedirectToAction("Index", "Home", new { area = "" });
         }
 
         [HttpPost]
-        public async Task<IActionResult> Join(string athleteId, int workoutId)
+        public async Task<IActionResult> Join(int workoutId)
         {
             await this.athleteService.JoinAsync(this.User.GetId()!, workoutId);
 
@@ -128,11 +102,11 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> Leave(string athleteId, int workoutId)
+        public async Task<IActionResult> Leave(int workoutId)
         {
-            await this.athleteService.LeaveAsync(athleteId, workoutId);
+            await this.athleteService.LeaveAsync(this.User.GetId()!, workoutId);
 
-            this.TempData["SuccessMessage"] = this.User.IsAdmin() ? AdminLeaveSuccess : AthleteLeaveSuccess;
+            this.TempData["SuccessMessage"] = AthleteLeaveSuccess;
             return this.RedirectToAction("Details", "Workout", new { id = workoutId });
         }
     }

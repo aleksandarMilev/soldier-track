@@ -82,7 +82,7 @@
             return $"{athlete.FirstName} {athlete.LastName}";
         }
 
-        public async Task<AthleteServiceModel?> GetFormModelByIdAsync(string id)
+        public async Task<AthleteServiceModel?> GetModelByIdAsync(string id)
         {
             var athlete = await this.data
                 .AllAthletesAsNoTracking()
@@ -220,7 +220,7 @@
                  .FirstOrDefaultAsync(a => a.Id == workoutId)
                  ?? throw new InvalidOperationException("Workout not found!");
 
-            var mapEntity = await this.data
+             var mapEntity = await this.data
                 .AthletesWorkouts
                 .FirstOrDefaultAsync(aw => aw.AthleteId == athleteId && aw.WorkoutId == workoutId)
                 ?? throw new InvalidOperationException("Map entity not found!");

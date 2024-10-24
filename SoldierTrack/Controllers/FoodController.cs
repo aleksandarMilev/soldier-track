@@ -1,19 +1,18 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
     using AutoMapper;
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using SoldierTrack.Services.Athlete;
     using SoldierTrack.Services.Food;
     using SoldierTrack.Services.Food.Models;
     using SoldierTrack.Web.Common.Extensions;
+    using SoldierTrack.Web.Controllers.Base;
     using SoldierTrack.Web.Models.Food;
 
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
     using static SoldierTrack.Web.Common.Constants.WebConstants;
     
-    [Authorize]
-    public class FoodController : Controller
+    public class FoodController : BaseController
     {
         private readonly IFoodService foodService;
         private readonly IAthleteService athleteService;

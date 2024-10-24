@@ -1,17 +1,15 @@
 ﻿namespace SoldierTrack.Web.Areas.Administrator.Controllers
 {
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using SoldierTrack.Services.Athlete;
     using SoldierTrack.Services.Workout;
-
-    using static SoldierTrack.Web.Common.Constants.WebConstants;
-    using static SoldierTrack.Web.Common.Constants.MessageConstants;
+    using SoldierTrack.Web.Areas.Administrator.Controllers.Base;
     using SoldierTrack.Web.Areas.Administrator.Models.Athlete;
 
-    [Area(AdminRoleName)]
-    [Authorize(Roles = AdminRoleName)]
-    public class AthleteController : Controller
+    using static SoldierTrack.Web.Common.Constants.MessageConstants;
+    using static SoldierTrack.Web.Common.Constants.WebConstants;
+
+    public class AthleteController : BaseController
     {
         private readonly IAthleteService athleteService;
         private readonly IWorkoutService workoutService;
@@ -23,13 +21,28 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(string? searchTerm = null, int pageIndex = 1, int pageSize = 5)
+        public async Task<IActionResult> GetAll(string? searchTerm = null, int pageIndex = 1, int pageSize = 10)
         {
             pageSize = Math.Min(pageSize, MaxPageSize);
             pageSize = Math.Max(pageSize, MinPageSize);
 
-            var model = await this.athleteService.GetPageModelsAsync(searchTerm, pageIndex, pageSize);
-            return this.View(model);
+            this.ViewData[nameof(searchTerm)] = searchTerm;
+            var models = await this.athleteService.GetPageModelsAsync(searchTerm, pageIndex, pageSize);
+
+            return this.View(models);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(string athleteId)
+        {
+            var model = await this.athleteService.GetDetailsModelByIdAsync(athleteId);
+
+            if (model == null)
+            {
+                return this.NotFound();
+            }
+
+            return this.View("~/Views/Athlete/Details.cshtml", model);
         }
 
         [HttpGet]
@@ -71,6 +84,24 @@
 
             this.TempData["SuccessMessage"] = AdminAddedAthlete;
             return this.RedirectToAction("Details", "Workout", new { id = workoutId, area = "" });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveFromWorkout(string athleteId, int workoutId)
+        {
+            await this.athleteService.LeaveAsync(athleteId, workoutId);
+
+            this.TempData["SuccessMessage"] = RemoveAthleteFromWorkout;
+            return this.RedirectToAction("Details", "Workout", new { id = workoutId, area = "" });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(string athleteId)
+        {
+            await this.athleteService.DeleteAsync(athleteId);
+
+            this.TempData["SuccessMessage"] = AdminDeleteAthlete;
+            return this.RedirectToAction("Index", "Home", new { area = "" });
         }
     }
 }

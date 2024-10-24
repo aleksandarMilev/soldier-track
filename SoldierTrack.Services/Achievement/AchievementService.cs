@@ -39,32 +39,6 @@
             return new AchievementPageServiceModel(achievements, pageIndex, totalPages, pageSize);
         }
 
-        public async Task<AchievementServiceModel?> GetByIdAsync(int id)
-        {
-            return await this.data
-                 .Achievements
-                 .AsNoTracking()
-                 .ProjectTo<AchievementServiceModel>(this.mapper.ConfigurationProvider)
-                 .FirstOrDefaultAsync(a => a.Id == id);
-        }
-
-        public async Task<AchievementServiceModel?> GetModelByNameAndAthleteIdAsync(int exerciseId, string athleteId)
-        {
-            return await this.data
-                .Achievements
-                 .AsNoTracking()
-                 .ProjectTo<AchievementServiceModel>(this.mapper.ConfigurationProvider)
-                 .FirstOrDefaultAsync(a => a.ExerciseId == exerciseId && a.AthleteId == athleteId);
-        }
-
-        public async Task<bool> AchievementIsAlreadyAddedAsync(int exerciseId, string athleteId)
-        {
-            return await this.data
-                .Achievements
-                .AsNoTracking()
-                .AnyAsync(a => a.ExerciseId == exerciseId && a.AthleteId == athleteId);
-        }
-
         public async Task<int?> GetAchievementIdAsync(string athleteId, int exerciseId)
         {
             var achievementId = await this.data
@@ -93,6 +67,23 @@
                 .OrderByDescending(a => a.OneRepMax)
                 .Take(10)
                 .ToListAsync();
+        }
+
+        public async Task<AchievementServiceModel?> GetByIdAsync(int id)
+        {
+            return await this.data
+                 .Achievements
+                 .AsNoTracking()
+                 .ProjectTo<AchievementServiceModel>(this.mapper.ConfigurationProvider)
+                 .FirstOrDefaultAsync(a => a.Id == id);
+        }
+
+        public async Task<bool> AchievementIsAlreadyAddedAsync(int exerciseId, string athleteId)
+        {
+            return await this.data
+                .Achievements
+                .AsNoTracking()
+                .AnyAsync(a => a.ExerciseId == exerciseId && a.AthleteId == athleteId);
         }
 
         public async Task CreateAsync(AchievementServiceModel serviceModel)

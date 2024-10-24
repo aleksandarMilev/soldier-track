@@ -5,11 +5,11 @@
     using SoldierTrack.Services.Athlete;
     using SoldierTrack.Services.FoodDiary;
     using SoldierTrack.Web.Common.Extensions;
+    using SoldierTrack.Web.Controllers.Base;
 
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
 
-    [Authorize]
-    public class FoodDiaryController : Controller
+    public class FoodDiaryController : BaseController
     {
         private readonly IFoodDiaryService foodDiaryService;
         private readonly IAthleteService athleteService;

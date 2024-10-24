@@ -25,14 +25,13 @@
 
 @{
     var athleteId = this.User.GetId();
+    var userIsAdmin = this.User.IsAdmin();
     var workout = this.Model;
     var workoutIsClosed = workout.MaxParticipants <= workout.CurrentParticipants;
-    var userIsAdmin = this.User.IsAdmin();
-    var userIsAthlete = this.User.Identity != null && this.User.Identity.IsAuthenticated && !userIsAdmin;
 }
 
 <div class="container mt-4">
-    <h2 class="mb-4">@workout.Title</h2>
+    <h2 class="mb-4"><i class="fas fa-dumbbell"></i> @workout.Title</h2>
     <div class="row">
         <div class="col-md-5">
             <img src="@workout.ImageUrl" alt="@workout.Title" class="img-fluid rounded" style="width: 100%; max-width: 400px; height: auto;" />
@@ -41,11 +40,11 @@
             <h3>Details</h3>
             <table class="table table-sm table-striped">
                 <tr>
-                    <th>Date:</th>
+                    <th><i class="fas fa-calendar-alt"></i> Date:</th>
                     <td><span class="utc-date" data-utc="@workout.Date.ToString("o")"></span></td>
                 </tr>
                 <tr>
-                    <th>Time:</th>
+                    <th><i class="fas fa-clock"></i> Time:</th>
                     <td>@workout.Date.ToLocalTime().ToString("hh:mm tt")</td>
                 </tr>
                 @if (!string.IsNullOrEmpty(workout.BriefDescription))
@@ -63,24 +62,24 @@
                     </tr>
                 }
                 <tr>
-                    <th>Category:</th>
+                    <th><i class="fas fa-tags"></i> Category:</th>
                     <td>@workout.Category.ToString()</td>
                 </tr>
                 <tr>
-                    <th>For Beginners:</th>
+                    <th><i class="fas fa-user-graduate"></i> For Beginners:</th>
                     <td>@(workout.IsForBeginners ? "Yes" : "No")</td>
                 </tr>
                 <tr>
-                    <th>Max Participants:</th>
+                    <th><i class="fas fa-users"></i> Max Participants:</th>
                     <td>@workout.MaxParticipants</td>
                 </tr>
                 <tr>
-                    <th>Current Participants:</th>
+                    <th><i class="fas fa-users"></i> Current Participants:</th>
                     <td>@workout.CurrentParticipants</td>
                 </tr>
             </table>
 
-            @if (userIsAthlete && !workoutIsClosed)
+            @if (!userIsAdmin && !workoutIsClosed)
             {
                 if (workout.ShowJoinButton)
                 {
@@ -88,11 +87,12 @@
                         asp-area=""
                         asp-controller="Athlete"
                         asp-action="Join"
-                        asp-route-athleteId="@athleteId"
                         asp-route-workoutId="@workout.Id"
                         method="post"
                         onsubmit="return confirm('Are you sure you want to join in the workout?')">
-                        <button type="submit" class="btn btn-primary">Join</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-user-plus"></i> Join
+                            </button>
                     </form>
                 }
 
@@ -102,19 +102,17 @@
                         asp-area=""
                         asp-controller="Athlete"
                         asp-action="Leave"
-                        asp-route-athleteId="@athleteId"
                         asp-route-workoutId="@workout.Id"
                         method="post"
-                        onsubmit=
-                        "return confirm(
-                                '@(!workout.AthleteHasMembership 
-                                ? "You have not active membership. While we should restore one workout in it (if it is monthly), this is not possible. Are you sure you want to continue?)" 
-                                : "Are you sure you want to leave this workout?")')">
-                        <button type="submit" class="btn btn-danger">Leave</button>
+                        onsubmit="return confirm('@(!workout.AthleteHasMembership ? "You have not active membership. While we should restore one workout in it (if it is monthly), this is not possible. Are you sure you want to continue?)" : "Are you sure you want to leave this workout?")')">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-user-minus"></i> Leave
+                            </button>
                     </form>
                 }
             }
-    </div>
+        </div>
+
         @if (workout.Athletes.Count() > 0)
         {
             <div class="mt-5">
@@ -142,27 +140,26 @@
                                             @if (userIsAdmin)
                                             {
                                                 <td class="text-center">
-                                                    @if (!workoutIsClosed)
-                                                    {
-                                                        <form 
-                                                            asp-area=""
-                                                            asp-controller="Athlete"
-                                                            asp-action="Leave"
-                                                            method="post"
-                                                            onsubmit="return confirm('Are you sure you want to remove this athlete from the workout?')"
-                                                            class="d-inline">
+                                                    <form 
+                                                        asp-area="Administrator"
+                                                        asp-controller="Athlete"
+                                                        asp-action="RemoveFromWorkout"
+                                                        method="post"
+                                                        onsubmit="return confirm('Are you sure you want to remove this athlete from the workout?')"
+                                                        class="d-inline">
                                                             <input type="hidden" name="athleteId" value="@athlete.Id" />
                                                             <input type="hidden" name="workoutId" value="@workout.Id" />
-                                                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
-                                                        </form>
-                                                    }
+                                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                                <i class="fas fa-user-minus"></i> Remove
+                                                            </button>
+                                                    </form>
                                                     <a 
-                                                       asp-area=""
-                                                       asp-controller="Athlete"
-                                                       asp-action="Details"
-                                                       asp-route-id="@athlete.Id"
-                                                       class="btn btn-primary btn-sm">
-                                                        View Details
+                                                        asp-area="Administrator"
+                                                        asp-controller="Athlete"
+                                                        asp-action="Details"
+                                                        asp-route-athleteId="@athlete.Id"
+                                                        class="btn btn-primary btn-sm">
+                                                            <i class="fas fa-eye"></i> View Details
                                                     </a>
                                                 </td>
                                             }
@@ -182,7 +179,9 @@
             </div>
         }
     </div>
-        <a asp-area="" asp-controller="Workout" asp-action="GetAll" class="btn btn-secondary mt-4 narrow-button">Back to List</a>
+    <a asp-area="" asp-controller="Workout" asp-action="GetAll" class="btn btn-secondary mt-4 narrow-button">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
 </div>
 
 <script src="~/js/convertUtcToLocaleDate.js"></script>

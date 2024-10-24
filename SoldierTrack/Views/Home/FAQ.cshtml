@@ -2,17 +2,19 @@
     this.ViewData["Title"] = "FAQ";
 }
 
-<h1>@this.ViewData["Title"]</h1>
+<h1 class="faq-title">
+    <i class="fas fa-question-circle"></i> @this.ViewData["Title"]
+</h1>
 
 <div class="faq-container">
     <div class="faq-item">
         <div class="faq-question" onclick="toggleAnswer(this)">
-            <h3>What is SoldierTrack?</h3>
+            <h3><i class="fas fa-info-circle"></i> What is SoldierTrack?</h3>
         </div>
-        <div class="faq-answer" style="display: none;">
+        <div class="faq-answer">
             <p>
                 SoldierTrack is a platform dedicated to supporting athletes in their daily routines by tracking workouts,
-                progressive overload, and calorie intake. 
+                progressive overload, and calorie intake.
                 It also offers memberships that athletes can purchase to join our CrossFit workouts at our facility.
             </p>
         </div>
@@ -20,12 +22,12 @@
 
     <div class="faq-item">
         <div class="faq-question" onclick="toggleAnswer(this)">
-            <h3>Is SoldierTrack free?</h3>
+            <h3><i class="fas fa-money-bill-wave"></i> Is SoldierTrack free?</h3>
         </div>
-        <div class="faq-answer" style="display: none;">
+        <div class="faq-answer">
             <p>
-                Our membership pricing is published under the request membership form. 
-                However, the features for tracking calories and exercises are completely free. 
+                Our membership pricing is published under the request membership form.
+                However, the features for tracking calories and exercises are completely free.
                 You do not need an active membership to access them.
             </p>
         </div>
@@ -33,9 +35,9 @@
 
     <div class="faq-item">
         <div class="faq-question" onclick="toggleAnswer(this)">
-            <h3>Should I register to use it?</h3>
+            <h3><i class="fas fa-user-check"></i> Should I register to use it?</h3>
         </div>
-        <div class="faq-answer" style="display: none;">
+        <div class="faq-answer">
             <p>
                 Yes, all functionalities in SoldierTrack are available only to registered users.
             </p>
@@ -44,18 +46,18 @@
 
     <div class="faq-item">
         <div class="faq-question" onclick="toggleAnswer(this)">
-            <h3>Can I activate my membership on a date different from today?</h3>
+            <h3><i class="fas fa-calendar-day"></i> Can I activate my membership on a date different from today?</h3>
         </div>
-        <div class="faq-answer" style="display: none;">
+        <div class="faq-answer">
             <p>No, all memberships begin on the date of request.</p>
         </div>
     </div>
 
     <div class="faq-item">
         <div class="faq-question" onclick="toggleAnswer(this)">
-            <h3>When will my membership be approved?</h3>
+            <h3><i class="fas fa-clock"></i> When will my membership be approved?</h3>
         </div>
-        <div class="faq-answer" style="display: none;">
+        <div class="faq-answer">
             <p>
                 Our admin team will approve your request during regular working hours.
                 If your request is submitted outside these hours, it will be processed on the next working day.
@@ -67,9 +69,9 @@
 
     <div class="faq-item">
         <div class="faq-question" onclick="toggleAnswer(this)">
-            <h3>Can I pay it online?</h3>
+            <h3><i class="fas fa-credit-card"></i> Can I pay it online?</h3>
         </div>
-        <div class="faq-answer" style="display: none;">
+        <div class="faq-answer">
             <p>
                 No, SoldierTrack does not support online payments yet.
                 Every user is required to pay for their membership at the first workout after approval, at our facility.
@@ -79,9 +81,9 @@
 
     <div class="faq-item">
         <div class="faq-question" onclick="toggleAnswer(this)">
-            <h3>Can I create my own exercises and add achievements to them?</h3>
+            <h3><i class="fas fa-dumbbell"></i> Can I create my own exercises and add achievements to them?</h3>
         </div>
-        <div class="faq-answer" style="display: none;">
+        <div class="faq-answer">
             <p>
                 Yes, you can create your own exercises. This happens from the 'Create Exercise' button in the menu.
                 When you search for exercises, you'll see an 'Include mine' checkbox.
@@ -92,9 +94,9 @@
 
     <div class="faq-item">
         <div class="faq-question" onclick="toggleAnswer(this)">
-            <h3>Can other users see my exercises and add achievements to them?</h3>
+            <h3><i class="fas fa-users"></i> Can other users see my exercises and add achievements to them?</h3>
         </div>
-        <div class="faq-answer" style="display: none;">
+        <div class="faq-answer">
             <p>
                 Yes, every registered user can view all exercises, including custom ones, and create achievements from them.
                 They need to check the 'Include custom' checkbox next to the search bar to see these exercises in the results.
@@ -105,9 +107,9 @@
 
     <div class="faq-item">
         <div class="faq-question" onclick="toggleAnswer(this)">
-            <h3>Can I create my own foods?</h3>
+            <h3><i class="fas fa-carrot"></i> Can I create my own foods?</h3>
         </div>
-        <div class="faq-answer" style="display: none;">
+        <div class="faq-answer">
             <p>
                 Yes, and the rules are the same as those for creating a custom exercise.
             </p>
@@ -116,16 +118,13 @@
 
     <div class="faq-item">
         <div class="faq-question" onclick="toggleAnswer(this)">
-            <h3>What does the 'custom' label on some foods and exercises mean?</h3>
+            <h3><i class="fas fa-exclamation-circle"></i> What does the 'custom' label on some foods and exercises mean?</h3>
         </div>
-        <div class="faq-answer" style="display: none;">
+        <div class="faq-answer">
             <p>
                 The <strong>'custom'</strong> label indicates that the food or exercise was added by a user, not by our team.
                 This means it may contain incorrect or inaccurate information, especially for foods.
                 Users can edit their custom entries, including macronutrient details, which could result in inaccuracies in your logs.
-                Additionally, both users and admins are free to delete custom entries at any time.
-                If a custom exercise is deleted, any achievements linked to that exercise will also be deleted.
-                Similarly, if a custom food is deleted, all food diary entries containing that item will be removed.
             </p>
             <p>
                 We strongly recommend using only <strong>'approved'</strong> foods and exercises,
@@ -142,9 +141,9 @@
 
     <div class="faq-item">
         <div class="faq-question" onclick="toggleAnswer(this)">
-            <h3>Is there a limit on the number of custom exercises and foods I can create?</h3>
+            <h3><i class="fas fa-list-ol"></i> Is there a limit on the number of custom exercises and foods I can create?</h3>
         </div>
-        <div class="faq-answer" style="display: none;">
+        <div class="faq-answer">
             <p>
                 Yes, you cannot create more than <strong>50</strong> custom exercises.
                 The same limit applies to custom foods.
@@ -155,9 +154,9 @@
 
     <div class="faq-item">
         <div class="faq-question" onclick="toggleAnswer(this)">
-            <h3>In what date range can I create food diaries?</h3>
+            <h3><i class="fas fa-calendar-alt"></i> In what date range can I create food diaries?</h3>
         </div>
-        <div class="faq-answer" style="display: none;">
+        <div class="faq-answer">
             <p>
                 You can create food diaries for any date within a range of one month in the past to one month in the future.
                 It's also important to note that SoldierTrack retains food diary data for up to one year.
@@ -168,9 +167,9 @@
 
     <div class="faq-item">
         <div class="faq-question" onclick="toggleAnswer(this)">
-            <h3>In what date range can I create achievements?</h3>
+            <h3><i class="fas fa-trophy"></i> In what date range can I create achievements?</h3>
         </div>
-        <div class="faq-answer" style="display: none;">
+        <div class="faq-answer">
             <p>
                 You have no constraints when creating achievements; you can create them for any date.
             </p>
@@ -179,15 +178,14 @@
 
     <div class="faq-item">
         <div class="faq-question" onclick="toggleAnswer(this)">
-            <h3>What will happen if I add the same food to a diary for a meal twice?</h3>
+            <h3><i class="fas fa-utensils"></i> What will happen if I add the same food to a diary for a meal twice?</h3>
         </div>
-        <div class="faq-answer" style="display: none;">
+        <div class="faq-answer">
             <p>
-                The second entry will replace the first one, so only the most recent data will be saved and displayed.
+                You will increase the quantity of the food with the second value.
             </p>
         </div>
     </div>
-
 </div>
 
 @section Scripts {
@@ -204,31 +202,61 @@
 }
 
 <style>
+    .faq-title {
+        font-size: 2rem;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
     .faq-container {
         margin: 20px;
         border: 1px solid #ccc;
         border-radius: 5px;
-        padding: 10px;
-        background-color: #a7a8a8;
+        padding: 15px;
+        background-color: #f4f5f7;
     }
 
     .faq-item {
         margin: 10px 0;
+        border-bottom: 1px solid #ddd;
     }
 
     .faq-question {
         cursor: pointer;
-        background-color: #b8bfbe;
-        padding: 10px;
-        border: 1px solid #ddd;
+        background-color: #e9ecef;
+        padding: 15px;
         border-radius: 5px;
+        display: flex;
+        align-items: center;
+        transition: background-color 0.3s ease;
+    }
+
+    .faq-question:hover {
+        background-color: #d6dde2;
     }
 
     .faq-answer {
-        margin-top: 5px;
-        padding: 10px;
-        border: 1px solid #ddd;
+        display: none;
+        margin-top: 10px;
+        padding: 15px;
         border-radius: 5px;
-        background-color: #c0d1d1;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .faq-answer p {
+        margin: 0;
+    }
+
+    h3 {
+        font-size: 1.2rem;
+        margin: 0;
+        padding-left: 10px;
+        color: #333;
+    }
+
+    i {
+        color: #007bff;
+        font-size: 1.5rem;
     }
 </style>

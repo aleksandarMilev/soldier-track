@@ -64,7 +64,7 @@
 
         public const string AdminAddedAthlete = "You have successfully added the athlete into the workout!";
 
-        public const string AdminLeaveSuccess = "You have successfully removed the athlete!";
+        public const string RemoveAthleteFromWorkout = "You have successfully removed the athlete!";
 
         public const string AdminRequestMembership = "Admins can not request memberships";
 

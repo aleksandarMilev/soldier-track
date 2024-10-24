@@ -5,6 +5,7 @@
 @{
     this.ViewData["Title"] = "All Athletes";
 
+    var searchTerm = this.ViewData["searchTerm"];
     var athletes = this.Model.Athletes;
     var pageIndex = this.Model.PageIndex;
     var totalPages = this.Model.TotalPages;
@@ -47,13 +48,14 @@
                     <td>@athlete.FirstName</td>
                     <td>@athlete.LastName</td>
                     <td class="text-center">
-                        <a asp-area=""
-                           asp-controller="Athlete"
-                           asp-action="Details"
-                           asp-route-id="@athlete.Id"
-                           class="btn btn-sm btn-info me-1"
-                           title="Details">
-                            Details
+                        <a 
+                            asp-area="Administrator"
+                            asp-controller="Athlete"
+                            asp-action="Details"
+                            asp-route-athleteId="@athlete.Id"
+                            class="btn btn-sm btn-info me-1"
+                            title="Details">
+                                Details
                         </a>
 
                         @if (athlete.Membership != null)
@@ -65,38 +67,41 @@
                                 </button>
 
                                 <div id="approvalButtons-@athlete.Id" style="display: none; margin-top: 5px;">
-                                    <form asp-area="Administrator"
-                                          asp-controller="Membership"
-                                          asp-action="Approve"
-                                          asp-route-id="@athlete.MembershipId"
-                                          asp-route-athleteId="@athlete.Id"
-                                          method="post"
-                                          class="d-inline">
-                                        <button type="submit" class="btn btn-sm btn-success me-1" onclick="return confirmApproval()">
-                                            Approve
-                                        </button>
+                                    <form  
+                                        asp-area="Administrator"
+                                        asp-controller="Membership"
+                                        asp-action="Approve"
+                                        asp-route-id="@athlete.MembershipId"
+                                        asp-route-athleteId="@athlete.Id"
+                                        method="post"
+                                        class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-success me-1" onclick="return confirmApproval()">
+                                                Approve
+                                            </button>
                                     </form>
-                                    <form asp-area="Administrator"
-                                          asp-controller="Membership"
-                                          asp-action="Reject"
-                                          asp-route-id="@athlete.MembershipId"
-                                          asp-route-athleteId="@athlete.Id"
-                                          method="post"
-                                          class="d-inline">
-                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirmRejection()">
-                                            Reject
-                                        </button>
+                                    <form 
+                                        asp-area="Administrator"
+                                        asp-controller="Membership"
+                                        asp-action="Reject"
+                                        asp-route-id="@athlete.MembershipId"
+                                        asp-route-athleteId="@athlete.Id"
+                                        method="post"
+                                        class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirmRejection()">
+                                                Reject
+                                            </button>
                                     </form>
                                 </div>
                             }
                             else
                             {
-                                <a asp-area="Administrator"
-                                   asp-controller="Athlete"
-                                   asp-action="AddToWorkout"
-                                   asp-route-athleteId="@athlete.Id"
-                                   class="btn btn-sm btn-info me-1">
-                                    Add To Workout
+                                <a 
+                                    asp-area="Administrator"
+                                    asp-controller="Athlete"
+                                    asp-action="AddToWorkout"
+                                    asp-route-athleteId="@athlete.Id"
+                                    class="btn btn-sm btn-info me-1">
+                                        Add To Workout
                                 </a>
                             }
                         }
@@ -111,7 +116,14 @@
             @if (pageIndex > 1)
             {
                 <li class="page-item">
-                    <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@(pageIndex - 1)" asp-route-pageSize="@pageSize">Previous</a>
+                    <a 
+                        class="page-link" 
+                        asp-action="GetAll" 
+                        asp-route-pageIndex="@(pageIndex - 1)"
+                        asp-route-pageSize="@pageSize"
+                        asp-route-searchTerm="@searchTerm">
+                            Previous
+                    </a>
                 </li>
             }
             else
@@ -124,7 +136,14 @@
             @if (pageIndex > 3)
             {
                 <li class="page-item">
-                    <a class="page-link" asp-action="GetAll" asp-route-pageIndex="1" asp-route-pageSize="@pageSize">1</a>
+                    <a 
+                        class="page-link" 
+                        asp-action="GetAll" 
+                        asp-route-pageIndex="1" 
+                        asp-route-pageSize="@pageSize"
+                        asp-route-searchTerm="@searchTerm">
+                            1
+                    </a>
                 </li>
                 <li class="page-item disabled">
                     <span class="page-link">...</span>
@@ -134,7 +153,14 @@
             @for (int i = Math.Max(1, pageIndex - 2); i <= Math.Min(totalPages, pageIndex + 2); i++)
             {
                 <li class="page-item @(i == pageIndex ? "active" : "")">
-                    <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@i" asp-route-pageSize="@pageSize">@i</a>
+                    <a 
+                        class="page-link"
+                        asp-action="GetAll" 
+                        asp-route-pageIndex="@i" 
+                        asp-route-pageSize="@pageSize"
+                        asp-route-searchTerm="@searchTerm">
+                            @i
+                    </a>
                 </li>
             }
 
@@ -144,14 +170,28 @@
                     <span class="page-link">...</span>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@totalPages" asp-route-pageSize="@pageSize">@totalPages</a>
+                    <a 
+                        class="page-link"
+                        asp-action="GetAll" 
+                        asp-route-pageIndex="@totalPages" 
+                        asp-route-pageSize="@pageSize"
+                        asp-route-searchTerm="@searchTerm">
+                            @totalPages
+                    </a>
                 </li>
             }
 
             @if (pageIndex < totalPages)
             {
                 <li class="page-item">
-                    <a class="page-link" asp-action="GetAll" asp-route-pageIndex="@(pageIndex + 1)" asp-route-pageSize="@pageSize">Next</a>
+                    <a 
+                        class="page-link" 
+                        asp-action="GetAll" 
+                        asp-route-pageIndex="@(pageIndex + 1)" 
+                        asp-route-pageSize="@pageSize"
+                        asp-route-searchTerm="@searchTerm">
+                            Next
+                    </a>
                 </li>
             }
             else

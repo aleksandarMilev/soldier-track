@@ -1,18 +1,16 @@
 ﻿namespace SoldierTrack.Web.Areas.Administration.Controllers
 {
     using AutoMapper;
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using SoldierTrack.Services.Workout;
     using SoldierTrack.Services.Workout.Models;
     using SoldierTrack.Web.Areas.Administrator.Models.Workout;
+    using SoldierTrack.Web.Areas.Administrator.Controllers.Base;
 
     using static SoldierTrack.Web.Common.Constants.WebConstants;
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
 
-    [Area(AdminRoleName)]
-    [Authorize(Roles = AdminRoleName)]
-    public class WorkoutController : Controller
+    public class WorkoutController : BaseController
     {
         private readonly IWorkoutService workoutService;
         private readonly IMapper mapper;
@@ -90,10 +88,10 @@
 
             var serviceModel = this.mapper.Map<WorkoutServiceModel>(viewModel);
             serviceModel.Id = id;
-            var workoutCreatedId = await this.workoutService.EditAsync(serviceModel);
+            var workoutEditedId = await this.workoutService.EditAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = WorkoutEdited;
-            return this.RedirectToAction("Details", "Workout", new { area = "", id = workoutCreatedId });
+            return this.RedirectToAction("Details", "Workout", new { area = "", id = workoutEditedId });
         }
 
         [HttpPost]
@@ -103,6 +101,18 @@
 
             this.TempData["SuccessMessage"] = WorkoutDeletedSuccessfully;
             return this.RedirectToAction("GetAll", "Workout", new { area = "" });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetArchive(string athleteId, int pageIndex = 1, int pageSize = 5)
+        {
+            pageSize = Math.Min(pageSize, MaxPageSize);
+            pageSize = Math.Max(pageSize, MinPageSize);
+
+            this.ViewBag.AthleteId = athleteId;
+            var model = await this.workoutService.GetArchiveAsync(athleteId, pageIndex, pageSize);
+
+            return this.View("~/Views/Workout/GetArchive.cshtml", model);
         }
     }
 }

@@ -49,6 +49,7 @@
                         <div class="row text-center mb-4">
                             <div class="col-12">
                                 <div class="macro-box p-3 rounded bg-light">
+                                    <i class="fas fa-fire fs-2 text-primary"></i>
                                     <p class="m-0 fw-bold text-uppercase fs-6">Calories</p>
                                     <p class="text-primary display-6 fw-bold">@this.Model.TotalCalories</p>
                                 </div>
@@ -58,7 +59,7 @@
                         <div class="row text-center">
                             <div class="col-md-4 col-12 mb-3 mb-md-0">
                                 <div class="macro-box p-3 rounded bg-light">
-                                    <i class="bi bi-egg fs-2 text-danger"></i>
+                                    <i class="fas fa-egg fs-2 text-danger"></i>
                                     <p class="m-0 fw-bold text-uppercase fs-6">Proteins</p>
                                     <p class="text-danger fs-5">@this.Model.Proteins g</p>
                                 </div>
@@ -66,7 +67,7 @@
 
                             <div class="col-md-4 col-12 mb-3 mb-md-0">
                                 <div class="macro-box p-3 rounded bg-light">
-                                    <i class="bi bi-bread-slice fs-2 text-warning"></i>
+                                    <i class="fas fa-bread-slice fs-2 text-warning"></i>
                                     <p class="m-0 fw-bold text-uppercase fs-6">Carbohydrates</p>
                                     <p class="text-warning fs-5">@this.Model.Carbohydrates g</p>
                                 </div>
@@ -74,7 +75,7 @@
 
                             <div class="col-md-4 col-12">
                                 <div class="macro-box p-3 rounded bg-light">
-                                    <i class="bi bi-droplet fs-2 text-success"></i>
+                                    <i class="fas fa-bacon fs-2 text-success"></i>
                                     <p class="m-0 fw-bold text-uppercase fs-6">Fats</p>
                                     <p class="text-success fs-5">@this.Model.Fats g</p>
                                 </div>
@@ -86,28 +87,34 @@
                     <div class="d-flex justify-content-center gap-2 flex-wrap">
                         @if (this.Model.AthleteId != null && this.User.GetId() == this.Model.AthleteId)
                         {
-                            <a asp-controller="Food"
-                               asp-action="Edit"
-                               asp-route-foodId="@this.Model.Id"
-                               class="btn btn-warning btn-sm">
-                                    Edit Food
+                            <a 
+                                asp-controller="Food"
+                                asp-action="Edit"
+                                asp-route-foodId="@this.Model.Id"
+                                class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i> Edit Food
                             </a>
                         }
 
                         @if (
-                            (this.Model.AthleteId != null && this.User.GetId() == this.Model.AthleteId) ||
-                             this.User.IsAdmin())
-                        {  
-                            <form method="post"
-                                    asp-controller="Food"
-                                    asp-action="Delete"
-                                    asp-route-foodId="@this.Model.Id"
-                                    onSubmit="return confirm('Are you sure you want to delete this food?')">
-                                <button class="btn btn-danger btn-sm">Delete Food</button>
+                        (this.Model.AthleteId != null && this.User.GetId() == this.Model.AthleteId) ||
+                        this.User.IsAdmin())
+                        {
+                            <form 
+                                method="post"
+                                asp-controller="Food"
+                                asp-action="Delete"
+                                asp-route-foodId="@this.Model.Id"
+                                onSubmit="return confirm('Are you sure you want to delete this food?')">
+                                    <button class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i> Delete Food
+                                    </button>
                             </form>
                         }
 
-                        <a asp-action="GetAll"class="btn btn-secondary">Back</a>
+                        <a asp-action="GetAll" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </a>
                     </div>
                 </div>
             </div>

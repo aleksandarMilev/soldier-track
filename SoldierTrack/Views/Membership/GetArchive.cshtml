@@ -7,6 +7,7 @@
 }
 
 @{
+    var athleteId = this.ViewBag.AthleteId;
     var memberships = this.Model.Memberships;
     var pageIndex = this.Model.PageIndex;
     var totalPages = this.Model.TotalPages;
@@ -54,7 +55,14 @@
                     @if (pageIndex > 1)
                     {
                         <li class="page-item">
-                            <a class="page-link" asp-action="GetArchive" asp-route-athleteId="@this.ViewBag.AthleteId" asp-route-pageIndex="@(pageIndex - 1)" asp-route-pageSize="@pageSize">Previous</a>
+                            <a 
+                                class="page-link" 
+                                asp-action="GetArchive" 
+                                asp-route-pageIndex="@(pageIndex - 1)" 
+                                asp-route-pageSize="@pageSize"
+                                asp-route-athleteId="@athleteId">
+                                    Previous
+                            </a>
                         </li>
                     }
                     else
@@ -67,7 +75,14 @@
                     @if (pageIndex > 3)
                     {
                         <li class="page-item">
-                            <a class="page-link" asp-action="GetArchive" asp-route-athleteId="@this.ViewBag.AthleteId" asp-route-pageIndex="1" asp-route-pageSize="@pageSize">1</a>
+                            <a 
+                                class="page-link" 
+                                asp-action="GetArchive" 
+                                asp-route-pageIndex="1" 
+                                asp-route-pageSize="@pageSize"
+                                asp-route-athleteId="@athleteId">
+                                    1
+                            </a>
                         </li>
                         <li class="page-item disabled">
                             <span class="page-link">...</span>
@@ -77,7 +92,14 @@
                     @for (int i = Math.Max(1, pageIndex - 2); i <= Math.Min(totalPages, pageIndex + 2); i++)
                     {
                         <li class="page-item @(i == pageIndex ? "active" : "")">
-                            <a class="page-link" asp-action="GetArchive" asp-route-athleteId="@this.ViewBag.AthleteId" asp-route-pageIndex="@i" asp-route-pageSize="@pageSize">@i</a>
+                            <a 
+                                class="page-link" 
+                                asp-action="GetArchive" 
+                                asp-route-pageIndex="@i" 
+                                asp-route-pageSize="@pageSize"
+                                asp-route-athleteId="@athleteId">
+                                    @i
+                            </a>
                         </li>
                     }
 
@@ -87,14 +109,28 @@
                             <span class="page-link">...</span>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" asp-action="GetArchive" asp-route-athleteId="@this.ViewBag.AthleteId" asp-route-pageIndex="@totalPages" asp-route-pageSize="@pageSize">@totalPages</a>
+                            <a 
+                                class="page-link" 
+                                asp-action="GetArchive" 
+                                asp-route-pageIndex="@totalPages" 
+                                asp-route-pageSize="@pageSize"
+                                asp-route-athleteId="@athleteId">
+                                    @totalPages
+                            </a>
                         </li>
                     }
 
                     @if (pageIndex < totalPages)
                     {
                         <li class="page-item">
-                            <a class="page-link" asp-action="GetArchive" asp-route-athleteId="@this.ViewBag.AthleteId" asp-route-pageIndex="@(pageIndex + 1)" asp-route-pageSize="@pageSize">Next</a>
+                            <a
+                                class="page-link" 
+                                asp-action="GetArchive" 
+                                asp-route-pageIndex="@(pageIndex + 1)" 
+                                asp-route-pageSize="@pageSize"
+                                asp-route-athleteId="@athleteId">
+                                    Next
+                            </a>
                         </li>
                     }
                     else

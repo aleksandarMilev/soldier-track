@@ -10,8 +10,7 @@
 
     var membership = this.Model.Membership;
     var workouts = this.Model.Workouts;
-
-    var userIsAdmin = this.User.IsInRole(AdminRoleName);
+    var userIsAdmin = this.User.IsAdmin();
 }
 
 @if (this.TempData["SuccessMessage"] != null)
@@ -35,44 +34,65 @@
         <div class="col-lg-8 col-md-10">
             <div class="card shadow-sm border-0 rounded-4">
                 <div class="card-body">
-                    <h2 class="card-title text-center fw-bold mb-4">@this.Model.FirstName @this.Model.LastName</h2>
+                    <h2 class="card-title text-center fw-bold mb-4">
+                        @this.Model.FirstName @this.Model.LastName
+                    </h2>
 
                     <dl class="row">
-                        <dt class="col-sm-4">Phone:</dt>
+                        <dt class="col-sm-4">
+                            <i class="fas fa-phone-alt"></i> Phone:
+                        </dt>
                         <dd class="col-sm-8">@this.Model.PhoneNumber</dd>
 
-                        <dt class="col-sm-4">Email:</dt>
+                        <dt class="col-sm-4">
+                            <i class="fas fa-envelope"></i> Email:
+                        </dt>
                         <dd class="col-sm-8">@this.Model.Email</dd>
 
                         @if (membership != null)
                         {
-                            <dt class="col-sm-4">Membership Start Date:</dt>
+                            <dt class="col-sm-4">
+                                <i class="fas fa-calendar-alt"></i> Membership Start Date:
+                            </dt>
                             <dd class="col-sm-8">@membership.StartDate.ToString("dd MMM yyyy")</dd>
 
                             @if (membership.TotalWorkoutsCount.HasValue && membership.TotalWorkoutsCount > 0)
                             {
-                                <dt class="col-sm-4">Total Workouts:</dt>
+                                <dt class="col-sm-4">
+                                    <i class="fas fa-dumbbell"></i> Total Workouts:
+                                </dt>
                                 <dd class="col-sm-8">@membership.TotalWorkoutsCount</dd>
 
-                                <dt class="col-sm-4">Workouts Left:</dt>
+                                <dt class="col-sm-4">
+                                    <i class="fas fa-running"></i> Workouts Left:
+                                </dt>
                                 <dd class="col-sm-8">@membership.WorkoutsLeft</dd>
                             }
 
-                            <dt class="col-sm-4">Is Monthly Membership:</dt>
+                            <dt class="col-sm-4">
+                                <i class="fas fa-calendar"></i> Is Monthly Membership:
+                            </dt>
                             <dd class="col-sm-8">@(membership.IsMonthly ? "Yes" : "No")</dd>
 
                             @if (membership.IsMonthly)
                             {
-                                <dt class="col-sm-4">Expires on:</dt>
+                                <dt class="col-sm-4">
+                                    <i class="fas fa-calendar-times"></i> Expires on:
+                                </dt>
                                 <dd class="col-sm-8">@membership.EndDate!.Value.ToString("dd MMM yyyy")</dd>
                             }
 
-                            <dt class="col-sm-4">Price:</dt>
+                            <dt class="col-sm-4">
+                                <i class="fas fa-dollar-sign"></i> Price:
+                            </dt>
                             <dd class="col-sm-8">@membership.Price lv.</dd>
 
-                            <dt class="col-sm-4">Membership Status:</dt>
+                            <dt class="col-sm-4">
+                                <i class="fas fa-user-check"></i> Membership Status:
+                            </dt>
                             <dd class="col-sm-8">
                                 <span class="badge @(membership.IsPending ? "bg-danger" : "bg-success")">
+                                    <i class="@(membership.IsPending ? "fas fa-user-clock" : "fas fa-user-check")"></i>
                                     @(membership.IsPending ? "Pending" : "Active")
                                 </span>
                             </dd>
@@ -89,17 +109,54 @@
                     <div class="d-flex justify-content-center gap-2 flex-wrap">
                         @if (userIsAdmin)
                         {
-                            <a asp-area="Administrator" asp-controller="Athlete" asp-action="GetAll" class="btn btn-outline-secondary btn-sm">Back to List</a>
+                            <a 
+                                class="btn btn-outline-secondary btn-sm"
+                                asp-area="Administrator" 
+                                asp-controller="Athlete" 
+                                asp-action="GetAll">
+                                    <i class="fas fa-arrow-left"></i> Back to List
+                            </a>
+
+                            <form 
+                                method="post"
+                                class="d-inline"
+                                asp-area="Administrator"
+                                asp-controller="Athlete"
+                                asp-action="Delete"
+                                asp-route-athleteId="@this.Model.Id"
+                                onsubmit="return confirm('Are you sure you want to delete the profile?');">
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash-alt"></i> Delete
+                                    </button>
+                            </form>
                         }
                         else
                         {
-                            <a asp-area="" asp-controller="Athlete" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-sm">Edit</a>
-                            <a asp-area="" asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary btn-sm">Back</a>
+                            <a 
+                                class="btn btn-outline-secondary btn-sm"
+                                asp-area="" 
+                                asp-controller="Home" 
+                                asp-action="Index">
+                                    <i class="fas fa-arrow-left"></i> Back
+                            </a>
+                            <a
+                                class="btn btn-warning btn-sm"
+                                asp-area="" 
+                                asp-controller="Athlete" 
+                                asp-action="Edit">
+                                    <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <form 
+                                method="post"
+                                class="d-inline"
+                                asp-controller="Athlete"
+                                asp-action="Delete"
+                                onsubmit="return confirm('Are you sure you want to delete the profile?');">
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash-alt"></i> Delete
+                                    </button>
+                            </form>
                         }
-                       
-                        <form asp-area="" asp-controller="Athlete" asp-action="Delete" asp-route-id="@this.Model.Id" class="d-inline" method="post" onsubmit="return confirm('Are you sure you want to delete the profile?');">
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                        </form>
                     </div>
                 </div>
             </div>
@@ -108,44 +165,98 @@
     @if (membership != null && !membership.IsPending && userIsAdmin)
     {
         <div class="text-center mt-4">
-            <form asp-area="Administrator" asp-controller="Membership" asp-action="Delete" asp-route-id="@this.Model.MembershipId" asp-route-athleteId="@this.Model.Id" class="d-inline">
-                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete the membership?')">Delete Membership</button>
+            <form 
+                class="d-inline"
+                asp-area="Administrator" 
+                asp-controller="Membership" 
+                asp-action="Delete" 
+                asp-route-id="@this.Model.MembershipId" 
+                asp-route-athleteId="@this.Model.Id">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete the membership?')">
+                    <i class="fas fa-trash-alt"></i> Delete Membership
+                </button>
             </form>
         </div>
     }
 
-    @if (!userIsAdmin)
-    {
-        <div class="text-center mt-4">
-            <a asp-area="" asp-controller="Membership" asp-action="GetArchive" asp-route-athleteId="@this.Model.Id" class="btn btn-outline-secondary btn-sm">Membership Archive</a>
-            <a asp-area="" asp-controller="Workout" asp-action="GetArchive" asp-route-athleteId="@this.Model.Id" class="btn btn-outline-secondary btn-sm">Workout Archive</a>
-        </div>
-    }
-    
+    <div class="text-center mt-4">
+        @if (this.User.IsAdmin())
+        {
+            <a 
+                 class="btn btn-outline-secondary btn-sm"
+                 asp-area=""
+                 asp-controller="Membership"
+                 asp-action="GetArchive"
+                 asp-route-athleteId="@this.Model.Id">
+                    <i class="fas fa-archive"></i> Membership Archive
+            </a>
+            <a 
+                class="btn btn-outline-secondary btn-sm"
+                asp-area=""
+                asp-controller="Workout"
+                asp-action="GetArchive"
+                asp-route-athleteId="@this.Model.Id">
+                    <i class="fas fa-clipboard-list"></i> Workout Archive
+            </a>
+        }
+        else
+        {
+            <a 
+                class="btn btn-outline-secondary btn-sm"
+                asp-area=""
+                asp-controller="Membership"
+                asp-action="GetArchive">
+                    <i class="fas fa-archive"></i> Membership Archive
+            </a>
+            <a 
+                class="btn btn-outline-secondary btn-sm"
+                asp-area=""
+                asp-controller="Workout"
+                asp-action="GetArchive">
+                    <i class="fas fa-clipboard-list"></i> Workout Archive
+            </a>
+        }
+       
+    </div>
+
     @if (workouts.Any())
     {
         <h2 class="text-center mt-5 mb-4">Scheduled Workouts</h2>
         <div class="row">
             @foreach (var workout in workouts)
             {
-                var workoutIsClosed = workout.Date < DateTime.UtcNow;
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="card h-100 shadow-sm">
                         <div class="card-body">
-                            <h5 class="card-title">@workout.Title</h5>
+                            <h5 class="card-title">
+                                <i class="fas fa-dumbbell"></i> @workout.Title
+                            </h5>
                             <p class="card-text">@workout.BriefDescription</p>
                             <hr />
-                            <p><strong>Date:</strong> @workout.Date.ToLocalTime().ToString("dd MMM yyyy")</p>
-                            <p><strong>Time:</strong> @workout.Date.ToLocalTime().ToString(@"hh\:mm tt")</p>
+                            <p><strong><i class="fas fa-calendar-day"></i> Date:</strong> @workout.Date.ToLocalTime().ToString("dd MMM yyyy")</p>
+                            <p><strong><i class="fas fa-clock"></i> Time:</strong> @workout.Date.ToLocalTime().ToString(@"hh\:mm tt")</p>
                         </div>
                         <div class="card-footer text-end">
-                            <a asp-area="" asp-controller="Workout" asp-action="Details" asp-route-id="@workout.Id" class="btn btn-secondary btn-sm">Details</a>
-                            @if (!workoutIsClosed && userIsAdmin)
+                            <a 
+                                class="btn btn-secondary btn-sm"
+                                asp-area=""
+                                asp-controller="Workout" 
+                                asp-action="Details" 
+                                asp-route-id="@workout.Id">
+                                    Details
+                            </a>
+                            @if (userIsAdmin)
                             {
-                                <form asp-area="" asp-controller="Athlete" asp-action="Leave" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to remove this workout from the schedule?')">
-                                    <input type="hidden" name="athleteId" value="@this.Model.Id" />
-                                    <input type="hidden" name="workoutId" value="@workout.Id" />
-                                    <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                                <form 
+                                    method="post"
+                                    class="d-inline"
+                                    asp-area="Administrator" 
+                                    asp-controller="Athlete" 
+                                    asp-action="RemoveFromWorkout" 
+                                    onsubmit="return confirm('Are you sure you want to remove this workout from the schedule?')">
+                                        <input type="hidden" name="athleteId" value="@this.Model.Id" />
+                                        <input type="hidden" name="workoutId" value="@workout.Id" />
+                                        <button type="submit" class="btn btn-danger btn-sm">Remove</button>
                                 </form>
                             }
                         </div>
@@ -159,6 +270,7 @@
         <p class="alert alert-info text-center">@((userIsAdmin) ? "No workouts scheduled for this athlete yet!" : "No workouts in your schedule yet!")</p>
     }
 </div>
+
 
 <style>
     .card {

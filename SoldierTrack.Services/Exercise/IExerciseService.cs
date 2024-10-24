@@ -12,11 +12,11 @@
 
         Task<string> GetNameByIdAsync(int id);
 
-        Task<int> CreateAsync(ExerciseServiceModel model);
-
         Task<bool> ExerciseLimitReachedAsync(string athleteId);
 
         Task<bool> ExerciseWithThisNameExistsAsync(string name);
+
+        Task<int> CreateAsync(ExerciseServiceModel model);
 
         Task EditAsync(ExerciseServiceModel model);
 

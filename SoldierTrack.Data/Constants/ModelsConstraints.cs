@@ -1,5 +1,4 @@
-﻿
-namespace SoldierTrack.Data.Constants
+﻿namespace SoldierTrack.Data.Constants
 {
     public static class ModelsConstraints
     {

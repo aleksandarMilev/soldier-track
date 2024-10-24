@@ -1,28 +1,22 @@
 namespace SoldierTrack.Controllers
 {
-    using System.Diagnostics;
-
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using SoldierTrack.Models;
+    using SoldierTrack.Web.Controllers.Base;
 
-    public class HomeController : Controller
+    [AllowAnonymous]
+    public class HomeController : BaseController
     {
         public IActionResult Index() => this.View();
 
         public IActionResult FAQ() => this.View();
 
-        [ResponseCache(
-            Duration = 0,
-            Location = ResponseCacheLocation.None,
-            NoStore = true)]
-        public IActionResult Error()
-        {
-            var model = new ErrorViewModel()
-            { 
-                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
-            };
+        public IActionResult Error400() => this.View();
 
-            return this.View(model);
-        }
+        public IActionResult Error401() => this.View();
+
+        public IActionResult Error404() => this.View();
+
+        public IActionResult Error500() => this.View();
     }
 }

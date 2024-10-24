@@ -66,32 +66,6 @@
             return new ExercisePageServiceModel(exercises, searchParams.PageIndex, totalPages, searchParams.PageSize);
         }
 
-        public async Task<ExerciseServiceModel?> GetByIdAsync(int id)
-        {
-            return await this.data
-                .Exercises //we want all, including the deleted one
-                .AsNoTracking()
-                .ProjectTo<ExerciseServiceModel>(this.mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(e => e.Id == id);
-        }
-
-        public async Task<string> GetNameByIdAsync(int id)
-        {
-            return await this.data
-                .AllDeletableAsNoTracking<Exercise>()
-                .Where(e => e.Id == id)
-                .Select(e => e.Name)
-                .FirstOrDefaultAsync()
-                ?? throw new InvalidOperationException("Exercise is not found!");
-        }
-
-        public async Task<bool> ExerciseWithThisNameExistsAsync(string name)
-        {
-            return await this.data
-                .AllDeletableAsNoTracking<Exercise>()
-                .AnyAsync(e => e.Name == name);
-        }
-
         public async Task<ExerciseDetailsServiceModel?> GetDetailsById(int exerciseId, string athleteId, bool userIsAdmin)
         {
             var model = await this.data
@@ -125,12 +99,39 @@
             if (model.AthleteId != null && model.AthleteId == athleteId)
             {
                 //exercise is custom and the current athlete is the creator
-                model.ShowEditButton = true; 
-                model.ShowDeleteButton = true; 
+                model.ShowEditButton = true;
+                model.ShowDeleteButton = true;
             }
 
             model.Rankings = await this.achievementService.GetRankingsAsync(exerciseId);
             return model;
+        }
+
+
+        public async Task<ExerciseServiceModel?> GetByIdAsync(int id)
+        {
+            return await this.data
+                .Exercises //we want all, including the deleted one
+                .AsNoTracking()
+                .ProjectTo<ExerciseServiceModel>(this.mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(e => e.Id == id);
+        }
+
+        public async Task<string> GetNameByIdAsync(int id)
+        {
+            return await this.data
+                .AllDeletableAsNoTracking<Exercise>()
+                .Where(e => e.Id == id)
+                .Select(e => e.Name)
+                .FirstOrDefaultAsync()
+                ?? throw new InvalidOperationException("Exercise is not found!");
+        }
+
+        public async Task<bool> ExerciseWithThisNameExistsAsync(string name)
+        {
+            return await this.data
+                .AllDeletableAsNoTracking<Exercise>()
+                .AnyAsync(e => e.Name == name);
         }
 
         public async Task<bool> ExerciseLimitReachedAsync(string athleteId)
