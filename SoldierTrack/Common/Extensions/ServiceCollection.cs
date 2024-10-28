@@ -54,7 +54,6 @@
 
         public static IServiceCollection AddAutoMapperProfiles(this IServiceCollection services)
         {
-
             services.AddAutoMapper(cfg =>
             {
                 cfg.AddProfile<AthleteProfile>();

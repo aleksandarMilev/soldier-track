@@ -23,7 +23,7 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetArchive(int pageIndex = 1, int pageSize = 10)
+        public async Task<IActionResult> GetArchive(int pageIndex = DefaultPageIndex, int pageSize = DefaultPageSize)
         {
             pageSize = Math.Min(pageSize, MaxPageSize);
             pageSize = Math.Max(pageSize, MinPageSize);

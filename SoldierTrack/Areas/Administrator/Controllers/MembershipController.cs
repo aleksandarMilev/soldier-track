@@ -41,7 +41,7 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetArchive(string athleteId, int pageIndex = 1, int pageSize = 5)
+        public async Task<IActionResult> GetArchive(string athleteId, int pageIndex = DefaultPageIndex, int pageSize = DefaultPageSize)
         {
             pageSize = Math.Min(pageSize, MaxPageSize);
             pageSize = Math.Max(pageSize, MinPageSize);

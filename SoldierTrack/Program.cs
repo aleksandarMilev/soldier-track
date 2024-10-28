@@ -14,6 +14,8 @@ namespace SoldierTrack.Web
             builder.Services.AddApplicationIdentity();
             builder.Services.AddAutoMapperProfiles();
 
+            builder.Services.AddMemoryCache();
+
             builder.Services.AddControllersWithViews(options =>
             {
                 options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();

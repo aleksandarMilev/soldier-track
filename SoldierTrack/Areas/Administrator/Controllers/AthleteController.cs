@@ -21,7 +21,7 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(string? searchTerm = null, int pageIndex = 1, int pageSize = 10)
+        public async Task<IActionResult> GetAll(string? searchTerm = null, int pageIndex = DefaultPageIndex, int pageSize = DefaultPageSize)
         {
             pageSize = Math.Min(pageSize, MaxPageSize);
             pageSize = Math.Max(pageSize, MinPageSize);

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-
-namespace SoldierTrack.Web.Common.Constants
+﻿namespace SoldierTrack.Web.Common.Constants
 {
     public static class ModelValidationConstants
     {
@@ -13,7 +11,6 @@ namespace SoldierTrack.Web.Common.Constants
 
             public const int EmailMinLength = 5;
             public const int EmailMaxLength = 100;
-
 
             public const int UserIdLength = 36;
         }

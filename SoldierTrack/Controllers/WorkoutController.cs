@@ -1,9 +1,11 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Caching.Memory;
     using SoldierTrack.Services.Athlete;
     using SoldierTrack.Services.Membership;
     using SoldierTrack.Services.Workout;
+    using SoldierTrack.Services.Workout.Models;
     using SoldierTrack.Web.Common.Extensions;
     using SoldierTrack.Web.Controllers.Base;
 
@@ -14,31 +16,44 @@
         private readonly IWorkoutService workoutService;
         private readonly IAthleteService athleteService;
         private readonly IMembershipService membershipService;
+        private readonly IMemoryCache cache;
 
         public WorkoutController(
             IWorkoutService workoutService,
             IAthleteService athleteService,
-            IMembershipService membershipService)
+            IMembershipService membershipService,
+            IMemoryCache cache)
         {
             this.workoutService = workoutService;
             this.athleteService = athleteService;
             this.membershipService = membershipService;
+            this.cache = cache;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(DateTime? date = null, int pageIndex = 1, int pageSize = 10)
+        public async Task<IActionResult> GetAll(DateTime? date = null, int pageIndex = DefaultPageIndex, int pageSize = DefaultPageSize)
         {
             pageSize = Math.Min(pageSize, MaxPageSize);
             pageSize = Math.Max(pageSize, MinPageSize);
 
             this.ViewBag.Date = date;
-            var model = await this.workoutService.GetAllAsync(date, pageIndex, pageSize);
+
+            var cacheKey = $"Workout_{date?.ToString("yyyyMMdd") ?? "All"}_{pageIndex}_{pageSize}";
+
+            if (!this.cache.TryGetValue(cacheKey, out WorkoutPageServiceModel? model))
+            {
+                model = await this.workoutService.GetAllAsync(date, pageIndex, pageSize);
+
+                var cacheOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(WorkoutCacheDuration));
+                this.cache.Set(cacheKey, model, cacheOptions);
+            }
 
             return this.View(model);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetArchive(int pageIndex = 1, int pageSize = 5)
+        public async Task<IActionResult> GetArchive(int pageIndex = DefaultPageIndex, int pageSize = DefaultPageSize)
         {
             pageSize = Math.Min(pageSize, MaxPageSize);
             pageSize = Math.Max(pageSize, MinPageSize);

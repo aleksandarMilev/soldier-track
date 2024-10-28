@@ -1,6 +1,5 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using SoldierTrack.Services.Athlete;
     using SoldierTrack.Services.FoodDiary;
@@ -25,15 +24,7 @@
         {
             var athleteId = this.User.GetId();
 
-            if ((date != null) && (DateTime.Now < date.Value.AddMonths(-1) || DateTime.Now > date.Value.AddMonths(1)))
-            {
-                this.TempData["FailureMessage"] = string.Format(
-                    FoodDiaryDateError,
-                    DateTime.Now.AddMonths(-1).ToString("dd MMM yyyy"),
-                    DateTime.Now.AddMonths(1).ToString("dd MMM yyyy"));
-
-                date = DateTime.Now;
-            }
+            this.ValidateDate(date);
 
             date ??= DateTime.Now; 
 
@@ -77,6 +68,21 @@
 
             this.TempData["SuccessMessage"] = "Food successfully removed!";
             return this.RedirectToAction(nameof(Details), new { diaryId });
+        }
+
+        private DateTime? ValidateDate(DateTime? date)
+        {
+            if ((date != null) && (DateTime.Now < date.Value.AddMonths(-1) || DateTime.Now > date.Value.AddMonths(1)))
+            {
+                this.TempData["FailureMessage"] = string.Format(
+                    FoodDiaryDateError,
+                    DateTime.Now.AddMonths(-1).ToString("dd MMM yyyy"),
+                    DateTime.Now.AddMonths(1).ToString("dd MMM yyyy"));
+
+                return DateTime.Now;
+            }
+
+            return date;
         }
     }
 }
