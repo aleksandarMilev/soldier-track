@@ -8,6 +8,8 @@
     using SoldierTrack.Services.Common;
     using SoldierTrack.Services.Food.Models;
 
+    using static SoldierTrack.Services.Common.Constants;
+
     public class FoodService : IFoodService
     {
         private readonly ApplicationDbContext data;
@@ -64,6 +66,16 @@
                 .AllDeletableAsNoTracking<Food>()
                 .ProjectTo<FoodDetailsServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(f => f.Id == id);
+        }
+
+        public async Task<bool> FoodLimitReachedAsync(string athleteId)
+        {
+            var count = await this.data
+                 .AllDeletableAsNoTracking<Food>()
+                 .Where(e => e.AthleteId == athleteId)
+                 .CountAsync();
+
+            return count > CustomFoodMaxCount;
         }
 
         public async Task<int> CreateAsync(FoodServiceModel model)

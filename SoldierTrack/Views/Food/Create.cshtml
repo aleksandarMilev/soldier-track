@@ -13,7 +13,7 @@
             <form asp-action="Create" method="post">
                 <partial name="_FoodPartial" model="@this.Model"></partial>
                 <button type="submit" class="btn btn-primary">Create</button>
-                <a asp-controller="FoodDiary" asp-action="MyDiary" asp-route-athleteId="@this.Model.AthleteId" class="btn btn-secondary">Back To My Diary</a>
+                <a class="btn btn-secondary" asp-area="" asp-controller="Food" asp-action="GetAll">Back</a>
             </form>
         </div>
     </div>

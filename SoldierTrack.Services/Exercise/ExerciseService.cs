@@ -80,11 +80,13 @@
 
             if (userIsAdmin)
             {
+                model.ShowEditButton = model.AthleteId == null;
                 model.ShowDeleteButton = true;
                 return model;
             }
 
             var achievementId = await this.achievementService.GetAchievementIdAsync(athleteId!, exerciseId);
+
             if (achievementId == null)
             {
                 //current athlete has not achievement for this exercise, so we will show the create button

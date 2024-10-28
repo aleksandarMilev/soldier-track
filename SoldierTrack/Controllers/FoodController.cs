@@ -43,8 +43,16 @@
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var athleteId = this.User.GetId();
+
+            if (await this.foodService.FoodLimitReachedAsync(athleteId!))
+            {
+                this.TempData["FailureMessage"] = MaxFoodLimit;
+                return this.RedirectToAction(nameof(GetAll));
+            }
+
             var model = new FoodFormModel() { AthleteId = this.User.GetId()! };
             return this.View(model);
         }
@@ -87,7 +95,8 @@
                 return this.NotFound();
             }
 
-            if (serviceModel.AthleteId == null || serviceModel.AthleteId != this.User.GetId())
+            if ((serviceModel.AthleteId == null && !this.User.IsAdmin()) &&
+                 serviceModel.AthleteId != this.User.GetId()!)
             {
                 return this.Unauthorized();
             }

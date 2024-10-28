@@ -108,6 +108,9 @@
 
         public const string FoodDeleted = "Food is successfully deleted!";
 
+        public const string MaxFoodLimit = "You have created 50 foods. You have reached the limit!";
+
+
         //food diary
         public const string FoodDiaryDateError = "Invalid date! You can select dates in the range {0} - {1}";
     }

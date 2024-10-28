@@ -85,7 +85,8 @@
                 </div>
                 <div class="card-footer bg-light text-center mt-3">
                     <div class="d-flex justify-content-center gap-2 flex-wrap">
-                        @if (this.Model.AthleteId != null && this.User.GetId() == this.Model.AthleteId)
+                        @if ((this.Model.AthleteId == null && this.User.IsAdmin()) || 
+                             (this.User.GetId() == this.Model.AthleteId))
                         {
                             <a 
                                 asp-controller="Food"
@@ -96,9 +97,8 @@
                             </a>
                         }
 
-                        @if (
-                        (this.Model.AthleteId != null && this.User.GetId() == this.Model.AthleteId) ||
-                        this.User.IsAdmin())
+                        @if ((this.Model.AthleteId != null && this.User.GetId() == this.Model.AthleteId) ||
+                              this.User.IsAdmin())
                         {
                             <form 
                                 method="post"

@@ -12,10 +12,10 @@
         <div class="col-md-6">
             <h2>Edit Exercise</h2>
             <form asp-action="Edit" method="post">
-                <partial name="_FormPartial" model="@this.Model"></partial>
+                <partial name="_ExercisePartial" model="@this.Model"></partial>
                 <input asp-for="@exerciseId" type="hidden" />
                 <button type="submit" class="btn btn-primary">Edit</button>
-                <a asp-controller="Achievement" asp-action="GetAll" asp-route-athleteId="@this.Model.AthleteId" class="btn btn-secondary">Cancel</a>
+                <a asp-area="" asp-controller="Exercise" asp-action="GetAll" class="btn btn-secondary">Cancel</a>
             </form>
         </div>
     </div>

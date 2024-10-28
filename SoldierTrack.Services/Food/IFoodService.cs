@@ -8,6 +8,8 @@
 
         Task<FoodServiceModel?> GetByIdAsync(int id);
 
+        Task<bool> FoodLimitReachedAsync(string athleteId);
+
         Task<int> CreateAsync(FoodServiceModel model);
 
         Task EditAsync(FoodServiceModel model);

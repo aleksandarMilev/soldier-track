@@ -7,5 +7,7 @@
         public const string AdminRoleName = "Administrator";
 
         public const int CustomExercisesMaxCount = 50;
+
+        public const int CustomFoodMaxCount = 50;
     }
 }
