@@ -7,7 +7,7 @@
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
     using static SoldierTrack.Web.Common.Constants.WebConstants;
 
-    public class MembershipController : BaseController
+    public class MembershipController : BaseAdminController
     {
         private readonly IMembershipService membershipService;
 

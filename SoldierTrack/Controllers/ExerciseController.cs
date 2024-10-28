@@ -51,6 +51,7 @@
         public async Task<IActionResult> Create()
         {
             var athleteId = this.User.GetId();
+
             if (await this.exerciseService.ExerciseLimitReachedAsync(athleteId!))
             {
                 this.TempData["FailureMessage"] = MaxExercisesLimit;
@@ -90,6 +91,7 @@
         public async Task<IActionResult> Details(int exerciseId)
         {
             var model = await this.exerciseService.GetDetailsById(exerciseId, this.User.GetId()!, this.User.IsAdmin());
+
             if (model == null)
             {
                 return this.NotFound();
@@ -107,7 +109,8 @@
                 return this.NotFound();
             }
 
-            if (serviceModel.AthleteId == null || serviceModel.AthleteId != this.User.GetId()!)
+            if ((serviceModel.AthleteId == null && !this.User.IsAdmin()) && 
+                 serviceModel.AthleteId != this.User.GetId()!)
             {
                 return this.Unauthorized();
             }

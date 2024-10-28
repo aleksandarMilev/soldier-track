@@ -9,7 +9,7 @@
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
     using static SoldierTrack.Web.Common.Constants.WebConstants;
 
-    public class AthleteController : BaseController
+    public class AthleteController : BaseAdminController
     {
         private readonly IAthleteService athleteService;
         private readonly IWorkoutService workoutService;

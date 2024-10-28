@@ -10,7 +10,7 @@
     using static SoldierTrack.Web.Common.Constants.WebConstants;
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
 
-    public class WorkoutController : BaseController
+    public class WorkoutController : BaseAdminController
     {
         private readonly IWorkoutService workoutService;
         private readonly IMapper mapper;

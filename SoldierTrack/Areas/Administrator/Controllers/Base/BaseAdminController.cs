@@ -7,7 +7,7 @@
 
     [Area(AdminRoleName)]
     [Authorize(Roles = AdminRoleName)]
-    public class BaseController : Controller
+    public class BaseAdminController : Controller
     {
     }
 }

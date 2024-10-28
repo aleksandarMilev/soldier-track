@@ -30,6 +30,6 @@
         [Display(Name = "Is For Beginners")]
         public bool IsForBeginners { get; init; }
 
-        public string AthleteId { get; init; } = null!;
+        public string? AthleteId { get; init; }
     }
 }
