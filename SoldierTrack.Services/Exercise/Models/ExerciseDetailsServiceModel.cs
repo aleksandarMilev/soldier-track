@@ -1,6 +1,6 @@
 ﻿namespace SoldierTrack.Services.Exercise.Models
 {
-    using SoldierTrack.Services.Exercise.Models.Util;
+    using Util;
 
     public class ExerciseDetailsServiceModel : ExerciseServiceModel
     {

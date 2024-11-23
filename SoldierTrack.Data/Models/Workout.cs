@@ -2,10 +2,10 @@
 {
     using System.ComponentModel.DataAnnotations;
 
-    using SoldierTrack.Data.Models.Base;
-    using SoldierTrack.Data.Models.Enums;
+    using Base;
+    using Enums;
 
-    using static SoldierTrack.Data.Constants.ModelsConstraints.WorkoutConstraints;
+    using static Constants.ModelsConstraints.WorkoutConstraints;
 
     public class Workout : BaseDeletableModel<int>
     {

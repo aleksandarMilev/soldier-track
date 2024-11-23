@@ -16,10 +16,12 @@
             this.Athletes = athletes;
         }
 
-        public int PageIndex { get; set; }
-        public int TotalPages { get; set; }
-        public int PageSize { get; set; }
+        public int PageIndex { get; init; }
 
-        public IEnumerable<AthleteDetailsServiceModel> Athletes { get; set; } = new List<AthleteDetailsServiceModel>();
+        public int TotalPages { get; init; }
+
+        public int PageSize { get; init; }
+
+        public IEnumerable<AthleteDetailsServiceModel> Athletes { get; init; } = new List<AthleteDetailsServiceModel>();
     }
 }

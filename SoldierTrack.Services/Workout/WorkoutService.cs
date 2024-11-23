@@ -1,14 +1,14 @@
 ﻿namespace SoldierTrack.Services.Workout
 {
+    using Athlete;
     using AutoMapper;
     using AutoMapper.QueryableExtensions;
+    using Common;
+    using Data;
+    using Data.Models;
+    using Membership;
     using Microsoft.EntityFrameworkCore;
-    using SoldierTrack.Data;
-    using SoldierTrack.Data.Models;
-    using SoldierTrack.Services.Athlete;
-    using SoldierTrack.Services.Common;
-    using SoldierTrack.Services.Membership;
-    using SoldierTrack.Services.Workout.Models;
+    using Models;
 
     public class WorkoutService : IWorkoutService
     {
@@ -48,6 +48,7 @@
                 .ToListAsync();
 
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
             return new WorkoutPageServiceModel(workouts, pageIndex, totalPages, pageSize);
         }
 
@@ -65,16 +66,15 @@
                 .ToListAsync();
 
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
             return new WorkoutPageServiceModel(workouts, pageIndex, totalPages, pageSize);
         }
 
-        public async Task<WorkoutServiceModel?> GetModelByIdAsync(int id)
-        {
-            return await this
+        public async Task<WorkoutServiceModel?> GetModelByIdAsync(int id) 
+            => await this
                 .GetUpcomingsAsNoTrackingAsync()
                 .ProjectTo<WorkoutServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(w => w.Id == id);
-        }
 
         public async Task<WorkoutDetailsServiceModel?> GetDetailsModelByIdAsync(int id, string athleteId)
         {
@@ -146,6 +146,7 @@
 
             this.data.Add(workout);
             await this.data.SaveChangesAsync();
+
             return workout.Id;
         }
 
@@ -160,6 +161,7 @@
             workout.DateTime = GetUtcFromLocalDateAndTime(model.Date, model.Time);
 
             await this.data.SaveChangesAsync();
+
             return workout.Id;
         }
 
@@ -195,19 +197,15 @@
             await this.data.SaveChangesAsync();
         }
 
-        private IQueryable<Workout> GetUpcomingsAsNoTrackingAsync()
-        {
-            return this.data
+        private IQueryable<Workout> GetUpcomingsAsNoTrackingAsync() 
+            => this.data
                 .AllDeletableAsNoTracking<Workout>()
                 .Where(w => w.DateTime > DateTime.UtcNow);
-        }
 
-        private IQueryable<Workout> GetUpcomingsAsync()
-        {
-            return this.data
+        private IQueryable<Workout> GetUpcomingsAsync() 
+            => this.data
                 .AllDeletable<Workout>()
                 .Where(w => w.DateTime > DateTime.UtcNow);
-        }
 
         private static DateTime GetUtcFromLocalDateAndTime(DateTime dateLocal, TimeSpan timeLocal)
         {

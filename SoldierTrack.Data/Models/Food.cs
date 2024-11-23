@@ -3,9 +3,9 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    using SoldierTrack.Data.Models.Base;
+    using Base;
 
-    using static SoldierTrack.Data.Constants.ModelsConstraints.FoodConstraints;
+    using static Constants.ModelsConstraints.FoodConstraints;
 
     public class Food : BaseDeletableModel<int>
     {

@@ -1,17 +1,17 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
     using AutoMapper;
+    using Common.Extensions;
+    using Controllers.Base;
     using Microsoft.AspNetCore.Mvc;
-    using SoldierTrack.Services.Achievement;
-    using SoldierTrack.Services.Athlete;
-    using SoldierTrack.Services.Exercise;
-    using SoldierTrack.Services.Exercise.Models;
-    using SoldierTrack.Web.Common.Extensions;
-    using SoldierTrack.Web.Controllers.Base;
-    using SoldierTrack.Web.Models.Exercise;
-    
-    using static SoldierTrack.Web.Common.Constants.MessageConstants;
-    using static SoldierTrack.Web.Common.Constants.WebConstants;
+    using Models.Exercise;
+    using Services.Achievement;
+    using Services.Athlete;
+    using Services.Exercise;
+    using Services.Exercise.Models;
+
+    using static Common.Constants.MessageConstants;
+    using static Common.Constants.WebConstants;
 
     public class ExerciseController : BaseController
     {
@@ -77,6 +77,7 @@
             if (await this.exerciseService.ExerciseWithThisNameExistsAsync(viewModel.Name))
             {
                 this.ModelState.AddModelError(nameof(viewModel.Name), string.Format(ExerciseNameDuplicated, viewModel.Name));
+
                 return this.View(viewModel);
             }
 
@@ -84,6 +85,7 @@
             var exerciseId = await this.exerciseService.CreateAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = ExerciseCreated;
+
             return this.RedirectToAction(nameof(Details), new { exerciseId });
         }
 
@@ -104,6 +106,7 @@
         public async Task<IActionResult> Edit(int exerciseId)
         {
             var serviceModel = await this.exerciseService.GetByIdAsync(exerciseId);
+
             if (serviceModel == null)
             {
                 return this.NotFound();
@@ -117,6 +120,7 @@
 
             var viewModel = this.mapper.Map<ExerciseFormModel>(serviceModel);
             this.ViewBag.ExerciseId = exerciseId; 
+
             return this.View(viewModel);
         }
 
@@ -133,6 +137,7 @@
             await this.exerciseService.EditAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = ExerciseEdited;
+
             return this.RedirectToAction(nameof(Details), new { exerciseId });
         }
 
@@ -142,6 +147,7 @@
             await this.exerciseService.DeleteAsync(exerciseId, this.User.GetId()!, this.User.IsAdmin());
             
             this.TempData["SuccessMessage"] = ExerciseDeleted;
+
             return this.RedirectToAction(nameof(GetAll));
         }
     }

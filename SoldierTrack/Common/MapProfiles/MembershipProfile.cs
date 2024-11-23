@@ -1,8 +1,8 @@
 ﻿namespace SoldierTrack.Web.Common.MapProfiles
 {
     using AutoMapper;
-    using SoldierTrack.Services.Membership.Models;
-    using SoldierTrack.Web.Models.Membership;
+    using Services.Membership.Models;
+    using Models.Membership;
 
     using static SoldierTrack.Web.Common.Constants.Constants.MembershipConstants;
 

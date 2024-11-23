@@ -1,26 +1,26 @@
 ﻿namespace SoldierTrack.Web.Common.Extensions
 {
+    using Data;
+    using Data.Models;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
-    using SoldierTrack.Data;
-    using SoldierTrack.Data.Models;
-    using SoldierTrack.Services.Achievement;
-    using SoldierTrack.Services.Achievement.MapperProfile;
-    using SoldierTrack.Services.Athlete;
-    using SoldierTrack.Services.Athlete.MapperProfile;
-    using SoldierTrack.Services.Email;
-    using SoldierTrack.Services.Email.Models;
-    using SoldierTrack.Services.Exercise;
-    using SoldierTrack.Services.Exercise.MapperProfile;
-    using SoldierTrack.Services.Food;
-    using SoldierTrack.Services.Food.MapProfile;
-    using SoldierTrack.Services.FoodDiary;
-    using SoldierTrack.Services.FoodDiary.MapProfile;
-    using SoldierTrack.Services.Membership;
-    using SoldierTrack.Services.Membership.MapperProfile;
-    using SoldierTrack.Services.Workout;
-    using SoldierTrack.Services.Workout.MapperProfile;
+    using Services.Achievement;
+    using Services.Achievement.MapperProfile;
+    using Services.Athlete;
+    using Services.Athlete.MapperProfile;
+    using Services.Email;
+    using Services.Email.Models;
+    using Services.Exercise;
+    using Services.Exercise.MapperProfile;
+    using Services.Food;
+    using Services.Food.MapProfile;
+    using Services.FoodDiary;
+    using Services.FoodDiary.MapProfile;
+    using Services.Membership;
+    using Services.Membership.MapperProfile;
+    using Services.Workout;
+    using Services.Workout.MapperProfile;
 
     public static class ServiceCollection
     {

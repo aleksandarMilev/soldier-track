@@ -1,15 +1,15 @@
 ﻿namespace SoldierTrack.Services.Exercise
 {
+    using Achievement;
     using AutoMapper;
     using AutoMapper.QueryableExtensions;
+    using Common;
+    using Data;
+    using Data.Models;
     using Microsoft.EntityFrameworkCore;
-    using SoldierTrack.Data;
-    using SoldierTrack.Data.Models;
-    using SoldierTrack.Services.Achievement;
-    using SoldierTrack.Services.Common;
-    using SoldierTrack.Services.Exercise.Models;
+    using Models;
 
-    using static SoldierTrack.Services.Common.Constants;
+    using static Common.Constants;
 
     public class ExerciseService : IExerciseService
     {
@@ -63,6 +63,7 @@
                 .ToListAsync();
 
             var totalPages = (int)Math.Ceiling(totalCount / (double)searchParams.PageSize);
+
             return new ExercisePageServiceModel(exercises, searchParams.PageIndex, totalPages, searchParams.PageSize);
         }
 
@@ -82,6 +83,7 @@
             {
                 model.ShowEditButton = model.AthleteId == null;
                 model.ShowDeleteButton = true;
+
                 return model;
             }
 
@@ -106,35 +108,30 @@
             }
 
             model.Rankings = await this.achievementService.GetRankingsAsync(exerciseId);
+
             return model;
         }
 
 
-        public async Task<ExerciseServiceModel?> GetByIdAsync(int id)
-        {
-            return await this.data
+        public async Task<ExerciseServiceModel?> GetByIdAsync(int id) 
+            => await this.data
                 .Exercises //we want all, including the deleted one
                 .AsNoTracking()
                 .ProjectTo<ExerciseServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(e => e.Id == id);
-        }
 
-        public async Task<string> GetNameByIdAsync(int id)
-        {
-            return await this.data
+        public async Task<string> GetNameByIdAsync(int id) 
+            => await this.data
                 .AllDeletableAsNoTracking<Exercise>()
                 .Where(e => e.Id == id)
                 .Select(e => e.Name)
                 .FirstOrDefaultAsync()
                 ?? throw new InvalidOperationException("Exercise is not found!");
-        }
 
-        public async Task<bool> ExerciseWithThisNameExistsAsync(string name)
-        {
-            return await this.data
+        public async Task<bool> ExerciseWithThisNameExistsAsync(string name) 
+            => await this.data
                 .AllDeletableAsNoTracking<Exercise>()
                 .AnyAsync(e => e.Name == name);
-        }
 
         public async Task<bool> ExerciseLimitReachedAsync(string athleteId)
         {

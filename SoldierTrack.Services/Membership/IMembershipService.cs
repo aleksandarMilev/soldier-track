@@ -1,6 +1,6 @@
 ﻿namespace SoldierTrack.Services.Membership
 {
-    using SoldierTrack.Services.Membership.Models;
+    using Models;
 
     public interface IMembershipService
     {

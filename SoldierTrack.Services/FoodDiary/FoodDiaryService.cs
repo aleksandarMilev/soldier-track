@@ -2,12 +2,12 @@
 {
     using AutoMapper;
     using AutoMapper.QueryableExtensions;
+    using Common;
+    using Data;
+    using Data.Models;
+    using Data.Models.Enums;
     using Microsoft.EntityFrameworkCore;
-    using SoldierTrack.Data;
-    using SoldierTrack.Data.Models;
-    using SoldierTrack.Data.Models.Enums;
-    using SoldierTrack.Services.Common;
-    using SoldierTrack.Services.FoodDiary.Models;
+    using Models;
 
     public class FoodDiaryService : IFoodDiaryService
     {
@@ -20,27 +20,24 @@
             this.mapper = mapper;
         }
 
-        public async Task<FoodDiaryServiceModel?> GetModelByDateAndAthleteIdAsync(string athleteId, DateTime date)
-        {
-            return await this.data
+        public async Task<FoodDiaryServiceModel?> GetModelByDateAndAthleteIdAsync(string athleteId, DateTime date) 
+            => await this.data
                 .FoodDiaries
                 .AsNoTracking()
                 .ProjectTo<FoodDiaryServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(fd => fd.AthleteId == athleteId && date == fd.Date.Date);
-        }
 
-        public async Task<FoodDiaryDetailsServiceModel?> GetDetailsByIdAsync(int diaryId)
-        {
-            return await this.data
+        public async Task<FoodDiaryDetailsServiceModel?> GetDetailsByIdAsync(int diaryId) 
+            => await this.data
                 .FoodDiaries
                 .AsNoTracking()
                 .ProjectTo<FoodDiaryDetailsServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(fd => fd.Id == diaryId);
-        }
 
         public async Task<FoodDiaryServiceModel> CreateForDateAsync(string athleteId, DateTime date)
         {
             var foodDiary = await CreateDiaryAsync(athleteId, date);
+
             return this.mapper.Map<FoodDiaryServiceModel>(foodDiary);
         }
 

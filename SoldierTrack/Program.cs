@@ -1,7 +1,7 @@
 namespace SoldierTrack.Web
 {
+    using Common.Extensions;
     using Microsoft.AspNetCore.Mvc;
-    using SoldierTrack.Web.Common.Extensions;
 
     public class Program
     {
@@ -9,36 +9,38 @@ namespace SoldierTrack.Web
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddApplicationServices(builder.Configuration);
-            builder.Services.AddApplicationDbContext(builder.Configuration, builder.Environment);
-            builder.Services.AddApplicationIdentity();
-            builder.Services.AddAutoMapperProfiles();
 
-            builder.Services.AddMemoryCache();
-
-            builder.Services.AddControllersWithViews(options =>
-            {
-                options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
-            });
+            builder.Services
+                .AddApplicationServices(builder.Configuration)
+                .AddApplicationDbContext(builder.Configuration, builder.Environment)
+                .AddApplicationIdentity()
+                .AddAutoMapperProfiles()
+                .AddMemoryCache()
+                .AddControllersWithViews(options =>
+                {
+                    options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
+                });
 
             var app = builder.Build();
 
-            if (app.Environment.IsDevelopment())
+            if (!app.Environment.IsDevelopment())
             {
                 app.UseMigrationsEndPoint();
             }
             else
             {
-                app.UseHsts();
-                app.UseStatusCodePagesWithReExecute("/Home/Error{0}");
-                app.UseExceptionHandler("/Home/Error500");
+                app
+                    .UseHsts()
+                    .UseStatusCodePagesWithReExecute("/Home/Error{0}")
+                    .UseExceptionHandler("/Home/Error500");
             }
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            app.UseRouting();
-            app.UseAuthentication();
-            app.UseAuthorization();
+            app
+                .UseHttpsRedirection()
+                .UseStaticFiles()
+                .UseRouting()
+                .UseAuthentication()
+                .UseAuthorization();
 
             app.MapDefaultAreaRoute();
             app.MapDefaultControllerRoute();

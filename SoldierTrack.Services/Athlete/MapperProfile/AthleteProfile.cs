@@ -1,10 +1,10 @@
 ﻿namespace SoldierTrack.Services.Athlete.MapperProfile
 {
     using AutoMapper;
-    using SoldierTrack.Data.Models;
-    using SoldierTrack.Services.Athlete.Models;
-    using SoldierTrack.Services.Membership.Models;
-    using SoldierTrack.Services.Workout.Models;
+    using Data.Models;
+    using Models;
+    using Services.Membership.Models;
+    using Services.Workout.Models;
 
     public class AthleteProfile : Profile
     {

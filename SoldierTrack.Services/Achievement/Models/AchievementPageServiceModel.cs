@@ -17,9 +17,11 @@
             this.PageSize = pageSize;
         }
 
-        public int PageIndex { get; set; }
-        public int TotalPages { get; set; }
-        public int PageSize { get; set; }
+        public int PageIndex { get; init; }
+
+        public int TotalPages { get; init; }
+
+        public int PageSize { get; init; }
 
         public IEnumerable<AchievementServiceModel> Achievements { get; init; } = new List<AchievementServiceModel>();
     }

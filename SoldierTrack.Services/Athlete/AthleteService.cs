@@ -2,16 +2,16 @@
 {
     using AutoMapper;
     using AutoMapper.QueryableExtensions;
+    using Common;
+    using Data;
+    using Data.Models;
+    using Email;
+    using Membership;
     using Microsoft.EntityFrameworkCore;
-    using SoldierTrack.Data;
-    using SoldierTrack.Data.Models;
-    using SoldierTrack.Services.Athlete.Models;
-    using SoldierTrack.Services.Common;
-    using SoldierTrack.Services.Email;
-    using SoldierTrack.Services.Membership;
+    using Models;
 
-    using static SoldierTrack.Services.Common.Messages;
-    using static SoldierTrack.Services.Common.Constants;
+    using static Common.Constants;
+    using static Common.Messages;
 
     public class AthleteService : IAthleteService
     {
@@ -152,13 +152,11 @@
             return false;
         }
 
-        public async Task<bool> AthleteAlreadyJoinedByIdAsync(string athleteId, int workoutId)
-        {
-            return await this.data
+        public async Task<bool> AthleteAlreadyJoinedByIdAsync(string athleteId, int workoutId) 
+            => await this.data
                 .AthletesWorkouts
                 .AsNoTracking()
                 .AnyAsync(aw => aw.AthleteId == athleteId && aw.WorkoutId == workoutId);
-        }
 
         public async Task EditAsync(AthleteServiceModel model)
         {

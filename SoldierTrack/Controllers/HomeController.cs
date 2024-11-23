@@ -1,8 +1,8 @@
-namespace SoldierTrack.Controllers
+namespace SoldierTrack.Web.Controllers
 {
+    using Base;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using SoldierTrack.Web.Controllers.Base;
 
     [AllowAnonymous]
     public class HomeController : BaseController

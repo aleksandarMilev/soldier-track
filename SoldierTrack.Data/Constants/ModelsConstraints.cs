@@ -21,7 +21,7 @@
             public const int TitleMaxLength = 50;
 
             public const int BriefDescriptionMinLength = 10;
-            public const int BriefDescriptionMaxLength = 100;
+            public const int BriefDescriptionMaxLength = 200;
 
             public const int FullDescriptionMinLength = 50;
             public const int FullDescriptionMaxLength = 2_000;
@@ -33,20 +33,6 @@
             public const int ParticipantsMaxValue = 15;
 
             public const int CurrentParticipantsMinValue = 0;
-        }
-
-        public static class MembershipConstraints
-        {
-            public const int TotalCountMinValue = 0;
-            public const int TotalCountMaxValue = 31;
-
-            public const int PriceMinValue = 0;
-            public const int PriceMaxValue = 300;
-        }
-
-        public static class CategoryConstraints
-        {
-            public const int NameMaxLength = 50;
         }
 
         public static class ExerciseConstraints

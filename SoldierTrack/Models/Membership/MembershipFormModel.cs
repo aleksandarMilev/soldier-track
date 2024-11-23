@@ -2,9 +2,9 @@
 {
     using System.ComponentModel.DataAnnotations; 
 
-    using SoldierTrack.Web.Common.Attributes.Validation.Membership;
+    using Common.Attributes.Validation.Membership;
 
-    using static SoldierTrack.Web.Common.Constants.ModelValidationConstants.MembershipConstants;
+    using static Common.Constants.ModelValidationConstants.MembershipConstants;
 
     [MonthlyOrFixedValidation]
     public class MembershipFormModel

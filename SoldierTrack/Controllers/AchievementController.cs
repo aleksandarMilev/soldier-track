@@ -1,17 +1,17 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
     using AutoMapper;
+    using Base;
+    using Common.Extensions;
     using Microsoft.AspNetCore.Mvc;
-    using SoldierTrack.Services.Achievement;
-    using SoldierTrack.Services.Achievement.Models;
-    using SoldierTrack.Services.Athlete;
-    using SoldierTrack.Services.Exercise;
-    using SoldierTrack.Web.Common.Extensions;
-    using SoldierTrack.Web.Controllers.Base;
-    using SoldierTrack.Web.Models.Achievement;
+    using Models.Achievement;
+    using Services.Achievement;
+    using Services.Achievement.Models;
+    using Services.Athlete;
+    using Services.Exercise;
 
-    using static SoldierTrack.Web.Common.Constants.MessageConstants;
-    using static SoldierTrack.Web.Common.Constants.WebConstants;
+    using static Common.Constants.MessageConstants;
+    using static Common.Constants.WebConstants;
 
     public class AchievementController : BaseController
     {
@@ -39,6 +39,7 @@
             pageSize = Math.Max(pageSize, MinPageSize);
 
             var models = await this.achievementService.GetAllByAthleteIdAsync(this.User.GetId()!, pageIndex, pageSize);
+
             return this.View(models);
         }
 
@@ -54,6 +55,7 @@
             }
 
             var model = new AchievementFormModel(athleteId!, exerciseId, exerciseName, DateTime.Now);
+
             return this.View(model);
         }
 
@@ -69,6 +71,7 @@
             await this.achievementService.CreateAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = PRSuccessfullyAdded;
+
             return this.RedirectToAction(nameof(GetAll), new { athleteId = viewModel.AthleteId });
         }
 
@@ -95,6 +98,7 @@
 
             this.ViewBag.Id = id; 
             var viewModel = this.mapper.Map<AchievementFormModel>(serviceModel);
+
             return this.View(viewModel);
         }
 
@@ -111,6 +115,7 @@
             await this.achievementService.EditAsync(serviceModel);
             
             this.TempData["SuccessMessage"] = AchievementEdited;
+
             return this.RedirectToAction(nameof(GetAll), new { athleteId = viewModel.AthleteId });
         }
 
@@ -121,6 +126,7 @@
             await this.achievementService.DeleteAsync(achievementId, athleteId);
 
             this.TempData["SuccessMessage"] = AchievementDeleted;
+
             return this.RedirectToAction(nameof(GetAll), new { athleteId });
         }
     }

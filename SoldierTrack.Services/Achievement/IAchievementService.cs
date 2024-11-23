@@ -1,7 +1,7 @@
 ﻿namespace SoldierTrack.Services.Achievement
 {
-    using SoldierTrack.Services.Achievement.Models;
-    using SoldierTrack.Services.Exercise.Models.Util;
+    using Models;
+    using Services.Exercise.Models.Util;
 
     public interface IAchievementService
     {

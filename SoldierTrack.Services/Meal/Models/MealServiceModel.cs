@@ -1,7 +1,7 @@
 ﻿namespace SoldierTrack.Services.Meal.Models
 {
-    using SoldierTrack.Data.Models.Enums;
-    using SoldierTrack.Services.Food.Models;
+    using Data.Models.Enums;
+    using Food.Models;
 
     public class MealServiceModel
     {

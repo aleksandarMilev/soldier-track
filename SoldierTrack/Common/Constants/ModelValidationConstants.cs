@@ -21,7 +21,7 @@
             public const int TitleMaxLength = 50;
 
             public const int BriefDescriptionMinLength = 10;
-            public const int BriefDescriptionMaxLength = 100;
+            public const int BriefDescriptionMaxLength = 200;
 
             public const int FullDescriptionMinLength = 50;
             public const int FullDescriptionMaxLength = 2_000;

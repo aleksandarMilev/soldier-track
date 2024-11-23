@@ -2,8 +2,8 @@
 {
     using System.ComponentModel.DataAnnotations.Schema;
 
-    using SoldierTrack.Data.Models.Base;
-    using SoldierTrack.Data.Models.Enums;
+    using Base;
+    using Enums;
 
     public class Meal : BaseModel<int>
     {

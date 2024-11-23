@@ -1,15 +1,15 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
     using AutoMapper;
+    using Base;
+    using Common.Extensions;
     using Microsoft.AspNetCore.Mvc;
-    using SoldierTrack.Services.Membership;
-    using SoldierTrack.Services.Membership.Models;
-    using SoldierTrack.Web.Common.Extensions;
-    using SoldierTrack.Web.Controllers.Base;
-    using SoldierTrack.Web.Models.Membership;
+    using Models.Membership;
+    using Services.Membership;
+    using Services.Membership.Models;
 
-    using static SoldierTrack.Web.Common.Constants.MessageConstants;
-    using static SoldierTrack.Web.Common.Constants.WebConstants;
+    using static Common.Constants.MessageConstants;
+    using static Common.Constants.WebConstants;
 
     public class MembershipController : BaseController
     {
@@ -29,6 +29,7 @@
             pageSize = Math.Max(pageSize, MinPageSize);
 
             var model = await this.membershipService.GetArchiveByAthleteIdAsync(this.User.GetId()!, pageIndex, pageSize);
+
             return this.View(model);
         }
 
@@ -63,6 +64,7 @@
             await this.membershipService.RequestAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = MembershipRequested;
+
             return this.RedirectToAction("Details", "Athlete", new { id = viewModel.AthleteId });
         }
     }

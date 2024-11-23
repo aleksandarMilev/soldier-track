@@ -1,6 +1,6 @@
 ﻿namespace SoldierTrack.Services.Athlete
 {
-    using SoldierTrack.Services.Athlete.Models;
+    using Models;
 
     public interface IAthleteService
     {

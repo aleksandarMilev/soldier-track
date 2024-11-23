@@ -3,10 +3,10 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    using SoldierTrack.Data.Models.Base;
-    using SoldierTrack.Data.Models.Enums;
+    using Base;
+    using Enums;
 
-    using static SoldierTrack.Data.Constants.ModelsConstraints.ExerciseConstraints;
+    using static Constants.ModelsConstraints.ExerciseConstraints;
 
     public class Exercise : BaseDeletableModel<int>
     {

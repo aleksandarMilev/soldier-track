@@ -1,9 +1,9 @@
 ﻿namespace SoldierTrack.Services.Exercise.MapperProfile
 {
     using AutoMapper;
-    using SoldierTrack.Data.Models;
-    using SoldierTrack.Services.Exercise.Models;
-    using SoldierTrack.Services.Exercise.Models.Util;
+    using Data.Models;
+    using Models;
+    using Models.Util;
 
     public class ExerciseProfile : Profile
     {

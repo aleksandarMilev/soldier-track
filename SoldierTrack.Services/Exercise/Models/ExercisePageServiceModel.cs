@@ -17,10 +17,12 @@
             this.PageSize = pageSize;
         }
 
-        public int PageIndex { get; set; }
-        public int TotalPages { get; set; }
-        public int PageSize { get; set; }
+        public int PageIndex { get; init; }
 
-        public IEnumerable<ExerciseServiceModel> Exercises { get; set; } = new List<ExerciseServiceModel>();
+        public int TotalPages { get; init; }
+
+        public int PageSize { get; init; }
+
+        public IEnumerable<ExerciseServiceModel> Exercises { get; init; } = new List<ExerciseServiceModel>();
     }
 }

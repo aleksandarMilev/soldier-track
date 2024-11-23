@@ -1,13 +1,13 @@
 ﻿namespace SoldierTrack.Web.Areas.Administrator.Controllers
 {
     using AutoMapper;
+    using Base;
     using Microsoft.AspNetCore.Mvc;
-    using SoldierTrack.Services.Food.Models;
-    using SoldierTrack.Services.Food;
-    using SoldierTrack.Web.Models.Food;
-    using SoldierTrack.Web.Areas.Administrator.Controllers.Base;
+    using Services.Food;
+    using Services.Food.Models;
+    using Web.Models.Food;
 
-    using static SoldierTrack.Web.Common.Constants.MessageConstants;
+    using static Common.Constants.MessageConstants;
 
     public class FoodController : BaseAdminController
     {
@@ -21,7 +21,8 @@
         }
 
         [HttpGet]
-        public IActionResult Create() => this.View("~/Views/Food/Create.cshtml", new FoodFormModel());
+        public IActionResult Create() 
+            => this.View("~/Views/Food/Create.cshtml", new FoodFormModel());
 
         [HttpPost]
         public async Task<IActionResult> Create(FoodFormModel viewModel)
@@ -35,6 +36,7 @@
             _ = await this.foodService.CreateAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = FoodCreated;
+
             return this.RedirectToAction("Index", "Home", new { area = "" });
         }
     }

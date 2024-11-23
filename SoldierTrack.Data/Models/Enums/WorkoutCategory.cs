@@ -2,11 +2,11 @@
 {
     public enum WorkoutCategory
     {
-        CrossFit,
-        Weightlifting,
-        Powerlifting,
-        Gymnastic,
-        Cardiovascular,
-        Other
+        CrossFit = 0,
+        Weightlifting = 1,
+        Powerlifting = 2,
+        Gymnastic = 3,
+        Cardiovascular = 4,
+        Other = 5
     }
 }

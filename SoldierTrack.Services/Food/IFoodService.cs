@@ -1,6 +1,6 @@
 ﻿namespace SoldierTrack.Services.Food
 {
-    using SoldierTrack.Services.Food.Models;
+    using Models;
 
     public interface IFoodService
     {

@@ -3,11 +3,11 @@ namespace SoldierTrack.Web.Areas.Identity.Pages.Account
 {
     using System.ComponentModel.DataAnnotations;
 
+    using Data.Models;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
-    using SoldierTrack.Data.Models;
 
     public class LoginModel : PageModel
     {
@@ -64,6 +64,7 @@ namespace SoldierTrack.Web.Areas.Identity.Pages.Account
                 if (user != null && user.IsDeleted)
                 {
                     this.ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+
                     return this.Page();
                 }
 
@@ -77,10 +78,12 @@ namespace SoldierTrack.Web.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     this.TempData["SuccessMessage"] = "Welcome!";
+
                     return this.LocalRedirect(returnUrl);
                 }
 
                 this.ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+
                 return this.Page();
             }
 

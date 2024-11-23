@@ -1,12 +1,12 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
+    using Base;
+    using Common.Extensions;
     using Microsoft.AspNetCore.Mvc;
-    using SoldierTrack.Services.Athlete;
-    using SoldierTrack.Services.FoodDiary;
-    using SoldierTrack.Web.Common.Extensions;
-    using SoldierTrack.Web.Controllers.Base;
+    using Services.Athlete;
+    using Services.FoodDiary;
 
-    using static SoldierTrack.Web.Common.Constants.MessageConstants;
+    using static Common.Constants.MessageConstants;
 
     public class FoodDiaryController : BaseController
     {
@@ -58,6 +58,7 @@
             await this.foodDiaryService.AddFoodAsync(this.User.GetId()!, foodId, date.Date, mealType, quantity);
 
             this.TempData["SuccessMessage"] = "Food successfully added!";
+
             return this.RedirectToAction("GetAll", "Food");
         }
 
@@ -67,6 +68,7 @@
             await this.foodDiaryService.RemoveFoodAsync(diaryId, foodId, mealType);
 
             this.TempData["SuccessMessage"] = "Food successfully removed!";
+
             return this.RedirectToAction(nameof(Details), new { diaryId });
         }
 

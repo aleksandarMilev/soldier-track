@@ -3,10 +3,10 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
+    using Base;
     using Microsoft.AspNetCore.Identity;
-    using SoldierTrack.Data.Models.Base;
 
-    using static SoldierTrack.Data.Constants.ModelsConstraints.AthleteConstraints;
+    using static Constants.ModelsConstraints.AthleteConstraints;
 
     public class Athlete : IdentityUser, IDeletableEntity
     {

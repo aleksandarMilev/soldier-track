@@ -1,15 +1,15 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
+    using Base;
+    using Common.Extensions;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Caching.Memory;
-    using SoldierTrack.Services.Athlete;
-    using SoldierTrack.Services.Membership;
-    using SoldierTrack.Services.Workout;
-    using SoldierTrack.Services.Workout.Models;
-    using SoldierTrack.Web.Common.Extensions;
-    using SoldierTrack.Web.Controllers.Base;
+    using Services.Athlete;
+    using Services.Membership;
+    using Services.Workout;
+    using Services.Workout.Models;
 
-    using static SoldierTrack.Web.Common.Constants.WebConstants;
+    using static Common.Constants.WebConstants;
 
     public class WorkoutController : BaseController
     {
@@ -46,6 +46,7 @@
 
                 var cacheOptions = new MemoryCacheEntryOptions()
                     .SetAbsoluteExpiration(TimeSpan.FromHours(WorkoutCacheDuration));
+
                 this.cache.Set(cacheKey, model, cacheOptions);
             }
 
@@ -59,6 +60,7 @@
             pageSize = Math.Max(pageSize, MinPageSize);
 
             var model = await this.workoutService.GetArchiveAsync(this.User.GetId()!, pageIndex, pageSize);
+
             return this.View(model);
         }
 

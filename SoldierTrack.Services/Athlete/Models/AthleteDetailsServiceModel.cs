@@ -1,7 +1,7 @@
 ﻿namespace SoldierTrack.Services.Athlete.Models
 {
-    using SoldierTrack.Services.Membership.Models;
-    using SoldierTrack.Services.Workout.Models;
+    using Membership.Models;
+    using Workout.Models;
 
     public class AthleteDetailsServiceModel : AthleteServiceModel
     {

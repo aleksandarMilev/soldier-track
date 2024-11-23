@@ -1,6 +1,6 @@
 ﻿namespace SoldierTrack.Services.Workout
 {
-    using SoldierTrack.Services.Workout.Models;
+    using Models;
 
     public interface IWorkoutService
     {

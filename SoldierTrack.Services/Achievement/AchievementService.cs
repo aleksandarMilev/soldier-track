@@ -2,11 +2,11 @@
 {
     using AutoMapper;
     using AutoMapper.QueryableExtensions;
+    using Data;
+    using Data.Models;
     using Microsoft.EntityFrameworkCore;
-    using SoldierTrack.Data;
-    using SoldierTrack.Data.Models;
-    using SoldierTrack.Services.Achievement.Models;
-    using SoldierTrack.Services.Exercise.Models.Util;
+    using Models;
+    using Services.Exercise.Models.Util;
 
     public class AchievementService : IAchievementService
     {
@@ -36,6 +36,7 @@
                 .ToListAsync();
 
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
             return new AchievementPageServiceModel(achievements, pageIndex, totalPages, pageSize);
         }
 
@@ -56,9 +57,8 @@
             return achievementId;
         }
 
-        public async Task<IEnumerable<Ranking>> GetRankingsAsync(int exerciseId)
-        {
-            return await this.data
+        public async Task<IEnumerable<Ranking>> GetRankingsAsync(int exerciseId) 
+            => await this.data
                 .Achievements
                 .AsNoTracking()
                 .Include(a => a.Athlete)
@@ -67,24 +67,19 @@
                 .OrderByDescending(a => a.OneRepMax)
                 .Take(10)
                 .ToListAsync();
-        }
 
-        public async Task<AchievementServiceModel?> GetByIdAsync(int id)
-        {
-            return await this.data
+        public async Task<AchievementServiceModel?> GetByIdAsync(int id) 
+            => await this.data
                  .Achievements
                  .AsNoTracking()
                  .ProjectTo<AchievementServiceModel>(this.mapper.ConfigurationProvider)
                  .FirstOrDefaultAsync(a => a.Id == id);
-        }
 
-        public async Task<bool> AchievementIsAlreadyAddedAsync(int exerciseId, string athleteId)
-        {
-            return await this.data
+        public async Task<bool> AchievementIsAlreadyAddedAsync(int exerciseId, string athleteId) 
+            => await this.data
                 .Achievements
                 .AsNoTracking()
                 .AnyAsync(a => a.ExerciseId == exerciseId && a.AthleteId == athleteId);
-        }
 
         public async Task CreateAsync(AchievementServiceModel serviceModel)
         {
@@ -135,8 +130,10 @@
             }
         }
 
-        private static double CalculateBigReps(double weightLifted, int repetitions) => weightLifted * (1 + 0.0333 * repetitions);
+        private static double CalculateBigReps(double weightLifted, int repetitions) 
+            => weightLifted * (1 + 0.0333 * repetitions);
 
-        private static double CalculateSmallReps(double weightLifted, int repetitions) => weightLifted * Math.Pow(repetitions, 0.1);
+        private static double CalculateSmallReps(double weightLifted, int repetitions) 
+            => weightLifted * Math.Pow(repetitions, 0.1);
     }
 }

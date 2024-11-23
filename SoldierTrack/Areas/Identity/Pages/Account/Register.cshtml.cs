@@ -3,14 +3,14 @@ namespace SoldierTrack.Web.Areas.Identity.Pages.Account
 {
     using System.ComponentModel.DataAnnotations;
 
+    using Data.Models;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
     using Microsoft.EntityFrameworkCore;
-    using SoldierTrack.Data.Models;
 
-    using static SoldierTrack.Web.Common.Constants.MessageConstants;
-    using static SoldierTrack.Web.Common.Constants.ModelValidationConstants.AthleteConstants;
+    using static Common.Constants.MessageConstants;
+    using static Common.Constants.ModelValidationConstants.AthleteConstants;
 
     public class RegisterModel : PageModel
     {
@@ -90,13 +90,16 @@ namespace SoldierTrack.Web.Areas.Identity.Pages.Account
             if (await this.userManager.Users.AnyAsync(u => u.PhoneNumber == phone))
             {
                 this.ModelState.AddModelError("Input.PhoneNumber", string.Format(PhoneDuplicate, phone));
+
                 return this.Page();
             }
 
             var email = this.Input.Email;
+
             if (await this.userManager.Users.AnyAsync(u => u.Email == email))
             {
                 this.ModelState.AddModelError("Input.Email", string.Format(EmailDuplicate, email));
+
                 return this.Page();
             }
 
@@ -116,8 +119,8 @@ namespace SoldierTrack.Web.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     await this.signInManager.SignInAsync(user, isPersistent: true);
-
                     this.TempData["SuccessMessage"] = "Welcome!";
+
                     return this.LocalRedirect(returnUrl);
                 }
 

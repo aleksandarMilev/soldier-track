@@ -2,7 +2,7 @@
 {
     using System.ComponentModel.DataAnnotations;
 
-    using SoldierTrack.Web.Models.Membership;
+    using Models.Membership;
 
     public class MonthlyOrFixedValidation : ValidationAttribute
     {

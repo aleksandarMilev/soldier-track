@@ -1,9 +1,9 @@
 ﻿namespace SoldierTrack.Services.Workout.MapperProfile
 {
+    using Athlete.Models;
     using AutoMapper;
-    using SoldierTrack.Data.Models;
-    using SoldierTrack.Services.Athlete.Models;
-    using SoldierTrack.Services.Workout.Models;
+    using Data.Models;
+    using Models;
 
     public class WorkoutProfile : Profile
     {

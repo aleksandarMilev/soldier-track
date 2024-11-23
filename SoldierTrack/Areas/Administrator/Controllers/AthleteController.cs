@@ -1,13 +1,13 @@
 ﻿namespace SoldierTrack.Web.Areas.Administrator.Controllers
 {
+    using Base;
     using Microsoft.AspNetCore.Mvc;
-    using SoldierTrack.Services.Athlete;
-    using SoldierTrack.Services.Workout;
-    using SoldierTrack.Web.Areas.Administrator.Controllers.Base;
-    using SoldierTrack.Web.Areas.Administrator.Models.Athlete;
+    using Models.Athlete;
+    using Services.Athlete;
+    using Services.Workout;
 
-    using static SoldierTrack.Web.Common.Constants.MessageConstants;
-    using static SoldierTrack.Web.Common.Constants.WebConstants;
+    using static Common.Constants.MessageConstants;
+    using static Common.Constants.WebConstants;
 
     public class AthleteController : BaseAdminController
     {
@@ -65,24 +65,27 @@
             if (workoutId == null)
             {
                 this.ModelState.AddModelError("", WorkoutNotFound);
+
                 return this.View(model);
             }
 
             if (await this.athleteService.AthleteAlreadyJoinedByIdAsync(model.AthleteId, workoutId.Value))
             {
                 this.ModelState.AddModelError("", AthleteAlreadyJoined);
+
                 return this.View(model);
             }
 
             if (await this.workoutService.WorkoutIsFull(workoutId.Value))
             {
                 this.ModelState.AddModelError("", WorkoutIsFull);
+
                 return this.View(model);
             }
 
             await this.athleteService.JoinAsync(model.AthleteId, workoutId.Value);
-
             this.TempData["SuccessMessage"] = AdminAddedAthlete;
+
             return this.RedirectToAction("Details", "Workout", new { id = workoutId, area = "" });
         }
 
@@ -90,8 +93,8 @@
         public async Task<IActionResult> RemoveFromWorkout(string athleteId, int workoutId)
         {
             await this.athleteService.LeaveAsync(athleteId, workoutId);
-
             this.TempData["SuccessMessage"] = RemoveAthleteFromWorkout;
+
             return this.RedirectToAction("Details", "Workout", new { id = workoutId, area = "" });
         }
 
@@ -99,8 +102,8 @@
         public async Task<IActionResult> Delete(string athleteId)
         {
             await this.athleteService.DeleteAsync(athleteId);
-
             this.TempData["SuccessMessage"] = AdminDeleteAthlete;
+
             return this.RedirectToAction("Index", "Home", new { area = "" });
         }
     }

@@ -1,9 +1,9 @@
 ﻿namespace SoldierTrack.Web.Common.Extensions
 {
+    using Data.Models;
     using Microsoft.AspNetCore.Identity;
-    using SoldierTrack.Data.Models;
 
-    using static SoldierTrack.Web.Common.Constants.WebConstants;
+    using static Common.Constants.WebConstants;
 
     public static class WebApp
     {

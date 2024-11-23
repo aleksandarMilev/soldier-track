@@ -1,10 +1,10 @@
 ﻿namespace SoldierTrack.Services.FoodDiary.MapProfile
 {
     using AutoMapper;
-    using SoldierTrack.Data.Models;
-    using SoldierTrack.Services.Food.Models;
-    using SoldierTrack.Services.FoodDiary.Models;
-    using SoldierTrack.Services.Meal.Models;
+    using Data.Models;
+    using Food.Models;
+    using Meal.Models;
+    using Models;
 
     public class FoodDiaryProfile: Profile
     {

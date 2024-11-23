@@ -1,6 +1,6 @@
 ﻿namespace SoldierTrack.Data.Models
 {
-    using SoldierTrack.Data.Models.Base;
+    using Base;
 
     public class Membership : BaseDeletableModel<int>
     {

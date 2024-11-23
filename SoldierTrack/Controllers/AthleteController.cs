@@ -1,16 +1,16 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
     using AutoMapper;
+    using Common.Extensions;
+    using Controllers.Base;
+    using Data.Models;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-    using SoldierTrack.Data.Models;
-    using SoldierTrack.Services.Athlete;
-    using SoldierTrack.Services.Athlete.Models;
-    using SoldierTrack.Web.Common.Extensions;
-    using SoldierTrack.Web.Controllers.Base;
-    using SoldierTrack.Web.Models.Athlete;
+    using Models.Athlete;
+    using Services.Athlete;
+    using Services.Athlete.Models;
 
-    using static SoldierTrack.Web.Common.Constants.MessageConstants;
+    using static Common.Constants.MessageConstants;
 
     public class AthleteController : BaseController
     {
@@ -52,6 +52,7 @@
             }
 
             var viewModel = this.mapper.Map<AthleteFormModel>(serviceModel);
+
             return this.View(viewModel);
         }
 
@@ -66,12 +67,14 @@
             if (await this.athleteService.AthleteWithSameNumberExistsAsync(viewModel.PhoneNumber, viewModel.Id))
             {
                 this.ModelState.AddModelError(nameof(viewModel.PhoneNumber), string.Format(PhoneDuplicate, viewModel.PhoneNumber));
+
                 return this.View(viewModel);
             }
 
             if (await this.athleteService.AthleteWithSameEmailExistsAsync(viewModel.Email, viewModel.Id))
             {
                 this.ModelState.AddModelError(nameof(viewModel.Email), string.Format(EmailDuplicate, viewModel.Email));
+
                 return this.View(viewModel);
             }
 
@@ -79,6 +82,7 @@
             await this.athleteService.EditAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = AthleteEditHimself;
+
             return this.RedirectToAction(nameof(Details), new { id = serviceModel.Id });
         }
 
@@ -89,6 +93,7 @@
             await this.athleteService.DeleteAsync(this.User.GetId()!);
 
             this.TempData["SuccessMessage"] = AthleteDeleteHimself;
+
             return this.RedirectToAction("Index", "Home", new { area = "" });
         }
 
@@ -98,6 +103,7 @@
             await this.athleteService.JoinAsync(this.User.GetId()!, workoutId);
 
             this.TempData["SuccessMessage"] = JoinSuccess;
+
             return this.RedirectToAction("Details", "Workout", new { id = workoutId });
         }
 
@@ -107,6 +113,7 @@
             await this.athleteService.LeaveAsync(this.User.GetId()!, workoutId);
 
             this.TempData["SuccessMessage"] = AthleteLeaveSuccess;
+
             return this.RedirectToAction("Details", "Workout", new { id = workoutId });
         }
     }

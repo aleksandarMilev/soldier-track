@@ -1,8 +1,8 @@
 ﻿namespace SoldierTrack.Web.Common.MapProfiles
 {
     using AutoMapper;
-    using SoldierTrack.Services.Workout.Models;
-    using SoldierTrack.Web.Areas.Administrator.Models.Workout;
+    using Services.Workout.Models;
+    using Areas.Administrator.Models.Workout;
 
     public class WorkoutProfile : Profile
     {

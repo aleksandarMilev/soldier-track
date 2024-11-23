@@ -2,8 +2,8 @@
 {
     using System.ComponentModel.DataAnnotations;
 
-    using static SoldierTrack.Web.Common.Constants.MessageConstants;
-    using static SoldierTrack.Web.Common.Constants.ModelValidationConstants.AthleteConstants;
+    using static Common.Constants.MessageConstants;
+    using static Common.Constants.ModelValidationConstants.AthleteConstants;
 
     public class AthleteFormModel
     {

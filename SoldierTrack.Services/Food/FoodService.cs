@@ -2,13 +2,13 @@
 {
     using AutoMapper;
     using AutoMapper.QueryableExtensions;
+    using Common;
+    using Data;
+    using Data.Models;
     using Microsoft.EntityFrameworkCore;
-    using SoldierTrack.Data;
-    using SoldierTrack.Data.Models;
-    using SoldierTrack.Services.Common;
-    using SoldierTrack.Services.Food.Models;
+    using Models;
 
-    using static SoldierTrack.Services.Common.Constants;
+    using static Common.Constants;
 
     public class FoodService : IFoodService
     {
@@ -57,16 +57,15 @@
                 .ToListAsync();
 
             var totalPages = (int)Math.Ceiling(totalCount / (double)searchParams.PageSize);
+
             return new FoodPageServiceModel(foods, searchParams.PageIndex, totalPages, searchParams.PageSize);
         }
 
-        public async Task<FoodServiceModel?> GetByIdAsync(int id)
-        {
-            return await this.data
+        public async Task<FoodServiceModel?> GetByIdAsync(int id) 
+            => await this.data
                 .AllDeletableAsNoTracking<Food>()
                 .ProjectTo<FoodDetailsServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(f => f.Id == id);
-        }
 
         public async Task<bool> FoodLimitReachedAsync(string athleteId)
         {

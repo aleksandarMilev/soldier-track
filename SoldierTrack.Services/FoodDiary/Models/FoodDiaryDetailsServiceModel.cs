@@ -1,6 +1,6 @@
 ﻿namespace SoldierTrack.Services.FoodDiary.Models
 {
-    using SoldierTrack.Services.Meal.Models;
+    using Meal.Models;
 
     public class FoodDiaryDetailsServiceModel : FoodDiaryServiceModel
     {

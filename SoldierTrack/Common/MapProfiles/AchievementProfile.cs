@@ -1,8 +1,8 @@
 ﻿namespace SoldierTrack.Web.Common.MapProfiles
 {
     using AutoMapper;
-    using SoldierTrack.Services.Achievement.Models;
-    using SoldierTrack.Web.Models.Achievement;
+    using Models.Achievement;
+    using Services.Achievement.Models;
 
     public class AchievementProfile : Profile
     {

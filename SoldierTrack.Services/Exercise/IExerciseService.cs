@@ -1,6 +1,6 @@
 ﻿namespace SoldierTrack.Services.Exercise
 {
-    using SoldierTrack.Services.Exercise.Models;
+    using Models;
 
     public interface IExerciseService
     {

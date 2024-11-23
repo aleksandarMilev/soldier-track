@@ -1,8 +1,8 @@
 ﻿namespace SoldierTrack.Services.Membership.MapperProfile
 {
     using AutoMapper;
-    using SoldierTrack.Data.Models;
-    using SoldierTrack.Services.Membership.Models;
+    using Data.Models;
+    using Models;
 
     public class MembershipProfile : Profile
     {

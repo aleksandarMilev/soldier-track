@@ -2,7 +2,7 @@
 {
     using System.ComponentModel.DataAnnotations.Schema;
 
-    using SoldierTrack.Data.Models.Base;
+    using Base;
 
     public class FoodDiary : BaseModel<int>
     {

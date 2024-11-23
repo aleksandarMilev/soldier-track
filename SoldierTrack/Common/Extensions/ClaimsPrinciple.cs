@@ -2,7 +2,7 @@
 {
     using System.Security.Claims;
 
-    using static SoldierTrack.Web.Common.Constants.WebConstants;
+    using static Constants.WebConstants;
 
     public static class ClaimsPrinciple
     {

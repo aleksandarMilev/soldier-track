@@ -1,13 +1,13 @@
 ﻿namespace SoldierTrack.Web.Areas.Administrator.Controllers
 {
     using AutoMapper;
+    using Base;
     using Microsoft.AspNetCore.Mvc;
-    using SoldierTrack.Services.Exercise;
-    using SoldierTrack.Services.Exercise.Models;
-    using SoldierTrack.Web.Areas.Administrator.Controllers.Base;
-    using SoldierTrack.Web.Models.Exercise;
+    using Services.Exercise;
+    using Services.Exercise.Models;
+    using Web.Models.Exercise;
 
-    using static SoldierTrack.Web.Common.Constants.MessageConstants;
+    using static Common.Constants.MessageConstants;
 
     public class ExerciseController : BaseAdminController
     {
@@ -19,7 +19,6 @@
             this.exerciseService = exerciseService;
             this.mapper = mapper;
         }
-
 
         public IActionResult Create() => this.View("~/Views/Exercise/Create.cshtml", new ExerciseFormModel());
 
@@ -41,6 +40,7 @@
             _ = await this.exerciseService.CreateAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = ExerciseCreated;
+
             return this.RedirectToAction("Index", "Home", new { area = "" });
         }
     }

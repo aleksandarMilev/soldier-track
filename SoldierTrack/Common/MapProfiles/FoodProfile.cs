@@ -1,8 +1,8 @@
 ﻿namespace SoldierTrack.Web.Common.MapProfiles
 {
     using AutoMapper;
-    using SoldierTrack.Services.Food.Models;
-    using SoldierTrack.Web.Models.Food;
+    using Services.Food.Models;
+    using Models.Food;
 
     public class FoodProfile : Profile
     {

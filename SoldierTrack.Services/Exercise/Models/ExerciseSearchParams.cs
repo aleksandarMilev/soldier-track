@@ -1,6 +1,6 @@
 ﻿namespace SoldierTrack.Services.Exercise.Models
 {
-    using static SoldierTrack.Services.Common.Constants;
+    using static Common.Constants;
 
     public class ExerciseSearchParams
     {

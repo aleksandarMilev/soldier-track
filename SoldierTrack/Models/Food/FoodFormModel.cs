@@ -2,9 +2,9 @@
 {
     using System.ComponentModel.DataAnnotations;
 
-    using static SoldierTrack.Web.Common.Constants.MessageConstants;
-    using static SoldierTrack.Web.Common.Constants.ModelValidationConstants.FoodConstants;
-    using static SoldierTrack.Web.Common.Constants.WebConstants;
+    using static Common.Constants.MessageConstants;
+    using static Common.Constants.ModelValidationConstants.FoodConstants;
+    using static Common.Constants.WebConstants;
 
     public class FoodFormModel
     {

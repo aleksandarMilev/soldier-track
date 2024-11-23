@@ -4,8 +4,8 @@
     using System.Net.Mail;
 
     using Microsoft.Extensions.Options;
-    using SoldierTrack.Services.Email.Models;
-
+    using Models;
+    
     public class EmailService : IEmailService
     {
         private readonly SmtpSettings smtpSettings;

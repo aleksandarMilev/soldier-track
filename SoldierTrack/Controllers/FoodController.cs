@@ -1,17 +1,17 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
     using AutoMapper;
+    using Base;
+    using Common.Extensions;
     using Microsoft.AspNetCore.Mvc;
-    using SoldierTrack.Services.Athlete;
-    using SoldierTrack.Services.Food;
-    using SoldierTrack.Services.Food.Models;
-    using SoldierTrack.Web.Common.Extensions;
-    using SoldierTrack.Web.Controllers.Base;
-    using SoldierTrack.Web.Models.Food;
+    using Models.Food;
+    using Services.Athlete;
+    using Services.Food;
+    using Services.Food.Models;
 
-    using static SoldierTrack.Web.Common.Constants.MessageConstants;
-    using static SoldierTrack.Web.Common.Constants.WebConstants;
-    
+    using static Common.Constants.MessageConstants;
+    using static Common.Constants.WebConstants;
+
     public class FoodController : BaseController
     {
         private readonly IFoodService foodService;
@@ -28,6 +28,7 @@
             this.mapper = mapper;
         }
 
+        [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] FoodSearchParams searchParams)
         {
             searchParams.PageSize = Math.Min(searchParams.PageSize, MaxPageSize);
@@ -54,6 +55,7 @@
             }
 
             var model = new FoodFormModel() { AthleteId = this.User.GetId()! };
+
             return this.View(model);
         }
 
@@ -69,6 +71,7 @@
             var foodId = await this.foodService.CreateAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = FoodCreated;
+
             return this.RedirectToAction(nameof(Details), new { id = foodId });
         }
 
@@ -120,6 +123,7 @@
             await this.foodService.EditAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = FoodEdited;
+
             return this.RedirectToAction(nameof(Details), new { id = foodId });
         }
 
@@ -130,6 +134,7 @@
             await this.foodService.DeleteAsync(foodId, athleteId!, this.User.IsAdmin());
 
             this.TempData["SuccessMessage"] = FoodDeleted;
+
             return this.RedirectToAction(nameof(GetAll));
         }
     }

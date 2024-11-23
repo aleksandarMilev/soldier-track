@@ -1,14 +1,14 @@
 ﻿namespace SoldierTrack.Web.Areas.Administration.Controllers
 {
+    using Administrator.Controllers.Base;
+    using Administrator.Models.Workout;
     using AutoMapper;
     using Microsoft.AspNetCore.Mvc;
-    using SoldierTrack.Services.Workout;
-    using SoldierTrack.Services.Workout.Models;
-    using SoldierTrack.Web.Areas.Administrator.Models.Workout;
-    using SoldierTrack.Web.Areas.Administrator.Controllers.Base;
+    using Services.Workout;
+    using Services.Workout.Models;
 
-    using static SoldierTrack.Web.Common.Constants.WebConstants;
     using static SoldierTrack.Web.Common.Constants.MessageConstants;
+    using static SoldierTrack.Web.Common.Constants.WebConstants;
 
     public class WorkoutController : BaseAdminController
     {
@@ -25,6 +25,7 @@
         public IActionResult Create()
         {
             var viewModel = new WorkoutFormModel() { Date = DateTime.Now };
+
             return this.View(viewModel);
         }
 
@@ -49,6 +50,7 @@
             var workoutCreatedId = await this.workoutService.CreateAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = WorkoutCreated;
+
             return this.RedirectToAction("Details", "Workout", new { area = "", id = workoutCreatedId });
         }
 
@@ -91,6 +93,7 @@
             var workoutEditedId = await this.workoutService.EditAsync(serviceModel);
 
             this.TempData["SuccessMessage"] = WorkoutEdited;
+
             return this.RedirectToAction("Details", "Workout", new { area = "", id = workoutEditedId });
         }
 
@@ -98,8 +101,8 @@
         public async Task<IActionResult> Delete(int id)
         {
             await this.workoutService.DeleteAsync(id);
-
             this.TempData["SuccessMessage"] = WorkoutDeletedSuccessfully;
+
             return this.RedirectToAction("GetAll", "Workout", new { area = "" });
         }
 

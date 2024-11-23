@@ -1,13 +1,13 @@
 ﻿namespace SoldierTrack.Services.Membership
 {
+    using Athlete;
     using AutoMapper;
     using AutoMapper.QueryableExtensions;
+    using Common;
+    using Data;
+    using Data.Models;
     using Microsoft.EntityFrameworkCore;
-    using SoldierTrack.Data;
-    using SoldierTrack.Data.Models;
-    using SoldierTrack.Services.Athlete;
-    using SoldierTrack.Services.Common;
-    using SoldierTrack.Services.Membership.Models;
+    using Models;
 
     public class MembershipService : IMembershipService
     {
@@ -41,15 +41,14 @@
                 .ToListAsync();
 
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
             return new MembershipPageServiceModel(memberships, pageIndex, totalPages, pageSize);
         }
 
-        public async Task<int> GetPendingCountAsync()
-        {
-            return await this.data
+        public async Task<int> GetPendingCountAsync() 
+            => await this.data
                 .AllDeletableAsNoTracking<Membership>()
                 .CountAsync(m => m.IsPending);
-        }
 
         public async Task<bool> MembershipExistsByAthleteIdAsync(string athleteId)
         {
@@ -165,9 +164,11 @@
             }
         }
 
-        public async Task UpdateMembershipOnJoinByAthleteIdAsync(string athleteId) => await this.UpdateMembershipAsync(athleteId, x => --x);
+        public async Task UpdateMembershipOnJoinByAthleteIdAsync(string athleteId) 
+            => await this.UpdateMembershipAsync(athleteId, x => --x);
 
-        public async Task UpdateMembershipOnLeaveByAthleteIdAsync(string athleteId) => await this.UpdateMembershipAsync(athleteId, x => ++x);
+        public async Task UpdateMembershipOnLeaveByAthleteIdAsync(string athleteId) 
+            => await this.UpdateMembershipAsync(athleteId, x => ++x);
 
         private async Task DeleteAsync(Membership membership)
         {

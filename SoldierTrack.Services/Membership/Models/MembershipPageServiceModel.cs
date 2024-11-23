@@ -16,10 +16,12 @@
             this.PageSize = pageSize;
         }
 
-        public int PageIndex { get; set; }
-        public int TotalPages { get; set; }
-        public int PageSize { get; set; }
+        public int PageIndex { get; init; }
 
-        public IEnumerable<MembershipServiceModel> Memberships { get; set; } = new List<MembershipServiceModel>();
+        public int TotalPages { get; init; }
+
+        public int PageSize { get; init; }
+
+        public IEnumerable<MembershipServiceModel> Memberships { get; init; } = new List<MembershipServiceModel>();
     }
 }
