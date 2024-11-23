@@ -22,6 +22,9 @@ This project is built using the following technologies and tools:
 - XUnit
 - Moq
 
+## Database Diagram
+![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/db.png)
+
 ## Accounts
 
 ### Administrator Account:
@@ -31,3 +34,48 @@ This project is built using the following technologies and tools:
 ### User Account:
 - Email: MyUser@mail.com
 - Password: 123456
+
+## Pages
+
+### Guest Home Page
+![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/home.png)
+
+### Authenticated User Home Page
+![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/home-aut.png)
+
+### Regsiter
+![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/register.png)
+
+### Request Membership
+![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/request-m-form.png)
+
+### Workouts List
+![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/workouts.png)
+
+### Workout Details
+![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/w-details.png)
+
+### Workouts List
+![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/workouts.png)
+
+### User Profile
+![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/profile.png)
+
+### Exercises List
+![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/exercises.png)
+
+### Achievements
+![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/achv.png)
+
+### Food List
+![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/food.png)
+
+### Diary
+![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/diary.png)
+
+### Diary Details
+![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/diary-d-1.png)
+![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/diary-d-2.png)
+
+### Athlete List (Admin)
+![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/admin-athlete.png)
