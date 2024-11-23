@@ -3,11 +3,15 @@
 
 SoldierTrack is a comprehensive platform designed to help athletes manage their daily routines and achieve their fitness goals effectively. The platform offers several key features:
 
-- Membership Management: Users can create and manage memberships to join workouts organized in a dedicated workout hall.
+- **Membership Management**: Users can create and manage memberships to join workouts organized in a dedicated workout hall.  
+    - The membership should start from today, and the user cannot modify it.
 
-- 1RM Calculator & Achievements Tracking: Users can calculate their one-rep max (1RM) and monitor their progress in the Achievements section. The calculator supports all major exercises from weightlifting, powerlifting, and more. Users also have the option to create custom exercises.
+- **1RM Calculator & Achievements Tracking**: Users can calculate their one-rep max (1RM) and monitor their progress in the Achievements section. The calculator supports all major exercises from weightlifting, powerlifting, and more. Users also have the option to create, update, and delete custom exercises.  
+    - The user cannot create more than 50 custom exercises.
 
-- Food Diary & Nutrition Tracking: Users can track their calorie and macronutrient intake through the Food Diary section. The platform allows users to maintain daily diaries where they log meals (breakfast, lunch, dinner, and snacks) by selecting from a vast food database. Each food entry includes detailed nutritional information, such as total calories, protein, carbohydrates, and fats per 100 grams. Users can also create their own custom food entries.
+- **Food Diary & Nutrition Tracking**: Users can track their calorie and macronutrient intake through the Food Diary section. The platform allows users to maintain daily diaries where they log meals (breakfast, lunch, dinner, and snacks) by selecting from a vast food database. Each food entry includes detailed nutritional information, such as total calories, protein, carbohydrates, and fats per 100 grams. Users can also create, update, and delete their own custom food entries.  
+    - The user cannot create more than 50 custom foods.  
+    - The user cannot start a diary entry that is older than one month ago or more than one month in the future.
   
 ## Technologies Used
 
