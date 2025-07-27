@@ -1,8 +1,8 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
     using AutoMapper;
-    using Common.Extensions;
     using Controllers.Base;
+    using Extensions;
     using Microsoft.AspNetCore.Mvc;
     using Models.Exercise;
     using Services.Achievement;
@@ -10,8 +10,8 @@
     using Services.Exercise;
     using Services.Exercise.Models;
 
-    using static Common.Constants.MessageConstants;
-    using static Common.Constants.WebConstants;
+    using static Constants.MessageConstants;
+    using static Constants.WebConstants;
 
     public class ExerciseController : BaseController
     {

@@ -1,12 +1,12 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
     using Base;
-    using Common.Extensions;
+    using Extensions;
     using Microsoft.AspNetCore.Mvc;
     using Services.Athlete;
     using Services.FoodDiary;
 
-    using static Common.Constants.MessageConstants;
+    using static Constants.MessageConstants;
 
     public class FoodDiaryController : BaseController
     {

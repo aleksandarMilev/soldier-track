@@ -2,15 +2,15 @@
 {
     using AutoMapper;
     using Base;
-    using Common.Extensions;
     using Microsoft.AspNetCore.Mvc;
     using Models.Food;
     using Services.Athlete;
     using Services.Food;
     using Services.Food.Models;
+    using Extensions;
 
-    using static Common.Constants.MessageConstants;
-    using static Common.Constants.WebConstants;
+    using static Constants.MessageConstants;
+    using static    Constants.WebConstants;
 
     public class FoodController : BaseController
     {

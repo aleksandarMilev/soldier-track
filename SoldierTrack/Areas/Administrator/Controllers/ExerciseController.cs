@@ -7,7 +7,7 @@
     using Services.Exercise.Models;
     using Web.Models.Exercise;
 
-    using static Common.Constants.MessageConstants;
+    using static Constants.MessageConstants;
 
     public class ExerciseController : BaseAdminController
     {

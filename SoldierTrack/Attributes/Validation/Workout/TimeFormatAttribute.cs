@@ -1,4 +1,4 @@
-﻿namespace SoldierTrack.Web.Common.Attributes.Validation.Workout
+﻿namespace SoldierTrack.Web.Attributes.Validation.Workout
 {
     using System.ComponentModel.DataAnnotations;
 

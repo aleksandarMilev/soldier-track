@@ -1,4 +1,4 @@
-﻿namespace SoldierTrack.Web.Common.Attributes.Validation.Membership
+﻿namespace SoldierTrack.Web.Attributes.Validation.Membership
 {
     using System.ComponentModel.DataAnnotations;
 
@@ -11,7 +11,7 @@
 
             if (startDate.HasValue && startDate.Value.Date != today)
             {
-                this.ErrorMessage = "Membership start date should be today!";
+                ErrorMessage = "Membership start date should be today!";
                 return false;
             }
 

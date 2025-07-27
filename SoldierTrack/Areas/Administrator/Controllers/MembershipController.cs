@@ -4,8 +4,8 @@
     using Microsoft.AspNetCore.Mvc;
     using Services.Membership;
 
-    using static Common.Constants.MessageConstants;
-    using static Common.Constants.WebConstants;
+    using static Constants.MessageConstants;
+    using static Constants.WebConstants;
 
     public class MembershipController : BaseAdminController
     {

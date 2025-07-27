@@ -1,4 +1,4 @@
-﻿namespace SoldierTrack.Web.Common.Extensions
+﻿namespace SoldierTrack.Web.Extensions
 {
     using Data;
     using Data.Models;
@@ -63,7 +63,7 @@
                 cfg.AddProfile<AchievementProfile>();
                 cfg.AddProfile<FoodProfile>();
                 cfg.AddProfile<FoodDiaryProfile>();
-            }, 
+            },
             typeof(Program).Assembly);
 
             return services;

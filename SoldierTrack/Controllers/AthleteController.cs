@@ -1,7 +1,6 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
     using AutoMapper;
-    using Common.Extensions;
     using Controllers.Base;
     using Data.Models;
     using Microsoft.AspNetCore.Identity;
@@ -9,8 +8,9 @@
     using Models.Athlete;
     using Services.Athlete;
     using Services.Athlete.Models;
+    using Web.Extensions;
 
-    using static Common.Constants.MessageConstants;
+    using static Constants.MessageConstants;
 
     public class AthleteController : BaseController
     {

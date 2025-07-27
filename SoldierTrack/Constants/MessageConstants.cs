@@ -1,7 +1,8 @@
-﻿namespace SoldierTrack.Web.Common.Constants
+﻿namespace SoldierTrack.Web.Constants
 {
     public static class MessageConstants
     {
+        //shared
         public const string LengthError = "The field length should be between {2} and {1} characters long!";
 
         public const string RequiredError = "The {0} field is required!";
@@ -90,7 +91,7 @@
 
         public const string ExerciseDeleted = "Exercise is successfully deleted!";
 
-        public const string CustomExerciseDeleted = 
+        public const string CustomExerciseDeleted =
             "Oops! It looks like the exercise creator has deleted this. " +
             "The achievement will remain in your records, but you won't be able to edit it. " +
             "However, you can still delete it if you'd like";

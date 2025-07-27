@@ -2,7 +2,7 @@
 {
     using AutoMapper;
     using Base;
-    using Common.Extensions;
+    using Extensions;
     using Microsoft.AspNetCore.Mvc;
     using Models.Achievement;
     using Services.Achievement;
@@ -10,8 +10,8 @@
     using Services.Athlete;
     using Services.Exercise;
 
-    using static Common.Constants.MessageConstants;
-    using static Common.Constants.WebConstants;
+    using static Constants.MessageConstants;
+    using static Constants.WebConstants;
 
     public class AchievementController : BaseController
     {

@@ -2,9 +2,9 @@
 {
     using System.ComponentModel.DataAnnotations;
 
-    using static Common.Constants.MessageConstants;
-    using static Common.Constants.ModelValidationConstants.FoodConstants;
-    using static Common.Constants.WebConstants;
+    using static Constants.MessageConstants;
+    using static Constants.ModelValidationConstants.FoodConstants;
+    using static Constants.WebConstants;
 
     public class FoodFormModel
     {

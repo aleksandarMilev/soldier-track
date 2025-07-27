@@ -4,13 +4,14 @@
     using Services.Membership.Models;
     using Models.Membership;
 
-    using static SoldierTrack.Web.Common.Constants.Constants.MembershipConstants;
+    using static Constants.Constants.MembershipConstants;
 
     public class MembershipProfile : Profile
     {
         public MembershipProfile()
         {
-            this.CreateMap<MembershipFormModel, MembershipServiceModel>()
+            this
+                .CreateMap<MembershipFormModel, MembershipServiceModel>()
                 .ForMember(
                     dest => dest.EndDate,
                     opt => opt.MapFrom(src => src.IsMonthly ? DateTime.UtcNow.AddMonths(1) : (DateTime?)null))

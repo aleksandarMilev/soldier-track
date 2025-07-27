@@ -7,7 +7,7 @@
     using Services.Food.Models;
     using Web.Models.Food;
 
-    using static Common.Constants.MessageConstants;
+    using static Constants.MessageConstants;
 
     public class FoodController : BaseAdminController
     {

@@ -1,7 +1,7 @@
 ﻿namespace SoldierTrack.Web.Controllers
 {
     using Base;
-    using Common.Extensions;
+    using Extensions;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Caching.Memory;
     using Services.Athlete;
@@ -9,7 +9,7 @@
     using Services.Workout;
     using Services.Workout.Models;
 
-    using static Common.Constants.WebConstants;
+    using static Constants.WebConstants;
 
     public class WorkoutController : BaseController
     {

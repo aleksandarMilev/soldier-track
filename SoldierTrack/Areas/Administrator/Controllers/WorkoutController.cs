@@ -7,8 +7,8 @@
     using Services.Workout;
     using Services.Workout.Models;
 
-    using static SoldierTrack.Web.Common.Constants.MessageConstants;
-    using static SoldierTrack.Web.Common.Constants.WebConstants;
+    using static Constants.MessageConstants;
+    using static Constants.WebConstants;
 
     public class WorkoutController : BaseAdminController
     {

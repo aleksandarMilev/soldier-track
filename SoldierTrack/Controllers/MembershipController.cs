@@ -2,14 +2,14 @@
 {
     using AutoMapper;
     using Base;
-    using Common.Extensions;
+    using Extensions;
     using Microsoft.AspNetCore.Mvc;
     using Models.Membership;
     using Services.Membership;
     using Services.Membership.Models;
 
-    using static Common.Constants.MessageConstants;
-    using static Common.Constants.WebConstants;
+    using static Constants.MessageConstants;
+    using static Constants.WebConstants;
 
     public class MembershipController : BaseController
     {

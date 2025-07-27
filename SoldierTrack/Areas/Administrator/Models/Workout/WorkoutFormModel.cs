@@ -2,12 +2,12 @@
 {
     using System.ComponentModel.DataAnnotations;
 
+    using Attributes.Validation.Workout;
     using Microsoft.AspNetCore.Mvc.Rendering;
-    using SoldierTrack.Web.Common.Attributes.Validation.Workout;
 
-    using static SoldierTrack.Web.Common.Constants.MessageConstants;
-    using static SoldierTrack.Web.Common.Constants.ModelValidationConstants.WorkoutConstants;
-    using static SoldierTrack.Web.Common.Constants.WebConstants;
+    using static Constants.MessageConstants;
+    using static SoldierTrack.Web.Constants.ModelValidationConstants.WorkoutConstants;
+    using static Constants.WebConstants;
 
     public class WorkoutFormModel
     {

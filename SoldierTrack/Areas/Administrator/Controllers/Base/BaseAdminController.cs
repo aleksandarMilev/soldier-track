@@ -3,7 +3,7 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
-    using static Common.Constants.WebConstants;
+    using static SoldierTrack.Web.Constants.WebConstants;
 
     [Area(AdminRoleName)]
     [Authorize(Roles = AdminRoleName)]

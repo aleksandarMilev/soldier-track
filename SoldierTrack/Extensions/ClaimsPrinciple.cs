@@ -1,4 +1,4 @@
-﻿namespace SoldierTrack.Web.Common.Extensions
+﻿namespace SoldierTrack.Web.Extensions
 {
     using System.Security.Claims;
 

@@ -1,54 +1,45 @@
-namespace SoldierTrack.Web
-{
-    using Common.Extensions;
-    using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using SoldierTrack.Web.Extensions;
 
-    public class Program
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services
+    .AddApplicationServices(builder.Configuration)
+    .AddApplicationDbContext(builder.Configuration, builder.Environment)
+    .AddApplicationIdentity()
+    .AddAutoMapperProfiles()
+    .AddMemoryCache()
+    .AddControllersWithViews(options =>
     {
-        public static async Task Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+        options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
+    });
 
+var app = builder.Build();
 
-            builder.Services
-                .AddApplicationServices(builder.Configuration)
-                .AddApplicationDbContext(builder.Configuration, builder.Environment)
-                .AddApplicationIdentity()
-                .AddAutoMapperProfiles()
-                .AddMemoryCache()
-                .AddControllersWithViews(options =>
-                {
-                    options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
-                });
-
-            var app = builder.Build();
-
-            if (!app.Environment.IsDevelopment())
-            {
-                app.UseMigrationsEndPoint();
-            }
-            else
-            {
-                app
-                    .UseHsts()
-                    .UseStatusCodePagesWithReExecute("/Home/Error{0}")
-                    .UseExceptionHandler("/Home/Error500");
-            }
-
-            app
-                .UseHttpsRedirection()
-                .UseStaticFiles()
-                .UseRouting()
-                .UseAuthentication()
-                .UseAuthorization();
-
-            app.MapDefaultAreaRoute();
-            app.MapDefaultControllerRoute();
-            app.MapRazorPages();
-
-            await app.CreateAdminRoleAsync();
-
-            app.Run();
-        }
-    }
+if (!app.Environment.IsDevelopment())
+{
+    app.UseMigrationsEndPoint();
 }
+else
+{
+    app
+        .UseHsts()
+        .UseStatusCodePagesWithReExecute("/Home/Error{0}")
+        .UseExceptionHandler("/Home/Error500");
+}
+
+app
+    .UseHttpsRedirection()
+    .UseStaticFiles()
+    .UseRouting()
+    .UseAuthentication()
+    .UseAuthorization();
+
+await app.UseMigrations();
+
+app.MapDefaultAreaRoute();
+app.MapDefaultControllerRoute();
+app.MapRazorPages();
+
+await app.CreateAdminRoleAsync();
+await app.RunAsync();

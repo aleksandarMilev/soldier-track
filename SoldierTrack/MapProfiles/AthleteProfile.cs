@@ -1,4 +1,4 @@
-﻿namespace SoldierTrack.Web.Common.MapProfiles
+﻿namespace SoldierTrack.Web.MapProfiles
 {
     using AutoMapper;
     using Models.Athlete;
@@ -8,7 +8,8 @@
     {
         public AthleteProfile()
         {
-            this.CreateMap<AthleteFormModel, AthleteServiceModel>()
+            this
+                .CreateMap<AthleteFormModel, AthleteServiceModel>()
                 .ReverseMap();
         }
     }

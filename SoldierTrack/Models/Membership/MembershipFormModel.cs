@@ -1,10 +1,10 @@
 ﻿namespace SoldierTrack.Web.Models.Membership
 {
-    using System.ComponentModel.DataAnnotations; 
+    using System.ComponentModel.DataAnnotations;
 
-    using Common.Attributes.Validation.Membership;
+    using Attributes.Validation.Membership;
 
-    using static Common.Constants.ModelValidationConstants.MembershipConstants;
+    using static Constants.ModelValidationConstants.MembershipConstants;
 
     [MonthlyOrFixedValidation]
     public class MembershipFormModel

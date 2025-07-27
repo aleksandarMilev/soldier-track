@@ -6,8 +6,8 @@
     using Services.Athlete;
     using Services.Workout;
 
-    using static Common.Constants.MessageConstants;
-    using static Common.Constants.WebConstants;
+    using static Constants.MessageConstants;
+    using static Constants.WebConstants;
 
     public class AthleteController : BaseAdminController
     {

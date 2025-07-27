@@ -1,11 +1,13 @@
-﻿namespace SoldierTrack.Web.Common.Extensions
+﻿namespace SoldierTrack.Web.Extensions
 {
+    using Data;
     using Data.Models;
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
 
-    using static Common.Constants.WebConstants;
+    using static Constants.WebConstants;
 
-    public static class WebApp
+    public static class ApplicationBuilder
     {
         public static async Task CreateAdminRoleAsync(this IApplicationBuilder app)
         {
@@ -50,11 +52,14 @@
             }
         }
 
-        public static void MapDefaultAreaRoute(this IEndpointRouteBuilder endpoints)
+        public static async Task<IApplicationBuilder> UseMigrations(this IApplicationBuilder app)
         {
-             endpoints.MapControllerRoute(
-                  name: "Areas",
-                  pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+            using var services = app.ApplicationServices.CreateScope();
+            var data = services.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            await data.Database.MigrateAsync();
+
+            return app;
         }
     }
 }

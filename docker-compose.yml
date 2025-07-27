@@ -1,0 +1,39 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ConnectionStrings__DefaultConnection=${CONNECTION_STRING}
+      - SmtpSettings__Host=${SMTP_HOST}
+      - SmtpSettings__Port=${SMTP_PORT}
+      - SmtpSettings__Username=${SMTP_USERNAME}
+      - SmtpSettings__Password=${SMTP_PASSWORD}
+    entrypoint:
+      [
+        "/wait-for-it.sh",
+        "sqlserver",
+        "1433",
+        "--",
+        "dotnet",
+        "SoldierTrack.Web.dll",
+      ]
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+      SA_PASSWORD: ${SA_PASSWORD}
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserverdata:/var/opt/mssql
+
+volumes:
+  sqlserverdata:

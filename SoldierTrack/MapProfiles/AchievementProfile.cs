@@ -1,4 +1,4 @@
-﻿namespace SoldierTrack.Web.Common.MapProfiles
+﻿namespace SoldierTrack.Web.MapProfiles
 {
     using AutoMapper;
     using Models.Achievement;
@@ -8,7 +8,8 @@
     {
         public AchievementProfile()
         {
-            this.CreateMap<AchievementFormModel, AchievementServiceModel>()
+            this
+                .CreateMap<AchievementFormModel, AchievementServiceModel>()
                 .ReverseMap();
         }
     }

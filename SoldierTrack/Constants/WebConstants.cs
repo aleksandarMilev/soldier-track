@@ -1,4 +1,4 @@
-﻿namespace SoldierTrack.Web.Common.Constants
+﻿namespace SoldierTrack.Web.Constants
 {
     public class WebConstants
     {

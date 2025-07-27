@@ -2,9 +2,9 @@
 {
     using System.ComponentModel.DataAnnotations;
 
-    using static SoldierTrack.Web.Common.Constants.WebConstants;
-    using static SoldierTrack.Web.Common.Constants.MessageConstants;
-    using static SoldierTrack.Web.Common.Constants.ModelValidationConstants.ExerciseConstraints;
+    using static Constants.WebConstants;
+    using static Constants.MessageConstants;
+    using static Constants.ModelValidationConstants.ExerciseConstraints;
 
     public class ExerciseFormModel
     {
