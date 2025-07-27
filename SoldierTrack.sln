@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoldierTrack.Web", "SoldierTrack\SoldierTrack.Web.csproj", "{54B18FDA-3F2D-45EC-9942-65BD74549155}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoldierTrack.Web", "SoldierTrack.Web\SoldierTrack.Web.csproj", "{54B18FDA-3F2D-45EC-9942-65BD74549155}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoldierTrack.Data", "SoldierTrack.Data\SoldierTrack.Data.csproj", "{EA340E72-3788-49D4-BB78-F0A612047206}"
 EndProject
