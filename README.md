@@ -1,18 +1,22 @@
 # SoldierTrack
-## Project Description
 
-SoldierTrack is a comprehensive platform designed to help athletes manage their daily routines and achieve their fitness goals effectively. The platform offers several key features:
+## Overview
 
-- **Membership Management**: Users can create and manage memberships to join workouts organized in a dedicated workout hall.  
-    - The membership should start from today, and the user cannot modify it.
+**SoldierTrack** is a fitness management platform tailored for athletes to track progress, optimize training, and manage nutrition. It offers:
 
-- **1RM Calculator & Achievements Tracking**: Users can calculate their one-rep max (1RM) and monitor their progress in the Achievements section. The calculator supports all major exercises from weightlifting, powerlifting, and more. Users also have the option to create, update, and delete custom exercises.  
-    - The user cannot create more than 50 custom exercises.
+- **Membership Management**: Join workout halls with fixed-start memberships.
+- **1RM Calculator & Achievements**: Calculate your one-rep max for major lifts and track progress.
+- **Food Diary**: Log meals using a detailed food database or custom entries with full macro breakdowns.
 
-- **Food Diary & Nutrition Tracking**: Users can track their calorie and macronutrient intake through the Food Diary section. The platform allows users to maintain daily diaries where they log meals (breakfast, lunch, dinner, and snacks) by selecting from a vast food database. Each food entry includes detailed nutritional information, such as total calories, protein, carbohydrates, and fats per 100 grams. Users can also create, update, and delete their own custom food entries.  
-    - The user cannot create more than 50 custom foods.  
-    - The user cannot start a diary entry that is older than one month ago or more than one month in the future.
-  
+## Feature Limits
+
+- Memberships must start on the current day and cannot be modified.
+- Users can create up to **50 custom exercises**.
+- Users can create up to **50 custom food entries**.
+- Diary entries cannot be:
+  - Older than 1 month ago
+  - More than 1 month in the future
+
 ## Technologies Used
 
 This project is built using the following technologies and tools:
@@ -27,59 +31,141 @@ This project is built using the following technologies and tools:
 - Moq
 
 ## Database Diagram
-![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/db.png)
+
+![Database Diagram](https://github.com/aleksandarMilev/soldier-track/blob/master/screenshots/db.png)
 
 ## Accounts
 
 ### Administrator Account:
+
 - Email: admin@mail.com
 - Password: admin1234
-  
+
 ### User Account:
+
 - Email: MyUser@mail.com
 - Password: 123456
 
-## Pages
+## Getting Started
+
+To run the application locally using Docker:
+
+### Prerequisites
+
+- [Docker](https://www.docker.com/products/docker-desktop) installed and running
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/aleksandarMilev/soldier-track
+cd soldier-track
+```
+
+### 2. Set Up Environment Variables
+
+Create a file similar to the .env-sample. It should be something like this:
+
+```bash
+ASPNETCORE_ENVIRONMENT=Development
+
+CONNECTION_STRING=Server=sqlserver;Database=SoldierTrackDb;User Id=sa;Password=!Passw0rd;TrustServerCertificate=True;
+
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USERNAME=mail@gmail.com
+SMTP_PASSWORD=smtp_password
+
+SA_PASSWORD=!Passw0rd
+```
+
+### 3. Run the app
+
+Use Docker Compose to start the application and the SQL Server database:
+
+```bash
+docker-compose up --build -d
+```
+
+The application should be available at **http://localhost:8080**
+
+## Screenshots
 
 ### Guest Home Page
-![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/home.png)
+
+![Guest Home Page](https://github.com/aleksandarMilev/soldier-track/blob/master/screenshots/home.png)
 
 ### Authenticated User Home Page
-![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/home-aut.png)
 
-### Regsiter
-![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/register.png)
+![Authenticated User Home Page](https://github.com/aleksandarMilev/soldier-track/blob/master/screenshots/home-aut.png)
+
+### Register
+
+![Register](https://github.com/aleksandarMilev/soldier-track/blob/master/screenshots/register.png)
 
 ### Request Membership
-![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/request-m-form.png)
+
+![Request Membership](https://github.com/aleksandarMilev/soldier-track/blob/master/screenshots/request-m-form.png)
 
 ### Workouts List
-![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/workouts.png)
+
+![Workouts List](https://github.com/aleksandarMilev/soldier-track/blob/master/screenshots/workouts.png)
 
 ### Workout Details
-![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/w-details.png)
+
+![Workout Details](https://github.com/aleksandarMilev/soldier-track/blob/master/screenshots/w-details.png)
 
 ### Workouts List
-![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/workouts.png)
+
+![Workout List](https://github.com/aleksandarMilev/soldier-track/blob/master/screenshots/workouts.png)
 
 ### User Profile
-![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/profile.png)
+
+![User Profile](https://github.com/aleksandarMilev/soldier-track/blob/master/screenshots/profile.png)
 
 ### Exercises List
-![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/exercises.png)
+
+![Exercises List](https://github.com/aleksandarMilev/soldier-track/blob/master/screenshots/exercises.png)
 
 ### Achievements
-![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/achv.png)
+
+![Achievements](https://github.com/aleksandarMilev/soldier-track/blob/master/screenshots/achv.png)
 
 ### Food List
-![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/food.png)
+
+![Food List](https://github.com/aleksandarMilev/soldier-track/blob/master/screenshots/food.png)
 
 ### Diary
-![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/diary.png)
+
+![Diary](https://github.com/aleksandarMilev/soldier-track/blob/master/screenshots/diary.png)
 
 ### Diary Details
-![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/diary-d-1.png)
-![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/diary-d-2.png)
+
+![Diary Details](https://github.com/aleksandarMilev/soldier-track/blob/master/screenshots/diary-d-1.png)
+![Diary Details](https://github.com/aleksandarMilev/soldier-track/blob/master/screenshots/diary-d-2.png)
 
 ### Athlete List (Admin)
-![Database Diagram](https://github.com/aleksandarMilev/SoldierTrack/blob/master/screenshots/admin-athlete.png)
+
+![Athlete List (Admin)](https://github.com/aleksandarMilev/soldier-track/blob/master/screenshots/admin-athlete.png)
+
+## License
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).  
+You are free to use, modify, and distribute it as you like.
+
+---
+
+## Contributing
+
+Contributions are welcome and appreciated! 🙌  
+If you find a bug, want to suggest a feature, or improve existing functionality, feel free to open an issue or submit a pull request (PR).
+
+Steps to contribute:
+
+1. Fork this repository
+2. Create a new branch (`git switch -c feature-name`)
+3. Make your changes
+4. Commit your changes (`git commit -m "Add some feature"`)
+5. Push to your branch (`git push origin feature-name`)
+6. Open a pull request
+
+I'll be extremely happy to review and merge your PR!
