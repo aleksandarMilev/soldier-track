@@ -3,8 +3,6 @@
     public class WebConstants
     {
         public const string AdminRoleName = "Administrator";
-        public const string AdminEmail = "admin@mail.com";
-        public const string AdminPassword = "admin1234";
 
         public const int MinPageSize = 1;
         public const int MaxPageSize = 100;

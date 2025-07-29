@@ -35,7 +35,7 @@ app
     .UseAuthentication()
     .UseAuthorization();
 
-await app.UseMigrations();
+await app.UseMigrationsAsync();
 
 app.MapDefaultAreaRoute();
 app.MapDefaultControllerRoute();

@@ -11,6 +11,8 @@
     using SoldierTrack.Services.Membership;
     using SoldierTrack.Services.Membership.Models;
     using Xunit;
+    using SoldierTrack.Common.Settings;
+    using Microsoft.Extensions.Options;
 
     public class AthleteServiceTest : IClassFixture<TestDatabaseFixture>
     {
@@ -39,11 +41,22 @@
         }
 
         private AthleteService CreateAthleteService()
-            => new(
+        {
+            var fakeAdminSettings = new AdminSettings()
+            {
+                Email = "admin@mail.com",
+                Password = "admin1234"
+            };
+
+            var fakeAdminOptions = Options.Create(fakeAdminSettings);
+
+             return new(
                 this.fixture.Data,
                 new Lazy<IMembershipService>(() => this.mockMembershipService.Object),
                 this.mockEmailService.Object,
+                fakeAdminOptions,
                 this.mapper);
+        }
 
         private void ResetDatabase()
         {

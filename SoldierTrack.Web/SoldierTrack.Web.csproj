@@ -4,15 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-SoldierTrack-a79d6c81-1d1f-4ff7-b5ae-182afb8e3998</UserSecretsId>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Areas\Administration\**" />
-    <Content Remove="Areas\Administration\**" />
-    <EmbeddedResource Remove="Areas\Administration\**" />
-    <None Remove="Areas\Administration\**" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
@@ -30,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SoldierTrack.Common\SoldierTrack.Common.csproj" />
     <ProjectReference Include="..\SoldierTrack.Services\SoldierTrack.Services.csproj" />
   </ItemGroup>
 

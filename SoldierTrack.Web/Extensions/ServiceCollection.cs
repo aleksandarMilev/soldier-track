@@ -21,33 +21,32 @@
     using Services.Membership.MapperProfile;
     using Services.Workout;
     using Services.Workout.MapperProfile;
+    using SoldierTrack.Common.Settings;
 
     public static class ServiceCollection
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<SmtpSettings>(configuration.GetSection("SmtpSettings"));
-
-            services.AddTransient<IAthleteService, AthleteService>();
-            services.AddTransient(provider =>
-            {
-                return new Lazy<IAthleteService>(() => provider.GetRequiredService<IAthleteService>());
-            });
-
-            services.AddTransient<IMembershipService, MembershipService>();
-            services.AddTransient(provider =>
-            {
-                return new Lazy<IMembershipService>(() => provider.GetRequiredService<IMembershipService>());
-            });
-
-            services.AddTransient<IExerciseService, ExerciseService>();
-            services.AddTransient<IWorkoutService, WorkoutService>();
-            services.AddTransient<IAchievementService, AchievementService>();
-            services.AddTransient<IFoodService, FoodService>();
-            services.AddTransient<IFoodDiaryService, FoodDiaryService>();
-            services.AddTransient<IEmailService, EmailService>();
-
-            services.AddRazorPages();
+            services
+                .Configure<SmtpSettings>(configuration.GetSection("SmtpSettings"))
+                .Configure<AdminSettings>(configuration.GetSection("AdminSettings"))
+                .AddTransient<IAthleteService, AthleteService>()
+                .AddTransient(provider =>
+                {
+                    return new Lazy<IAthleteService>(() => provider.GetRequiredService<IAthleteService>());
+                })
+                .AddTransient<IMembershipService, MembershipService>()
+                .AddTransient(provider =>
+                {
+                    return new Lazy<IMembershipService>(() => provider.GetRequiredService<IMembershipService>());
+                })
+                .AddTransient<IExerciseService, ExerciseService>()
+                .AddTransient<IWorkoutService, WorkoutService>()
+                .AddTransient<IAchievementService, AchievementService>()
+                .AddTransient<IFoodService, FoodService>()
+                .AddTransient<IFoodDiaryService, FoodDiaryService>()
+                .AddTransient<IEmailService, EmailService>()
+                .AddRazorPages();
 
             return services;
         }

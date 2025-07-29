@@ -4,7 +4,7 @@ WORKDIR /src
 COPY . ./
 RUN dotnet restore SoldierTrack.sln
 
-RUN dotnet publish SoldierTrack/SoldierTrack.Web.csproj -c Release -o /app/publish
+RUN dotnet publish SoldierTrack.Web/SoldierTrack.Web.csproj -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app

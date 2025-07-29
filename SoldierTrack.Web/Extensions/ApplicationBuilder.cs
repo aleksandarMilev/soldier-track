@@ -4,6 +4,8 @@
     using Data.Models;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Options;
+    using SoldierTrack.Common.Settings;
 
     using static Constants.WebConstants;
 
@@ -12,6 +14,7 @@
         public static async Task CreateAdminRoleAsync(this IApplicationBuilder app)
         {
             using var scope = app.ApplicationServices.CreateScope();
+            var adminSettings = scope.ServiceProvider.GetRequiredService<IOptions<AdminSettings>>().Value;
 
             var userManager = scope
                 .ServiceProvider
@@ -30,7 +33,7 @@
                 var role = new IdentityRole(AdminRoleName);
                 await roleManager.CreateAsync(role);
 
-                var admin = await userManager.FindByEmailAsync(AdminEmail);
+                var admin = await userManager.FindByEmailAsync(adminSettings.Email);
 
                 if (admin == null)
                 {
@@ -38,11 +41,11 @@
                     {
                         FirstName = AdminRoleName,
                         LastName = AdminRoleName,
-                        UserName = AdminEmail,
-                        Email = AdminEmail
+                        UserName = adminSettings.Email,
+                        Email = adminSettings.Email
                     };
 
-                    await userManager.CreateAsync(admin, AdminPassword);
+                    await userManager.CreateAsync(admin, adminSettings.Password);
                 }
 
                 if (role.Name != null)
@@ -52,7 +55,7 @@
             }
         }
 
-        public static async Task<IApplicationBuilder> UseMigrations(this IApplicationBuilder app)
+        public static async Task<IApplicationBuilder> UseMigrationsAsync(this IApplicationBuilder app)
         {
             using var services = app.ApplicationServices.CreateScope();
             var data = services.ServiceProvider.GetRequiredService<ApplicationDbContext>();

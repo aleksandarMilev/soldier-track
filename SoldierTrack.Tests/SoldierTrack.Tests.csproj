@@ -7,18 +7,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Common\**" />
-	  <Compile Remove="Controllers\**" />
-	  <Compile Remove="IntegrationTests\**" />
-	  <EmbeddedResource Remove="Common\**" />
-	  <EmbeddedResource Remove="Controllers\**" />
-	  <EmbeddedResource Remove="IntegrationTests\**" />
-	  <None Remove="Common\**" />
-	  <None Remove="Controllers\**" />
-	  <None Remove="IntegrationTests\**" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="FluentAssertions" Version="6.12.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.8" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.8" />
@@ -34,7 +22,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\SoldierTrack.Data\SoldierTrack.Data.csproj" />
 		<ProjectReference Include="..\SoldierTrack.Services\SoldierTrack.Services.csproj" />
-		<ProjectReference Include="..\SoldierTrack\SoldierTrack.Web.csproj" />
+		<ProjectReference Include="..\SoldierTrack.Web\SoldierTrack.Web.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SoldierTrack.Common\SoldierTrack.Common.csproj" />
     <ProjectReference Include="..\SoldierTrack.Data\SoldierTrack.Data.csproj" />
   </ItemGroup>
 

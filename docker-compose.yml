@@ -14,6 +14,8 @@ services:
       - SmtpSettings__Port=${SMTP_PORT}
       - SmtpSettings__Username=${SMTP_USERNAME}
       - SmtpSettings__Password=${SMTP_PASSWORD}
+      - AdminSettings__Email=${ADMIN_EMAIL}
+      - AdminSettings__Password=${ADMIN_PASSWORD}
     entrypoint:
       [
         "/wait-for-it.sh",

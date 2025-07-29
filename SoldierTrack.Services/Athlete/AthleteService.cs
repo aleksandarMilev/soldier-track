@@ -8,8 +8,10 @@
     using Email;
     using Membership;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Options;
     using Models;
 
+    using SoldierTrack.Common.Settings;
     using static Common.Constants;
     using static Common.Messages;
 
@@ -18,24 +20,27 @@
         private readonly ApplicationDbContext data;
         private readonly Lazy<IMembershipService> membershipService;
         private readonly IEmailService emailService;
+        private readonly AdminSettings adminSettings;
         private readonly IMapper mapper;
 
         public AthleteService(
             ApplicationDbContext data,
             Lazy<IMembershipService> membershipService,
             IEmailService emailService,
+            IOptions<AdminSettings> adminSettings,
             IMapper mapper)
         {
             this.data = data;
             this.membershipService = membershipService;
             this.emailService = emailService;
+            this.adminSettings = adminSettings.Value;
             this.mapper = mapper;
         }
 
         public async Task<AthletePageServiceModel> GetPageModelsAsync(string? searchTerm, int pageIndex, int pageSize)
         {
             var query = this.data
-                .AllAthletesAsNoTracking()
+                .AllAthletesAsNoTracking(this.adminSettings.Email)
                 .Include(a => a.Membership)
                 .OrderByDescending(a => a.Membership != null && a.Membership.IsPending)
                 .ThenBy(a => a.FirstName)
@@ -71,7 +76,7 @@
         public async Task<string?> GetNameByIdAsync(string id)
         {
             var athlete = await this.data
-                .AllAthletesAsNoTracking()
+                .AllAthletesAsNoTracking(this.adminSettings.Email)
                 .FirstOrDefaultAsync(a => a.Id == id);
 
             if (athlete == null)
@@ -85,7 +90,7 @@
         public async Task<AthleteServiceModel?> GetModelByIdAsync(string id)
         {
             var athlete = await this.data
-                .AllAthletesAsNoTracking()
+                .AllAthletesAsNoTracking(this.adminSettings.Email)
                 .FirstOrDefaultAsync(a => a.Id == id);
 
             if (athlete == null)
@@ -102,7 +107,7 @@
             var todayUtcTime = DateTime.UtcNow.TimeOfDay;
 
             var serviceModel = await this.data
-                .AllAthletesAsNoTracking()
+                .AllAthletesAsNoTracking(this.adminSettings.Email)
                 .Include(a => a.Membership)
                 .Include(a => a.AthletesWorkouts)
                 .ProjectTo<AthleteDetailsServiceModel>(this.mapper.ConfigurationProvider)
@@ -125,7 +130,7 @@
         public async Task<bool> AthleteWithSameNumberExistsAsync(string phoneNumber, string id)
         {
             var athlete = await this.data
-                .AllAthletesAsNoTracking()
+                .AllAthletesAsNoTracking(this.adminSettings.Email)
                 .FirstOrDefaultAsync(a => a.Id == id)
                 ?? throw new InvalidOperationException("User is not found!");
 
@@ -140,7 +145,7 @@
         public async Task<bool> AthleteWithSameEmailExistsAsync(string email, string id)
         {
             var athlete = await this.data
-                .AllAthletesAsNoTracking()
+                .AllAthletesAsNoTracking(this.adminSettings.Email)
                 .FirstOrDefaultAsync(a => a.Id == id)
                 ?? throw new InvalidOperationException("User is not found!");
 
@@ -161,7 +166,7 @@
         public async Task EditAsync(AthleteServiceModel model)
         {
             var athlete = await this.data
-                .AllAthletes()
+                .AllAthletes(this.adminSettings.Email)
                 .Include(a => a.Membership)
                 .FirstOrDefaultAsync(a => a.Id == model.Id)
                 ?? throw new InvalidOperationException("User is not found!");
@@ -173,7 +178,7 @@
         public async Task DeleteAsync(string id)
         {
             var athlete = await this.data
-                .AllAthletes()
+                .AllAthletes(this.adminSettings.Email)
                 .Include(a => a.Membership)
                 .FirstOrDefaultAsync(a => a.Id == id)
                 ?? throw new InvalidOperationException("User is not found!");

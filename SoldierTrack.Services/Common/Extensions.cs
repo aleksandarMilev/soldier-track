@@ -5,8 +5,6 @@
     using Data.Models.Base;
     using Microsoft.EntityFrameworkCore;
 
-    using static SoldierTrack.Services.Common.Constants;
-
     public static class Extensions
     {
         public static IQueryable<T> AllDeletable<T>(this ApplicationDbContext data)
@@ -22,15 +20,15 @@
                     .AsNoTracking()
                     .Where(e => !e.IsDeleted);
 
-        public static IQueryable<Athlete> AllAthletes(this ApplicationDbContext data) 
+        public static IQueryable<Athlete> AllAthletes(this ApplicationDbContext data, string adminMail) 
             => data
                .Set<Athlete>()
-               .Where(a => !a.IsDeleted && a.Email != AdminEmail);
+               .Where(a => !a.IsDeleted && a.Email != adminMail);
 
-        public static IQueryable<Athlete> AllAthletesAsNoTracking(this ApplicationDbContext data) 
+        public static IQueryable<Athlete> AllAthletesAsNoTracking(this ApplicationDbContext data, string adminMail) 
             => data
                 .Set<Athlete>()
                 .AsNoTracking()
-                .Where(a => !a.IsDeleted && a.Email != AdminEmail);
+                .Where(a => !a.IsDeleted && a.Email != adminMail);
     }
 }

@@ -7,21 +7,26 @@
     using Data;
     using Data.Models;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Options;
     using Models;
+    using SoldierTrack.Common.Settings;
 
     public class MembershipService : IMembershipService
     {
         private readonly ApplicationDbContext data;
         private readonly Lazy<IAthleteService> athleteService;
+        private readonly AdminSettings adminSettings;
         private readonly IMapper mapper;
 
         public MembershipService(
             ApplicationDbContext data, 
             Lazy<IAthleteService> athleteService, 
+            IOptions<AdminSettings> adminSettings,
             IMapper mapper)
         {
             this.data = data;
             this.athleteService = athleteService;
+            this.adminSettings = adminSettings.Value;
             this.mapper = mapper;
         }
 
@@ -87,7 +92,7 @@
             var membership = this.mapper.Map<Membership>(model);
 
             var athlete = await this.data
-                .AllAthletes()
+                .AllAthletes(this.adminSettings.Email)
                 .FirstOrDefaultAsync(a => a.Id == model.AthleteId)
                ?? throw new InvalidOperationException("Athlete not found!");
 

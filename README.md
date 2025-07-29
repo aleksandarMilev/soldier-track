@@ -38,13 +38,10 @@ This project is built using the following technologies and tools:
 
 ### Administrator Account:
 
+The application will start with a built-in account that has admin rights. The email and password will be whatever you specified in the `.env` file (more about `.env` in the next section).
+
 - Email: admin@mail.com
 - Password: admin1234
-
-### User Account:
-
-- Email: MyUser@mail.com
-- Password: 123456
 
 ## Getting Started
 
@@ -63,7 +60,7 @@ cd soldier-track
 
 ### 2. Set Up Environment Variables
 
-Create a file similar to the .env-sample. It should be something like this:
+Create a .env file in the root directory (you can use the .env-sample as skeleton). It should be something like this:
 
 ```bash
 ASPNETCORE_ENVIRONMENT=Development
@@ -76,6 +73,9 @@ SMTP_USERNAME=mail@gmail.com
 SMTP_PASSWORD=smtp_password
 
 SA_PASSWORD=!Passw0rd
+
+ADMIN_EMAIL=admin@mail.com
+ADMIN_PASSWORD=admin1234
 ```
 
 ### 3. Run the app
@@ -161,11 +161,11 @@ If you find a bug, want to suggest a feature, or improve existing functionality,
 
 Steps to contribute:
 
-1. Fork this repository
-2. Create a new branch (`git switch -c feature-name`)
+1. (_Optional_) Fork the repo
+2. Create a new branch (`git switch -c feature/foo`)
 3. Make your changes
-4. Commit your changes (`git commit -m "Add some feature"`)
-5. Push to your branch (`git push origin feature-name`)
+4. Commit them (`git commit -m "Add some cool feature"`)
+5. Push (`git push origin feature/foo`)
 6. Open a pull request
 
 I'll be extremely happy to review and merge your PR!

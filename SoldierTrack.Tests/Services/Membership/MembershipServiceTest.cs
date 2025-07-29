@@ -3,7 +3,9 @@
     using AutoMapper;
     using Data.Models;
     using FluentAssertions;
+    using Microsoft.Extensions.Options;
     using Moq;
+    using SoldierTrack.Common.Settings;
     using SoldierTrack.Services.Athlete;
     using SoldierTrack.Services.Membership;
     using SoldierTrack.Services.Membership.Models;
@@ -30,9 +32,18 @@
 
             this.mapper = config.CreateMapper();
 
+            var fakeAdminSettings = new AdminSettings()
+            {
+                Email = "admin@mail.com",
+                Password = "admin1234"
+            };
+
+            var fakeAdminOptions = Options.Create(fakeAdminSettings);
+
             this.membershipService = new MembershipService(
                 this.fixture.Data,
                 new Lazy<IAthleteService>(() => this.mockAthleteService.Object),
+                fakeAdminOptions,
                 this.mapper
             );
         }
