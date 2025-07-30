@@ -33,12 +33,18 @@
                 .AddTransient<IAthleteService, AthleteService>()
                 .AddTransient(provider =>
                 {
-                    return new Lazy<IAthleteService>(() => provider.GetRequiredService<IAthleteService>());
+                    return new Lazy<IAthleteService>(() =>
+                    {
+                        return provider.GetRequiredService<IAthleteService>();
+                    });
                 })
                 .AddTransient<IMembershipService, MembershipService>()
                 .AddTransient(provider =>
                 {
-                    return new Lazy<IMembershipService>(() => provider.GetRequiredService<IMembershipService>());
+                    return new Lazy<IMembershipService>(() =>
+                    {
+                        return provider.GetRequiredService<IMembershipService>();
+                    });
                 })
                 .AddTransient<IExerciseService, ExerciseService>()
                 .AddTransient<IWorkoutService, WorkoutService>()
@@ -92,7 +98,11 @@
 
         public static IServiceCollection AddApplicationIdentity(this IServiceCollection services)
         {
-
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Identity/Account/Login";
+            });
+            
             services
                 .AddIdentity<Athlete, IdentityRole>(options =>
                 {

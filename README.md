@@ -65,17 +65,16 @@ Create a .env file in the root directory (you can use the .env-sample as skeleto
 ```bash
 ASPNETCORE_ENVIRONMENT=Development
 
-CONNECTION_STRING=Server=sqlserver;Database=SoldierTrackDb;User Id=sa;Password=!Passw0rd;TrustServerCertificate=True;
+CONNECTION_STRING_PASSWORD=!Passw0rd
 
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USERNAME=mail@gmail.com
-SMTP_PASSWORD=smtp_password
-
-SA_PASSWORD=!Passw0rd
+SMTP_USERNAME=foo@mail.com
+SMTP_PASSWORD=foo
 
 ADMIN_EMAIL=admin@mail.com
 ADMIN_PASSWORD=admin1234
+
 ```
 
 ### 3. Run the app
@@ -87,6 +86,10 @@ docker-compose up --build -d
 ```
 
 The application should be available at **http://localhost:8080**
+
+### 4. (_Optional_) Run the tests
+
+Simply run `dotnet test` from the project root.
 
 ## Screenshots
 

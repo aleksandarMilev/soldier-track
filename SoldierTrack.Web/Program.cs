@@ -13,25 +13,23 @@ builder.Services
     {
         options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
     });
+    
 
 var app = builder.Build();
 
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
-}
-else
-{
-    app
-        .UseHsts()
-        .UseStatusCodePagesWithReExecute("/Home/Error{0}")
-        .UseExceptionHandler("/Home/Error500");
+    app.UseDeveloperExceptionPage();
 }
 
 app
     .UseHttpsRedirection()
     .UseStaticFiles()
     .UseRouting()
+    .UseHsts()
+    .UseStatusCodePagesWithReExecute("/Home/Error{0}")
+    .UseExceptionHandler("/Home/Error500")
     .UseAuthentication()
     .UseAuthorization();
 
