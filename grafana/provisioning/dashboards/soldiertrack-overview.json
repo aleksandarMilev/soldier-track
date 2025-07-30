@@ -1,0 +1,22 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "soldiertrack-overview",
+    "title": "SoldierTrack – Simple Metrics",
+    "panels": [
+      {
+        "type": "graph",
+        "title": "HTTP Requests Total",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+        "targets": [
+          {
+            "expr": "http_requests_total",
+            "legendFormat": "{{method}} {{code}}",
+            "refId": "A"
+          }
+        ]
+      }
+    ]
+  },
+  "overwrite": true
+}

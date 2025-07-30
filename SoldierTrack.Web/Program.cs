@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Prometheus;
 using SoldierTrack.Web.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,6 +39,9 @@ await app.UseMigrationsAsync();
 app.MapDefaultAreaRoute();
 app.MapDefaultControllerRoute();
 app.MapRazorPages();
+
+app.UseHttpMetrics();
+app.MapMetrics();
 
 await app.CreateAdminRoleAsync();
 await app.RunAsync();
