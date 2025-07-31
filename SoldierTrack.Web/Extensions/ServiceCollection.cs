@@ -98,11 +98,6 @@
 
         public static IServiceCollection AddApplicationIdentity(this IServiceCollection services)
         {
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.LoginPath = "/Identity/Account/Login";
-            });
-            
             services
                 .AddIdentity<Athlete, IdentityRole>(options =>
                 {
@@ -115,6 +110,12 @@
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services
+                .ConfigureApplicationCookie(options =>
+                {
+                    options.LoginPath = "/Identity/Account/Login";
+                });
+            
             return services;
         }
     }

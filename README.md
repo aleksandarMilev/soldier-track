@@ -172,3 +172,8 @@ Steps to contribute:
 6. Open a pull request
 
 I'll be extremely happy to review and merge your PR!
+
+Known issues:
+
+- Grafana does not visualize HTTP Requests Rate
+- All images are saved as URLs at the db (except the static onesm, they are saved as files at `/www.root`). This is not ideal. It will be better to keep them as files too.

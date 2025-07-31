@@ -28,6 +28,7 @@ app
     .UseHttpsRedirection()
     .UseStaticFiles()
     .UseRouting()
+    .UseHttpMetrics()
     .UseHsts()
     .UseStatusCodePagesWithReExecute("/Home/Error{0}")
     .UseExceptionHandler("/Home/Error500")
@@ -39,8 +40,6 @@ await app.UseMigrationsAsync();
 app.MapDefaultAreaRoute();
 app.MapDefaultControllerRoute();
 app.MapRazorPages();
-
-app.UseHttpMetrics();
 app.MapMetrics();
 
 await app.CreateAdminRoleAsync();
