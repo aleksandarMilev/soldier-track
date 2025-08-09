@@ -38,8 +38,8 @@ This project is built using the following technologies and tools:
 **SoldierTrack** is deployed to **Microsoft Azure** using **Docker** containers and an automated **GitHub Actions** CI/CD pipeline.  
 Every push to the master branch triggers:
 
-1. Automated build & tests
-2. Docker image creation
+1. Automated Docker build
+2. Docker image creation and push to Azure Container Registry
 3. Deployment to Azure App Service
 
 Live application: [https://soldiertrack.azurewebsites.net](https://soldiertrack.azurewebsites.net)
