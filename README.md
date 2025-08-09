@@ -29,6 +29,20 @@ This project is built using the following technologies and tools:
 - AutoMapper
 - XUnit
 - Moq
+- Azure App Service
+- Docker
+- GitHub Actions
+
+## Deployment & Hosting
+
+**SoldierTrack** is deployed to **Microsoft Azure** using **Docker** containers and an automated **GitHub Actions** CI/CD pipeline.  
+Every push to the master branch triggers:
+
+1. Automated build & tests
+2. Docker image creation
+3. Deployment to Azure App Service
+
+Live application: [https://soldiertrack.azurewebsites.net](https://soldiertrack.azurewebsites.net)
 
 ## Database Diagram
 
@@ -72,8 +86,8 @@ SMTP_PORT=587
 SMTP_USERNAME=foo@mail.com
 SMTP_PASSWORD=foo
 
-ADMIN_EMAIL=admin@mail.com
-ADMIN_PASSWORD=admin1234
+ADMIN_EMAIL=foo@boo.com
+ADMIN_PASSWORD=bar
 
 ```
 
