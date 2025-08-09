@@ -42,7 +42,7 @@ Every push to the master branch triggers:
 2. Docker image creation and push to Azure Container Registry
 3. Deployment to Azure App Service
 
-Live application: [https://soldiertrack.azurewebsites.net](https://soldiertrack.azurewebsites.net)
+Live application: [https://soldiertrack-app.azurewebsites.net](https://soldiertrack-app.azurewebsites.net)
 
 ## Database Diagram
 
