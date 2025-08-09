@@ -1,0 +1,64 @@
+name: build-and-deploy
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  IMAGE_NAME: soldier-track
+  RESOURCE_GROUP: SoldierTrack-RG
+  WEBAPP_NAME: soldiertrack-app
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to ACR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Build image
+        run: |
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+                       -t ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest .
+
+      - name: Push image
+        run: |
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Point Web App to the new image tag and restart
+        run: |
+          az webapp config container set \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --name ${{ env.WEBAPP_NAME }} \
+            --docker-custom-image-name ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            --docker-registry-server-url https://${{ secrets.ACR_LOGIN_SERVER }} \
+            --docker-registry-server-user ${{ secrets.ACR_USERNAME }} \
+            --docker-registry-server-password ${{ secrets.ACR_PASSWORD }}
+
+          az webapp restart \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --name ${{ env.WEBAPP_NAME }}
