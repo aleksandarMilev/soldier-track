@@ -98,7 +98,7 @@
         {
             this.ResetDatabase();
 
-            var result = await this.workoutService.GetAllAsync(null, 1, 2);
+            var result = await this.workoutService.GetAll(null, 1, 2);
 
             result.Should().NotBeNull();
             result.Workouts.Should().HaveCount(2);
@@ -122,7 +122,7 @@
                 CurrentParticipants = 0
             };
 
-            var result = await this.workoutService.CreateAsync(model);
+            var result = await this.workoutService.Create(model);
 
             result.Should().BeGreaterThan(0);
 
@@ -151,7 +151,7 @@
                 CurrentParticipants = 0
             };
 
-            var result = await this.workoutService.EditAsync(model);
+            var result = await this.workoutService.Edit(model);
 
             result.Should().Be(workout.Id);
 
@@ -180,7 +180,7 @@
                 CurrentParticipants = 0
             };
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() => this.workoutService.EditAsync(model));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => this.workoutService.Edit(model));
         }
 
         [Fact]
@@ -190,7 +190,7 @@
 
             var workout = this.fixture.Data.Workouts.First();
 
-            await this.workoutService.DeleteAsync(workout.Id);
+            await this.workoutService.Delete(workout.Id);
 
             var deletedWorkout = await this.fixture.Data.Workouts.FindAsync(workout.Id);
             deletedWorkout?.IsDeleted.Should().BeTrue();

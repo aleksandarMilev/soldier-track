@@ -19,7 +19,7 @@
             this.mapper = mapper;
         }
 
-        public async Task<AchievementPageServiceModel> GetAllByAthleteIdAsync(string athleteId, int pageIndex, int pageSize)
+        public async Task<AchievementPageServiceModel> GetAllByAthleteId(string athleteId, int pageIndex, int pageSize)
         {
             var query = this.data
                 .Achievements

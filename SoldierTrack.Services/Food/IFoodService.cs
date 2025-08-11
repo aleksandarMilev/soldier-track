@@ -4,17 +4,17 @@
 
     public interface IFoodService
     {
-        Task<FoodPageServiceModel> GetPageModelsAsync(FoodSearchParams searchParams, string athleteId, bool userIsAdmin);
+        Task<FoodPageServiceModel> GetPageModels(FoodSearchParams searchParams, string athleteId, bool userIsAdmin);
 
-        Task<FoodServiceModel?> GetByIdAsync(int id);
+        Task<FoodServiceModel?> GetById(int id);
 
-        Task<bool> FoodLimitReachedAsync(string athleteId);
+        Task<bool> FoodLimitReached(string athleteId);
 
-        Task<int> CreateAsync(FoodServiceModel model);
+        Task<int> Create(FoodServiceModel model);
 
-        Task EditAsync(FoodServiceModel model);
+        Task Edit(FoodServiceModel model);
 
-        Task DeleteAsync(int foodId, string athleteId, bool userIsAdmin);
+        Task Delete(int foodId, string athleteId, bool userIsAdmin);
 
     }
 }

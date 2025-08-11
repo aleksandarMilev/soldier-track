@@ -11,27 +11,22 @@
 
     using static Constants.WebConstants;
 
-    public class WorkoutController : BaseController
+    public class WorkoutController(
+        IWorkoutService workoutService,
+        IAthleteService athleteService,
+        IMembershipService membershipService,
+        IMemoryCache cache) : BaseController
     {
-        private readonly IWorkoutService workoutService;
-        private readonly IAthleteService athleteService;
-        private readonly IMembershipService membershipService;
-        private readonly IMemoryCache cache;
-
-        public WorkoutController(
-            IWorkoutService workoutService,
-            IAthleteService athleteService,
-            IMembershipService membershipService,
-            IMemoryCache cache)
-        {
-            this.workoutService = workoutService;
-            this.athleteService = athleteService;
-            this.membershipService = membershipService;
-            this.cache = cache;
-        }
+        private readonly IWorkoutService workoutService = workoutService;
+        private readonly IAthleteService athleteService = athleteService;
+        private readonly IMembershipService membershipService = membershipService;
+        private readonly IMemoryCache cache = cache;
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(DateTime? date = null, int pageIndex = DefaultPageIndex, int pageSize = DefaultPageSize)
+        public async Task<IActionResult> GetAll(
+            DateTime? date = null,
+            int pageIndex = DefaultPageIndex,
+            int pageSize = DefaultPageSize)
         {
             pageSize = Math.Min(pageSize, MaxPageSize);
             pageSize = Math.Max(pageSize, MinPageSize);
@@ -42,24 +37,35 @@
 
             if (!this.cache.TryGetValue(cacheKey, out WorkoutPageServiceModel? model))
             {
-                model = await this.workoutService.GetAllAsync(date, pageIndex, pageSize);
+                model = await this.workoutService.GetAll(
+                    date,
+                    pageIndex,
+                    pageSize);
 
                 var cacheOptions = new MemoryCacheEntryOptions()
                     .SetAbsoluteExpiration(TimeSpan.FromHours(WorkoutCacheDuration));
 
-                this.cache.Set(cacheKey, model, cacheOptions);
+                this.cache.Set(
+                    cacheKey,
+                    model,
+                    cacheOptions);
             }
 
             return this.View(model);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetArchive(int pageIndex = DefaultPageIndex, int pageSize = DefaultPageSize)
+        public async Task<IActionResult> GetArchive(
+            int pageIndex = DefaultPageIndex,
+            int pageSize = DefaultPageSize)
         {
             pageSize = Math.Min(pageSize, MaxPageSize);
             pageSize = Math.Max(pageSize, MinPageSize);
 
-            var model = await this.workoutService.GetArchiveAsync(this.User.GetId()!, pageIndex, pageSize);
+            var model = await this.workoutService.GetArchive(
+                this.User.GetId()!,
+                pageIndex,
+                pageSize);
 
             return this.View(model);
         }
@@ -68,11 +74,13 @@
         public async Task<IActionResult> Details(int id)
         {
             var athleteId = this.User.GetId()!;
-            await this.membershipService.DeleteIfExpiredAsync(athleteId);
+            await this.membershipService.DeleteIfExpired(athleteId);
 
-            var model = await this.workoutService.GetDetailsModelByIdAsync(id, athleteId);
+            var model = await this.workoutService.GetDetailsModelById(
+                id,
+                athleteId);
 
-            if (model == null)
+            if (model is null)
             {
                 return this.NotFound();
             }

@@ -5,7 +5,7 @@
 
     public interface IAchievementService
     {
-        Task<AchievementPageServiceModel> GetAllByAthleteIdAsync(string athleteId, int pageIndex, int pageSize);
+        Task<AchievementPageServiceModel> GetAllByAthleteId(string athleteId, int pageIndex, int pageSize);
 
         Task<AchievementServiceModel?> GetByIdAsync(int id);
 

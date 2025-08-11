@@ -113,7 +113,7 @@
         {
             this.ResetDatabase();
 
-            var result = await this.athleteService.GetPageModelsAsync(null, 1, 2);
+            var result = await this.athleteService.GetPageModels(null, 1, 2);
 
             result.Should().NotBeNull();
             result.Athletes.Should().HaveCount(2);
@@ -145,7 +145,7 @@
         {
             this.ResetDatabase();
 
-            var result = await this.athleteService.GetModelByIdAsync("1");
+            var result = await this.athleteService.GetModelById("1");
 
             result.Should().NotBeNull();
             result?.FirstName.Should().Be("John");
@@ -200,7 +200,7 @@
 
             var athlete = this.fixture.Data.Athletes.First();
 
-            await this.athleteService.DeleteAsync(athlete.Id);
+            await this.athleteService.Delete(athlete.Id);
 
             athlete.IsDeleted.Should().BeTrue();
         }
@@ -210,7 +210,7 @@
         {
             this.ResetDatabase();
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() => this.athleteService.DeleteAsync("999"));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => this.athleteService.Delete("999"));
         }
 
         [Fact]
@@ -221,7 +221,7 @@
             var athleteId = "1";
             var workoutId = 1;
 
-            await this.athleteService.JoinAsync(athleteId, workoutId);
+            await this.athleteService.Join(athleteId, workoutId);
 
             var athleteWorkout = await this
                 .fixture
@@ -240,9 +240,9 @@
             var athleteId = "1";
             var workoutId = 1;
 
-            await this.athleteService.JoinAsync(athleteId, workoutId);
+            await this.athleteService.Join(athleteId, workoutId);
 
-            await this.athleteService.LeaveAsync(athleteId, workoutId);
+            await this.athleteService.Leave(athleteId, workoutId);
 
             var athleteWorkout = await this
                 .fixture

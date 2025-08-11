@@ -27,7 +27,7 @@
             this.mapper = mapper;
         }
 
-        public async Task<ExercisePageServiceModel> GetPageModelsAsync(ExerciseSearchParams searchParams, string athleteId, bool isAdmin)
+        public async Task<ExercisePageServiceModel> GetPageModels(ExerciseSearchParams searchParams, string athleteId, bool isAdmin)
         {
             var query = this.data
                 .AllDeletableAsNoTracking<Exercise>()
@@ -113,7 +113,7 @@
         }
 
 
-        public async Task<ExerciseServiceModel?> GetByIdAsync(int id) 
+        public async Task<ExerciseServiceModel?> GetById(int id) 
             => await this.data
                 .Exercises //we want all, including the deleted one
                 .AsNoTracking()
@@ -128,12 +128,12 @@
                 .FirstOrDefaultAsync()
                 ?? throw new InvalidOperationException("Exercise is not found!");
 
-        public async Task<bool> ExerciseWithThisNameExistsAsync(string name) 
+        public async Task<bool> ExerciseWithThisNameExists(string name) 
             => await this.data
                 .AllDeletableAsNoTracking<Exercise>()
                 .AnyAsync(e => e.Name == name);
 
-        public async Task<bool> ExerciseLimitReachedAsync(string athleteId)
+        public async Task<bool> ExerciseLimitReached(string athleteId)
         {
             var count = await this.data
                 .AllDeletableAsNoTracking<Exercise>()
@@ -143,7 +143,7 @@
             return count > CustomExercisesMaxCount;
         }
 
-        public async Task<int> CreateAsync(ExerciseServiceModel model)
+        public async Task<int> Create(ExerciseServiceModel model)
         {
             var exercise = this.mapper.Map<Exercise>(model);
             this.data.Add(exercise);
@@ -163,7 +163,7 @@
             await this.data.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int exerciseId, string athleteId, bool userIsAdmin)
+        public async Task Delete(int exerciseId, string athleteId, bool userIsAdmin)
         {
             var exercise = await this.data
               .AllDeletable<Exercise>()

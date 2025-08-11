@@ -30,7 +30,7 @@
             this.mapper = mapper;
         }
 
-        public async Task<MembershipPageServiceModel> GetArchiveByAthleteIdAsync(string athleteId, int pageIndex, int pageSize)
+        public async Task<MembershipPageServiceModel> GetArchiveByAthleteId(string athleteId, int pageIndex, int pageSize)
         {
             var query = this.data
                 .MembershipArchives
@@ -55,7 +55,7 @@
                 .AllDeletableAsNoTracking<Membership>()
                 .CountAsync(m => m.IsPending);
 
-        public async Task<bool> MembershipExistsByAthleteIdAsync(string athleteId)
+        public async Task<bool> MembershipExistsByAthleteId(string athleteId)
         {
             var membership = await this.data
                 .AllDeletableAsNoTracking<Membership>()
@@ -87,7 +87,7 @@
             return false;
         }
 
-        public async Task RequestAsync(MembershipServiceModel model)
+        public async Task Request(MembershipServiceModel model)
         {
             var membership = this.mapper.Map<Membership>(model);
 
@@ -103,7 +103,7 @@
             await this.data.SaveChangesAsync();
         }
 
-        public async Task ApproveAsync(int id)
+        public async Task Approve(int id)
         {
             var membership = await this.data
                 .AllDeletable<Membership>()
@@ -117,9 +117,9 @@
             await this.athleteService.Value.SendMailForApproveMembershipAsync(membership.AthleteId);
         }
 
-        public async Task RejectAsync(int id) => await this.DeleteByIdAsync(id);
+        public async Task Reject(int id) => await this.DeleteById(id);
 
-        public async Task DeleteByIdAsync(int membershipId)
+        public async Task DeleteById(int membershipId)
         {
             var membership = await this.data
               .AllDeletable<Membership>()
@@ -141,7 +141,7 @@
             await this.DeleteAsync(membership);
         }
 
-        public async Task DeleteIfExpiredAsync(string athleteId)
+        public async Task DeleteIfExpired(string athleteId)
         {
             var membership = await this.data
                 .AllDeletableAsNoTracking<Membership>()
@@ -149,7 +149,7 @@
 
             if ((membership != null) && (membership.IsMonthly && membership.EndDate < DateTime.UtcNow.Date))
             {
-                await this.DeleteByIdAsync(membership.Id);
+                await this.DeleteById(membership.Id);
             }
         }
 

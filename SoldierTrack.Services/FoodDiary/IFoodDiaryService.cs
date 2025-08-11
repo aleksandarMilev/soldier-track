@@ -4,11 +4,11 @@
 
     public interface IFoodDiaryService
     {
-        Task<FoodDiaryServiceModel?> GetModelByDateAndAthleteIdAsync(string athleteId, DateTime date);
+        Task<FoodDiaryServiceModel?> GetModelByDateAndAthleteId(string athleteId, DateTime date);
 
-        Task<FoodDiaryDetailsServiceModel?> GetDetailsByIdAsync(int diaryId);
+        Task<FoodDiaryDetailsServiceModel?> GetDetailsById(int diaryId);
 
-        Task<FoodDiaryServiceModel> CreateForDateAsync(string athleteId, DateTime date);
+        Task<FoodDiaryServiceModel> CreateForDate(string athleteId, DateTime date);
 
         Task AddFoodAsync(string athleteId, int foodId, DateTime date, string mealType, int quantity);
 

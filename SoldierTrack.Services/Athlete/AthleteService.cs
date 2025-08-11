@@ -37,7 +37,7 @@
             this.mapper = mapper;
         }
 
-        public async Task<AthletePageServiceModel> GetPageModelsAsync(string? searchTerm, int pageIndex, int pageSize)
+        public async Task<AthletePageServiceModel> GetPageModels(string? searchTerm, int pageIndex, int pageSize)
         {
             var query = this.data
                 .AllAthletesAsNoTracking(this.adminSettings.Email)
@@ -87,7 +87,7 @@
             return $"{athlete.FirstName} {athlete.LastName}";
         }
 
-        public async Task<AthleteServiceModel?> GetModelByIdAsync(string id)
+        public async Task<AthleteServiceModel?> GetModelById(string id)
         {
             var athlete = await this.data
                 .AllAthletesAsNoTracking(this.adminSettings.Email)
@@ -101,7 +101,7 @@
             return this.mapper.Map<AthleteServiceModel>(athlete);
         }
 
-        public async Task<AthleteDetailsServiceModel?> GetDetailsModelByIdAsync(string id)
+        public async Task<AthleteDetailsServiceModel?> GetDetailsModelById(string id)
         {
             var todayUtcDate = DateTime.UtcNow.Date;
             var todayUtcTime = DateTime.UtcNow.TimeOfDay;
@@ -127,7 +127,7 @@
             return serviceModel;
         }
 
-        public async Task<bool> AthleteWithSameNumberExistsAsync(string phoneNumber, string id)
+        public async Task<bool> AthleteWithSameNumberExists(string phoneNumber, string id)
         {
             var athlete = await this.data
                 .AllAthletesAsNoTracking(this.adminSettings.Email)
@@ -142,7 +142,7 @@
             return false;
         }
 
-        public async Task<bool> AthleteWithSameEmailExistsAsync(string email, string id)
+        public async Task<bool> AthleteWithSameEmailExists(string email, string id)
         {
             var athlete = await this.data
                 .AllAthletesAsNoTracking(this.adminSettings.Email)
@@ -157,7 +157,7 @@
             return false;
         }
 
-        public async Task<bool> AthleteAlreadyJoinedByIdAsync(string athleteId, int workoutId) 
+        public async Task<bool> AthleteAlreadyJoinedById(string athleteId, int workoutId) 
             => await this.data
                 .AthletesWorkouts
                 .AsNoTracking()
@@ -175,7 +175,7 @@
             await this.data.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(string id)
+        public async Task Delete(string id)
         {
             var athlete = await this.data
                 .AllAthletes(this.adminSettings.Email)
@@ -190,13 +190,13 @@
 
             if (membership != null)
             {
-                await this.membershipService.Value.DeleteByIdAsync(membership.Id);
+                await this.membershipService.Value.DeleteById(membership.Id);
             }
 
             await this.data.SaveChangesAsync();
         }
 
-        public async Task JoinAsync(string athleteId, int workoutId)
+        public async Task Join(string athleteId, int workoutId)
         {
             var workout = await this.data
                 .AllDeletable<Workout>()
@@ -216,7 +216,7 @@
             await this.data.SaveChangesAsync();
         }
 
-        public async Task LeaveAsync(string athleteId, int workoutId)
+        public async Task Leave(string athleteId, int workoutId)
         {
             var workout = await this.data
                  .AllDeletable<Workout>()

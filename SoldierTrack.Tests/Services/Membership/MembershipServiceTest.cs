@@ -108,7 +108,7 @@
         {
             this.ResetDatabase();
 
-            var exists = await this.membershipService.MembershipExistsByAthleteIdAsync("1");
+            var exists = await this.membershipService.MembershipExistsByAthleteId("1");
 
             exists.Should().BeTrue();
         }
@@ -128,7 +128,7 @@
         {
             this.ResetDatabase();
 
-            await this.membershipService.ApproveAsync(1);
+            await this.membershipService.Approve(1);
 
             var membership = await this.fixture.Data.Memberships.FindAsync(1);
             membership.Should().NotBeNull();
@@ -141,7 +141,7 @@
         {
             this.ResetDatabase();
 
-            Func<Task> act = async () => await this.membershipService.ApproveAsync(999);
+            Func<Task> act = async () => await this.membershipService.Approve(999);
 
             await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("Membership not found!");
         }
@@ -151,7 +151,7 @@
         {
             this.ResetDatabase();
 
-            Func<Task> act = async () => await this.membershipService.RejectAsync(999);
+            Func<Task> act = async () => await this.membershipService.Reject(999);
 
             await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("Membership not found!");
         }

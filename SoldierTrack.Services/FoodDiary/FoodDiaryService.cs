@@ -20,21 +20,21 @@
             this.mapper = mapper;
         }
 
-        public async Task<FoodDiaryServiceModel?> GetModelByDateAndAthleteIdAsync(string athleteId, DateTime date) 
+        public async Task<FoodDiaryServiceModel?> GetModelByDateAndAthleteId(string athleteId, DateTime date) 
             => await this.data
                 .FoodDiaries
                 .AsNoTracking()
                 .ProjectTo<FoodDiaryServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(fd => fd.AthleteId == athleteId && date == fd.Date.Date);
 
-        public async Task<FoodDiaryDetailsServiceModel?> GetDetailsByIdAsync(int diaryId) 
+        public async Task<FoodDiaryDetailsServiceModel?> GetDetailsById(int diaryId) 
             => await this.data
                 .FoodDiaries
                 .AsNoTracking()
                 .ProjectTo<FoodDiaryDetailsServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(fd => fd.Id == diaryId);
 
-        public async Task<FoodDiaryServiceModel> CreateForDateAsync(string athleteId, DateTime date)
+        public async Task<FoodDiaryServiceModel> CreateForDate(string athleteId, DateTime date)
         {
             var foodDiary = await CreateDiaryAsync(athleteId, date);
 

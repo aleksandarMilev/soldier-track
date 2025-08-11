@@ -4,27 +4,27 @@
 
     public interface IAthleteService
     {
-        Task<AthletePageServiceModel> GetPageModelsAsync(string? searchTerm, int pageIndex, int pageSize);
+        Task<AthletePageServiceModel> GetPageModels(string? searchTerm, int pageIndex, int pageSize);
 
-        Task<AthleteDetailsServiceModel?> GetDetailsModelByIdAsync(string id);
+        Task<AthleteDetailsServiceModel?> GetDetailsModelById(string id);
 
         Task<string?> GetNameByIdAsync(string id);
 
-        Task<bool> AthleteWithSameNumberExistsAsync(string phoneNumber, string userId);
+        Task<bool> AthleteWithSameNumberExists(string phoneNumber, string userId);
 
-        Task<bool> AthleteWithSameEmailExistsAsync(string email, string userId);
+        Task<bool> AthleteWithSameEmailExists(string email, string userId);
 
-        Task<bool> AthleteAlreadyJoinedByIdAsync(string athleteId, int workoutId);
+        Task<bool> AthleteAlreadyJoinedById(string athleteId, int workoutId);
 
-        Task<AthleteServiceModel?> GetModelByIdAsync(string id);
+        Task<AthleteServiceModel?> GetModelById(string id);
 
         Task EditAsync(AthleteServiceModel model);
 
-        Task DeleteAsync(string id);
+        Task Delete(string id);
 
-        Task JoinAsync(string athleteId, int workoutId);
+        Task Join(string athleteId, int workoutId);
 
-        Task LeaveAsync(string athleteId, int workoutId);
+        Task Leave(string athleteId, int workoutId);
 
         Task SendMailForApproveMembershipAsync(string athleteId);
 

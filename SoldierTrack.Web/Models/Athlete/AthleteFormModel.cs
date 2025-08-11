@@ -39,7 +39,9 @@
                 PhoneLength,
                 MinimumLength = PhoneLength,
                 ErrorMessage = LengthError)]
-        [RegularExpression("\\b\\d{10}\\b", ErrorMessage = InvalidPhoneFormat)]
+        [RegularExpression(
+            "\\b\\d{10}\\b",
+            ErrorMessage = InvalidPhoneFormat)]
         public string PhoneNumber { get; init; } = null!;
     }
 }

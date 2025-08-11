@@ -9,25 +9,28 @@
     using static Constants.MessageConstants;
     using static Constants.WebConstants;
 
-    public class AthleteController : BaseAdminController
+    public class AthleteController(
+        IAthleteService athleteService,
+        IWorkoutService workoutService) : BaseAdminController
     {
-        private readonly IAthleteService athleteService;
-        private readonly IWorkoutService workoutService;
-
-        public AthleteController(IAthleteService athleteService, IWorkoutService workoutService)
-        {
-            this.athleteService = athleteService;
-            this.workoutService = workoutService;
-        }
+        private readonly IAthleteService athleteService = athleteService;
+        private readonly IWorkoutService workoutService = workoutService;
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(string? searchTerm = null, int pageIndex = DefaultPageIndex, int pageSize = DefaultPageSize)
+        public async Task<IActionResult> GetAll(
+            string? searchTerm = null,
+            int pageIndex = DefaultPageIndex,
+            int pageSize = DefaultPageSize)
         {
             pageSize = Math.Min(pageSize, MaxPageSize);
             pageSize = Math.Max(pageSize, MinPageSize);
 
             this.ViewData[nameof(searchTerm)] = searchTerm;
-            var models = await this.athleteService.GetPageModelsAsync(searchTerm, pageIndex, pageSize);
+
+            var models = await this.athleteService.GetPageModels(
+                searchTerm,
+                pageIndex,
+                pageSize);
 
             return this.View(models);
         }
@@ -35,9 +38,9 @@
         [HttpGet]
         public async Task<IActionResult> Details(string athleteId)
         {
-            var model = await this.athleteService.GetDetailsModelByIdAsync(athleteId);
+            var model = await this.athleteService.GetDetailsModelById(athleteId);
 
-            if (model == null)
+            if (model is null)
             {
                 return this.NotFound();
             }
@@ -60,7 +63,9 @@
         [HttpPost]
         public async Task<IActionResult> AddToWorkout(AddAthleteToWorkoutModel model)
         {
-            var workoutId = await this.workoutService.GetIdByDateAndTimeAsync(model.WorkoutDate, model.WorkoutTime);
+            var workoutId = await this.workoutService.GetIdByDateAndTime(
+                model.WorkoutDate,
+                model.WorkoutTime);
 
             if (workoutId == null)
             {
@@ -69,7 +74,9 @@
                 return this.View(model);
             }
 
-            if (await this.athleteService.AthleteAlreadyJoinedByIdAsync(model.AthleteId, workoutId.Value))
+            if (await this.athleteService.AthleteAlreadyJoinedById(
+                model.AthleteId,
+                workoutId.Value))
             {
                 this.ModelState.AddModelError("", AthleteAlreadyJoined);
 
@@ -83,28 +90,42 @@
                 return this.View(model);
             }
 
-            await this.athleteService.JoinAsync(model.AthleteId, workoutId.Value);
+            await this.athleteService.Join(
+                model.AthleteId,
+                workoutId.Value);
+
             this.TempData["SuccessMessage"] = AdminAddedAthlete;
 
-            return this.RedirectToAction("Details", "Workout", new { id = workoutId, area = "" });
+            return this.RedirectToAction(
+                "Details",
+                "Workout",
+                new { id = workoutId, area = "" });
         }
 
         [HttpPost]
-        public async Task<IActionResult> RemoveFromWorkout(string athleteId, int workoutId)
+        public async Task<IActionResult> RemoveFromWorkout(
+            string athleteId,
+            int workoutId)
         {
-            await this.athleteService.LeaveAsync(athleteId, workoutId);
+            await this.athleteService.Leave(athleteId, workoutId);
             this.TempData["SuccessMessage"] = RemoveAthleteFromWorkout;
 
-            return this.RedirectToAction("Details", "Workout", new { id = workoutId, area = "" });
+            return this.RedirectToAction(
+                "Details",
+                "Workout",
+                new { id = workoutId, area = "" });
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(string athleteId)
         {
-            await this.athleteService.DeleteAsync(athleteId);
+            await this.athleteService.Delete(athleteId);
             this.TempData["SuccessMessage"] = AdminDeleteAthlete;
 
-            return this.RedirectToAction("Index", "Home", new { area = "" });
+            return this.RedirectToAction(
+                "Index",
+                "Home",
+                new { area = "" });
         }
     }
 }

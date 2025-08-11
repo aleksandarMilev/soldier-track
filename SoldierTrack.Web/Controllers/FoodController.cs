@@ -12,32 +12,37 @@
     using static Constants.MessageConstants;
     using static    Constants.WebConstants;
 
-    public class FoodController : BaseController
+    public class FoodController(
+        IFoodService foodService,
+        IAthleteService athleteService,
+        IMapper mapper) : BaseController
     {
-        private readonly IFoodService foodService;
-        private readonly IAthleteService athleteService;
-        private readonly IMapper mapper;
-
-        public FoodController(
-            IFoodService foodService,
-            IAthleteService athleteService,
-            IMapper mapper)
-        {
-            this.foodService = foodService;
-            this.athleteService = athleteService;
-            this.mapper = mapper;
-        }
+        private readonly IFoodService foodService = foodService;
+        private readonly IAthleteService athleteService = athleteService;
+        private readonly IMapper mapper = mapper;
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] FoodSearchParams searchParams)
+        public async Task<IActionResult> GetAll(
+            [FromQuery] FoodSearchParams searchParams)
         {
             searchParams.PageSize = Math.Min(searchParams.PageSize, MaxPageSize);
             searchParams.PageSize = Math.Max(searchParams.PageSize, MinPageSize);
 
-            var model = await this.foodService.GetPageModelsAsync(searchParams, this.User.GetId()!, this.User.IsAdmin());
+            var model = await this.foodService.GetPageModels(
+                searchParams,
+                this.User.GetId()!,
+                this.User.IsAdmin());
 
-            this.ViewData[nameof(searchParams.IncludeMine)] = searchParams.IncludeMine.ToString().ToLower();
-            this.ViewData[nameof(searchParams.IncludeCustom)] = searchParams.IncludeCustom.ToString().ToLower();
+            this.ViewData[nameof(searchParams.IncludeMine)] = searchParams
+                .IncludeMine
+                .ToString()
+                .ToLower();
+
+            this.ViewData[nameof(searchParams.IncludeCustom)] = searchParams
+                .IncludeCustom
+                .ToString()
+                .ToLower();
+
             this.ViewData[nameof(searchParams.SearchTerm)] = searchParams.SearchTerm;
 
             return this.View(model);
@@ -48,13 +53,16 @@
         {
             var athleteId = this.User.GetId();
 
-            if (await this.foodService.FoodLimitReachedAsync(athleteId!))
+            if (await this.foodService.FoodLimitReached(athleteId!))
             {
                 this.TempData["FailureMessage"] = MaxFoodLimit;
-                return this.RedirectToAction(nameof(GetAll));
+                return this.RedirectToAction(nameof(this.GetAll));
             }
 
-            var model = new FoodFormModel() { AthleteId = this.User.GetId()! };
+            var model = new FoodFormModel()
+            {
+                AthleteId = this.User.GetId()!
+            };
 
             return this.View(model);
         }
@@ -68,17 +76,19 @@
             }
 
             var serviceModel = this.mapper.Map<FoodServiceModel>(viewModel);
-            var foodId = await this.foodService.CreateAsync(serviceModel);
+            var foodId = await this.foodService.Create(serviceModel);
 
             this.TempData["SuccessMessage"] = FoodCreated;
 
-            return this.RedirectToAction(nameof(Details), new { id = foodId });
+            return this.RedirectToAction(
+                nameof(this.Details),
+                new { id = foodId });
         }
 
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var model = await this.foodService.GetByIdAsync(id);
+            var model = await this.foodService.GetById(id);
 
             if (model == null)
             {
@@ -91,15 +101,19 @@
         [HttpGet]
         public async Task<IActionResult> Edit(int foodId)
         {
-            var serviceModel = await this.foodService.GetByIdAsync(foodId);
+            var serviceModel = await this.foodService.GetById(foodId);
 
-            if (serviceModel == null)
+            if (serviceModel is null)
             {
                 return this.NotFound();
             }
 
-            if ((serviceModel.AthleteId == null && !this.User.IsAdmin()) &&
-                 serviceModel.AthleteId != this.User.GetId()!)
+            var userIsUnauthorized =
+                serviceModel.AthleteId == null &&
+                !this.User.IsAdmin() &&
+                serviceModel.AthleteId != this.User.GetId()!;
+
+            if (userIsUnauthorized)
             {
                 return this.Unauthorized();
             }
@@ -111,7 +125,9 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(FoodFormModel viewModel, int foodId)
+        public async Task<IActionResult> Edit(
+            FoodFormModel viewModel,
+            int foodId)
         {
             if (!this.ModelState.IsValid)
             {
@@ -120,22 +136,27 @@
 
             var serviceModel = this.mapper.Map<FoodServiceModel>(viewModel);
             serviceModel.Id = foodId;
-            await this.foodService.EditAsync(serviceModel);
+            await this.foodService.Edit(serviceModel);
 
             this.TempData["SuccessMessage"] = FoodEdited;
 
-            return this.RedirectToAction(nameof(Details), new { id = foodId });
+            return this.RedirectToAction(
+                nameof(this.Details),
+                new { id = foodId });
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(int foodId)
         {
             var athleteId = this.User.GetId();
-            await this.foodService.DeleteAsync(foodId, athleteId!, this.User.IsAdmin());
+            await this.foodService.Delete(
+                foodId,
+                athleteId!,
+                this.User.IsAdmin());
 
             this.TempData["SuccessMessage"] = FoodDeleted;
 
-            return this.RedirectToAction(nameof(GetAll));
+            return this.RedirectToAction(nameof(this.GetAll));
         }
     }
 }

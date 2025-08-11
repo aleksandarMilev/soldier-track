@@ -29,7 +29,7 @@
             this.mapper = mapper;
         }
 
-        public async Task<WorkoutPageServiceModel> GetAllAsync(DateTime? date, int pageIndex, int pageSize)
+        public async Task<WorkoutPageServiceModel> GetAll(DateTime? date, int pageIndex, int pageSize)
         {
             var query = this 
                 .GetUpcomingsAsNoTrackingAsync()
@@ -52,7 +52,7 @@
             return new WorkoutPageServiceModel(workouts, pageIndex, totalPages, pageSize);
         }
 
-        public async Task<WorkoutPageServiceModel> GetArchiveAsync(string athleteId, int pageIndex, int pageSize)
+        public async Task<WorkoutPageServiceModel> GetArchive(string athleteId, int pageIndex, int pageSize)
         {
             var query = this.data
                .AthletesWorkouts
@@ -70,13 +70,13 @@
             return new WorkoutPageServiceModel(workouts, pageIndex, totalPages, pageSize);
         }
 
-        public async Task<WorkoutServiceModel?> GetModelByIdAsync(int id) 
+        public async Task<WorkoutServiceModel?> GetModelById(int id) 
             => await this
                 .GetUpcomingsAsNoTrackingAsync()
                 .ProjectTo<WorkoutServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(w => w.Id == id);
 
-        public async Task<WorkoutDetailsServiceModel?> GetDetailsModelByIdAsync(int id, string athleteId)
+        public async Task<WorkoutDetailsServiceModel?> GetDetailsModelById(int id, string athleteId)
         {
             var model = await
                 this.GetUpcomingsAsNoTrackingAsync()
@@ -88,7 +88,7 @@
                 return null;
             }
 
-            if (await this.membershipService.MembershipExistsByAthleteIdAsync(athleteId))
+            if (await this.membershipService.MembershipExistsByAthleteId(athleteId))
             {
                 model.AthleteHasMembership = true;
 
@@ -97,7 +97,7 @@
                     model.ShowJoinButton = true;
                 }
 
-                if (await this.athleteService.AthleteAlreadyJoinedByIdAsync(athleteId, model.Id))
+                if (await this.athleteService.AthleteAlreadyJoinedById(athleteId, model.Id))
                 {
                     model.ShowJoinButton = false;
                     model.ShowLeaveButton = true;
@@ -107,7 +107,7 @@
             return model;
         }
 
-        public async Task<int?> GetIdByDateAndTimeAsync(DateTime date, TimeSpan time)
+        public async Task<int?> GetIdByDateAndTime(DateTime date, TimeSpan time)
         {
             var utcDate = GetUtcFromLocalDateAndTime(date, time);
             var workout = await
@@ -118,7 +118,7 @@
             return workout?.Id;
         }
 
-        public async Task<bool> AnotherWorkoutExistsAtThisDateAndTimeAsync(DateTime date, TimeSpan time, int? id = null)
+        public async Task<bool> AnotherWorkoutExistsAtThisDateAndTime(DateTime date, TimeSpan time, int? id = null)
         {
             var utcDate = GetUtcFromLocalDateAndTime(date, time);
             var workout = await
@@ -139,7 +139,7 @@
             return workout.CurrentParticipants == workout.MaxParticipants;
         }
 
-        public async Task<int> CreateAsync(WorkoutServiceModel model)
+        public async Task<int> Create(WorkoutServiceModel model)
         {
             var workout = this.mapper.Map<Workout>(model);
             workout.DateTime = GetUtcFromLocalDateAndTime(model.Date, model.Time);
@@ -150,7 +150,7 @@
             return workout.Id;
         }
 
-        public async Task<int> EditAsync(WorkoutServiceModel model)
+        public async Task<int> Edit(WorkoutServiceModel model)
         {
             var workout = await
                  this.GetUpcomingsAsync()
@@ -165,7 +165,7 @@
             return workout.Id;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task Delete(int id)
         {
             var entity = await
                 this.GetUpcomingsAsync()

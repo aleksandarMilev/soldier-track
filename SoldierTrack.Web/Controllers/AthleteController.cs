@@ -12,28 +12,22 @@
 
     using static Constants.MessageConstants;
 
-    public class AthleteController : BaseController
+    public class AthleteController(
+        IAthleteService athleteService,
+        SignInManager<Athlete> signInManager,
+        IMapper mapper) : BaseController
     {
-        private readonly IAthleteService athleteService;
-        private readonly SignInManager<Athlete> signInManager;
-        private readonly IMapper mapper;
-
-        public AthleteController(
-            IAthleteService athleteService,
-            SignInManager<Athlete> signInManager,
-            IMapper mapper)
-        {
-            this.athleteService = athleteService;
-            this.signInManager = signInManager;
-            this.mapper = mapper;
-        }
+        private readonly IAthleteService athleteService = athleteService;
+        private readonly SignInManager<Athlete> signInManager = signInManager;
+        private readonly IMapper mapper = mapper;
 
         [HttpGet]
         public async Task<IActionResult> Details()
         {
-            var model = await this.athleteService.GetDetailsModelByIdAsync(this.User.GetId()!);
+            var model = await this.athleteService.GetDetailsModelById(
+                this.User.GetId()!);
 
-            if (model == null)
+            if (model is null)
             {
                 return this.NotFound();
             }
@@ -44,9 +38,10 @@
         [HttpGet]
         public async Task<IActionResult> Edit()
         {
-            var serviceModel = await this.athleteService.GetModelByIdAsync(this.User.GetId()!);
+            var serviceModel = await this.athleteService.GetModelById(
+                this.User.GetId()!);
 
-            if (serviceModel == null)
+            if (serviceModel is null)
             {
                 return this.NotFound();
             }
@@ -64,16 +59,24 @@
                 return this.View(viewModel);
             }
 
-            if (await this.athleteService.AthleteWithSameNumberExistsAsync(viewModel.PhoneNumber, viewModel.Id))
+            if (await this.athleteService.AthleteWithSameNumberExists(
+                viewModel.PhoneNumber,
+                viewModel.Id))
             {
-                this.ModelState.AddModelError(nameof(viewModel.PhoneNumber), string.Format(PhoneDuplicate, viewModel.PhoneNumber));
+                this.ModelState.AddModelError(
+                    nameof(viewModel.PhoneNumber),
+                    string.Format(PhoneDuplicate, viewModel.PhoneNumber));
 
                 return this.View(viewModel);
             }
 
-            if (await this.athleteService.AthleteWithSameEmailExistsAsync(viewModel.Email, viewModel.Id))
+            if (await this.athleteService.AthleteWithSameEmailExists(
+                viewModel.Email,
+                viewModel.Id))
             {
-                this.ModelState.AddModelError(nameof(viewModel.Email), string.Format(EmailDuplicate, viewModel.Email));
+                this.ModelState.AddModelError(
+                    nameof(viewModel.Email),
+                    string.Format(EmailDuplicate, viewModel.Email));
 
                 return this.View(viewModel);
             }
@@ -83,38 +86,53 @@
 
             this.TempData["SuccessMessage"] = AthleteEditHimself;
 
-            return this.RedirectToAction(nameof(Details), new { id = serviceModel.Id });
+            return this.RedirectToAction(
+                nameof(Details),
+                new { id = serviceModel.Id });
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete()
         {
             await this.signInManager.SignOutAsync();
-            await this.athleteService.DeleteAsync(this.User.GetId()!);
+            await this.athleteService.Delete(this.User.GetId()!);
 
             this.TempData["SuccessMessage"] = AthleteDeleteHimself;
 
-            return this.RedirectToAction("Index", "Home", new { area = "" });
+            return this.RedirectToAction(
+                "Index",
+                "Home",
+                new { area = "" });
         }
 
         [HttpPost]
         public async Task<IActionResult> Join(int workoutId)
         {
-            await this.athleteService.JoinAsync(this.User.GetId()!, workoutId);
+            await this.athleteService.Join(
+                this.User.GetId()!,
+                workoutId);
 
             this.TempData["SuccessMessage"] = JoinSuccess;
 
-            return this.RedirectToAction("Details", "Workout", new { id = workoutId });
+            return this.RedirectToAction(
+                "Details",
+                "Workout",
+                new { id = workoutId });
         }
 
         [HttpPost]
         public async Task<IActionResult> Leave(int workoutId)
         {
-            await this.athleteService.LeaveAsync(this.User.GetId()!, workoutId);
+            await this.athleteService.Leave(
+                this.User.GetId()!,
+                workoutId);
 
             this.TempData["SuccessMessage"] = AthleteLeaveSuccess;
 
-            return this.RedirectToAction("Details", "Workout", new { id = workoutId });
+            return this.RedirectToAction(
+                "Details",
+                "Workout",
+                new { id = workoutId });
         }
     }
 }

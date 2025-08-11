@@ -9,35 +9,38 @@
 
     using static Constants.MessageConstants;
 
-    public class FoodController : BaseAdminController
+    public class FoodController(
+        IFoodService service,
+        IMapper mapper) : BaseAdminController
     {
-        private readonly IFoodService foodService;
-        private readonly IMapper mapper;
-
-        public FoodController(IFoodService foodService, IMapper mapper)
-        {
-            this.foodService = foodService;
-            this.mapper = mapper;
-        }
+        private readonly IFoodService service = service;
+        private readonly IMapper mapper = mapper;
 
         [HttpGet]
         public IActionResult Create() 
-            => this.View("~/Views/Food/Create.cshtml", new FoodFormModel());
+            => this.View(
+                "~/Views/Food/Create.cshtml",
+                new FoodFormModel());
 
         [HttpPost]
         public async Task<IActionResult> Create(FoodFormModel viewModel)
         {
             if (!this.ModelState.IsValid)
             {
-                return this.View("~/Views/Food/Create.cshtml", viewModel);
+                return this.View(
+                    "~/Views/Food/Create.cshtml",
+                    viewModel);
             }
 
             var serviceModel = this.mapper.Map<FoodServiceModel>(viewModel);
-            _ = await this.foodService.CreateAsync(serviceModel);
+            _ = await this.service.Create(serviceModel);
 
             this.TempData["SuccessMessage"] = FoodCreated;
 
-            return this.RedirectToAction("Index", "Home", new { area = "" });
+            return this.RedirectToAction(
+                "Index",
+                "Home",
+                new { area = "" });
         }
     }
 }

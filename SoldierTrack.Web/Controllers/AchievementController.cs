@@ -13,32 +13,29 @@
     using static Constants.MessageConstants;
     using static Constants.WebConstants;
 
-    public class AchievementController : BaseController
+    public class AchievementController(
+        IAchievementService achievementService,
+        IExerciseService exerciseService,
+        IAthleteService athleteService,
+        IMapper mapper) : BaseController
     {
-        private readonly IAchievementService achievementService;
-        private readonly IExerciseService exerciseService;
-        private readonly IAthleteService athleteService;
-        private readonly IMapper mapper;
-
-        public AchievementController(
-            IAchievementService achievementService,
-            IExerciseService exerciseService,
-            IAthleteService athleteService,
-            IMapper mapper)
-        {
-            this.achievementService = achievementService;
-            this.exerciseService = exerciseService;
-            this.athleteService = athleteService;
-            this.mapper = mapper;
-        }
+        private readonly IAchievementService achievementService = achievementService;
+        private readonly IExerciseService exerciseService = exerciseService;
+        private readonly IAthleteService athleteService = athleteService;
+        private readonly IMapper mapper = mapper;
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(int pageIndex = DefaultPageIndex, int pageSize = DefaultPageSize)
+        public async Task<IActionResult> GetAll(
+            int pageIndex = DefaultPageIndex,
+            int pageSize = DefaultPageSize)
         {
             pageSize = Math.Min(pageSize, MaxPageSize);
             pageSize = Math.Max(pageSize, MinPageSize);
 
-            var models = await this.achievementService.GetAllByAthleteIdAsync(this.User.GetId()!, pageIndex, pageSize);
+            var models = await this.achievementService.GetAllByAthleteId(
+                this.User.GetId()!,
+                pageIndex,
+                pageSize);
 
             return this.View(models);
         }
@@ -49,12 +46,18 @@
             var athleteId = this.User.GetId();
             var exerciseName = await this.exerciseService.GetNameByIdAsync(exerciseId);
 
-            if (await this.achievementService.AchievementIsAlreadyAddedAsync(exerciseId, athleteId!))
+            if (await this.achievementService.AchievementIsAlreadyAddedAsync(
+                exerciseId,
+                athleteId!))
             {
                 return this.BadRequest();
             }
 
-            var model = new AchievementFormModel(athleteId!, exerciseId, exerciseName, DateTime.Now);
+            var model = new AchievementFormModel(
+                athleteId!,
+                exerciseId,
+                exerciseName,
+                DateTime.Now);
 
             return this.View(model);
         }
@@ -72,7 +75,9 @@
 
             this.TempData["SuccessMessage"] = PRSuccessfullyAdded;
 
-            return this.RedirectToAction(nameof(GetAll), new { athleteId = viewModel.AthleteId });
+            return this.RedirectToAction(
+                nameof(GetAll),
+                new { athleteId = viewModel.AthleteId });
         }
 
         [HttpGet]
@@ -80,7 +85,7 @@
         {
             var serviceModel = await this.achievementService.GetByIdAsync(id);
 
-            if (serviceModel == null)
+            if (serviceModel is null)
             {
                 return this.NotFound();
             }
@@ -91,7 +96,8 @@
                 return this.RedirectToAction(nameof(GetAll));
             }
 
-            if ((serviceModel.AthleteId == null) || (serviceModel.AthleteId != this.User.GetId()!))
+            if ((serviceModel.AthleteId == null) ||
+                (serviceModel.AthleteId != this.User.GetId()!))
             {
                 return this.Unauthorized();
             }
@@ -103,7 +109,9 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(AchievementFormModel viewModel, int id)
+        public async Task<IActionResult> Edit(
+            AchievementFormModel viewModel,
+            int id)
         {
             if (!this.ModelState.IsValid)
             {
@@ -116,7 +124,9 @@
             
             this.TempData["SuccessMessage"] = AchievementEdited;
 
-            return this.RedirectToAction(nameof(GetAll), new { athleteId = viewModel.AthleteId });
+            return this.RedirectToAction(
+                nameof(GetAll),
+                new { athleteId = viewModel.AthleteId });
         }
 
         [HttpPost]
@@ -127,7 +137,9 @@
 
             this.TempData["SuccessMessage"] = AchievementDeleted;
 
-            return this.RedirectToAction(nameof(GetAll), new { athleteId });
+            return this.RedirectToAction(
+                nameof(GetAll),
+                new { athleteId });
         }
     }
 }

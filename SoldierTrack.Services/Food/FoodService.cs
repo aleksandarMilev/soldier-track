@@ -21,7 +21,7 @@
             this.mapper = mapper;
         }
 
-        public async Task<FoodPageServiceModel> GetPageModelsAsync(FoodSearchParams searchParams, string athleteId, bool isAdmin)
+        public async Task<FoodPageServiceModel> GetPageModels(FoodSearchParams searchParams, string athleteId, bool isAdmin)
         {
             var query = this.data
                .AllDeletableAsNoTracking<Food>()
@@ -61,13 +61,13 @@
             return new FoodPageServiceModel(foods, searchParams.PageIndex, totalPages, searchParams.PageSize);
         }
 
-        public async Task<FoodServiceModel?> GetByIdAsync(int id) 
+        public async Task<FoodServiceModel?> GetById(int id) 
             => await this.data
                 .AllDeletableAsNoTracking<Food>()
                 .ProjectTo<FoodDetailsServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(f => f.Id == id);
 
-        public async Task<bool> FoodLimitReachedAsync(string athleteId)
+        public async Task<bool> FoodLimitReached(string athleteId)
         {
             var count = await this.data
                  .AllDeletableAsNoTracking<Food>()
@@ -77,7 +77,7 @@
             return count > CustomFoodMaxCount;
         }
 
-        public async Task<int> CreateAsync(FoodServiceModel model)
+        public async Task<int> Create(FoodServiceModel model)
         {
             var food = this.mapper.Map<Food>(model);
             this.data.Add(food);
@@ -86,7 +86,7 @@
             return food.Id;
         }
 
-        public async Task EditAsync(FoodServiceModel model)
+        public async Task Edit(FoodServiceModel model)
         {
             var food = await this.data
                 .AllDeletable<Food>()
@@ -97,7 +97,7 @@
             await this.data.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int foodId, string athleteId, bool userIsAdmin)
+        public async Task Delete(int foodId, string athleteId, bool userIsAdmin)
         {
             var food = await this.data
                  .AllDeletable<Food>()

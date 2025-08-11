@@ -3,21 +3,14 @@
     using Base;
     using Extensions;
     using Microsoft.AspNetCore.Mvc;
-    using Services.Athlete;
     using Services.FoodDiary;
 
     using static Constants.MessageConstants;
 
-    public class FoodDiaryController : BaseController
+    public class FoodDiaryController(
+        IFoodDiaryService service) : BaseController
     {
-        private readonly IFoodDiaryService foodDiaryService;
-        private readonly IAthleteService athleteService;
-
-        public FoodDiaryController(IFoodDiaryService foodDiaryService, IAthleteService athleteService)
-        {
-            this.foodDiaryService = foodDiaryService;
-            this.athleteService = athleteService;
-        }
+        private readonly IFoodDiaryService service = service;
 
         [HttpGet]
         public async Task<IActionResult> MyDiary(DateTime? date)
@@ -28,8 +21,13 @@
 
             date ??= DateTime.Now; 
 
-            var model = await this.foodDiaryService.GetModelByDateAndAthleteIdAsync(athleteId!, date.Value.Date);
-            model ??= await this.foodDiaryService.CreateForDateAsync(athleteId!, date.Value);
+            var model = await this.service.GetModelByDateAndAthleteId(
+                athleteId!,
+                date.Value.Date);
+
+            model ??= await this.service.CreateForDate(
+                athleteId!,
+                date.Value);
 
             return this.View(model);
         }
@@ -37,9 +35,9 @@
         [HttpGet]
         public async Task<IActionResult> Details(int diaryId)
         {
-            var model = await this.foodDiaryService.GetDetailsByIdAsync(diaryId);
+            var model = await this.service.GetDetailsById(diaryId);
 
-            if (model == null)
+            if (model is null)
             {
                 return this.NotFound();
             }
@@ -53,9 +51,18 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddFood(int foodId, DateTime date, string mealType, int quantity)
+        public async Task<IActionResult> AddFood(
+            int foodId,
+            DateTime date,
+            string mealType,
+            int quantity)
         {
-            await this.foodDiaryService.AddFoodAsync(this.User.GetId()!, foodId, date.Date, mealType, quantity);
+            await this.service.AddFoodAsync(
+                this.User.GetId()!,
+                foodId,
+                date.Date,
+                mealType,
+                quantity);
 
             this.TempData["SuccessMessage"] = "Food successfully added!";
 
@@ -63,23 +70,35 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> RemoveFood(int diaryId, int foodId, string mealType)
+        public async Task<IActionResult> RemoveFood(
+            int diaryId,
+            int foodId,
+            string mealType)
         {
-            await this.foodDiaryService.RemoveFoodAsync(diaryId, foodId, mealType);
+            await this.service.RemoveFoodAsync(diaryId, foodId, mealType);
 
             this.TempData["SuccessMessage"] = "Food successfully removed!";
 
-            return this.RedirectToAction(nameof(Details), new { diaryId });
+            return this.RedirectToAction(
+                nameof(this.Details),
+                new { diaryId });
         }
 
         private DateTime? ValidateDate(DateTime? date)
         {
-            if ((date != null) && (DateTime.Now < date.Value.AddMonths(-1) || DateTime.Now > date.Value.AddMonths(1)))
+            var dateIsNotNullAndIsInTheCorrectRange = 
+                (date != null) &&
+                (DateTime.Now < date.Value.AddMonths(-1) ||
+                DateTime.Now > date.Value.AddMonths(1));
+
+            if (dateIsNotNullAndIsInTheCorrectRange)
             {
+                const string DateFormat = "dd MMM yyyy";
+
                 this.TempData["FailureMessage"] = string.Format(
                     FoodDiaryDateError,
-                    DateTime.Now.AddMonths(-1).ToString("dd MMM yyyy"),
-                    DateTime.Now.AddMonths(1).ToString("dd MMM yyyy"));
+                    DateTime.Now.AddMonths(-1).ToString(DateFormat),
+                    DateTime.Now.AddMonths(1).ToString(DateFormat));
 
                 return DateTime.Now;
             }

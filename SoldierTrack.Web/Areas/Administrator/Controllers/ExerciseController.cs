@@ -9,39 +9,46 @@
 
     using static Constants.MessageConstants;
 
-    public class ExerciseController : BaseAdminController
+    public class ExerciseController(
+        IExerciseService service,
+        IMapper mapper) : BaseAdminController
     {
-        private readonly IExerciseService exerciseService;
-        private readonly IMapper mapper;
+        private readonly IExerciseService service = service;
+        private readonly IMapper mapper = mapper;
 
-        public ExerciseController(IExerciseService exerciseService, IMapper mapper)
-        {
-            this.exerciseService = exerciseService;
-            this.mapper = mapper;
-        }
-
-        public IActionResult Create() => this.View("~/Views/Exercise/Create.cshtml", new ExerciseFormModel());
+        public IActionResult Create()
+            => this.View(
+                "~/Views/Exercise/Create.cshtml",
+                new ExerciseFormModel());
 
         [HttpPost]
         public async Task<IActionResult> Create(ExerciseFormModel viewModel)
         {
             if (!this.ModelState.IsValid)
             {
-                return this.View("~/Views/Exercise/Create.cshtml", viewModel);
+                return this.View(
+                    "~/Views/Exercise/Create.cshtml",
+                    viewModel);
             }
 
-            if (await this.exerciseService.ExerciseWithThisNameExistsAsync(viewModel.Name))
+            if (await this.service.ExerciseWithThisNameExists(viewModel.Name))
             {
-                this.ModelState.AddModelError(nameof(viewModel.Name), string.Format(ExerciseNameDuplicated, viewModel.Name));
+                this.ModelState.AddModelError(
+                    nameof(viewModel.Name),
+                    string.Format(ExerciseNameDuplicated, viewModel.Name));
+
                 return this.View("~/Views/Exercise/Create.cshtml", viewModel);
             }
 
             var serviceModel = this.mapper.Map<ExerciseServiceModel>(viewModel);
-            _ = await this.exerciseService.CreateAsync(serviceModel);
+            _ = await this.service.Create(serviceModel);
 
             this.TempData["SuccessMessage"] = ExerciseCreated;
 
-            return this.RedirectToAction("Index", "Home", new { area = "" });
+            return this.RedirectToAction(
+                "Index",
+                "Home",
+                new { area = "" });
         }
     }
 }

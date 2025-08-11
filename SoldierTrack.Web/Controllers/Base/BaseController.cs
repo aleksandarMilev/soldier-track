@@ -4,7 +4,5 @@
     using Microsoft.AspNetCore.Mvc;
 
     [Authorize]
-    public class BaseController : Controller
-    {
-    }
+    public class BaseController : Controller { }
 }

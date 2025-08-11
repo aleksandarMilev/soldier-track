@@ -4,22 +4,22 @@
 
     public interface IExerciseService
     {
-        Task<ExercisePageServiceModel> GetPageModelsAsync(ExerciseSearchParams searchParams, string athleteId, bool userIsAdmin);
+        Task<ExercisePageServiceModel> GetPageModels(ExerciseSearchParams searchParams, string athleteId, bool userIsAdmin);
 
-        Task<ExerciseServiceModel?> GetByIdAsync(int id);
+        Task<ExerciseServiceModel?> GetById(int id);
 
         Task<ExerciseDetailsServiceModel?> GetDetailsById(int id, string athleteId, bool userIsAdmin);
 
         Task<string> GetNameByIdAsync(int id);
 
-        Task<bool> ExerciseLimitReachedAsync(string athleteId);
+        Task<bool> ExerciseLimitReached(string athleteId);
 
-        Task<bool> ExerciseWithThisNameExistsAsync(string name);
+        Task<bool> ExerciseWithThisNameExists(string name);
 
-        Task<int> CreateAsync(ExerciseServiceModel model);
+        Task<int> Create(ExerciseServiceModel model);
 
         Task EditAsync(ExerciseServiceModel model);
 
-        Task DeleteAsync(int exerciseId, string athleteId, bool userIsAdmin);
+        Task Delete(int exerciseId, string athleteId, bool userIsAdmin);
     }
 }

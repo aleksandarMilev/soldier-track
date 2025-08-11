@@ -9,7 +9,11 @@
     {
         public AchievementFormModel() { }
 
-        public AchievementFormModel(string athleteId, int exerciseId, string exerciseName, DateTime dateAchieved)
+        public AchievementFormModel(
+            string athleteId,
+            int exerciseId,
+            string exerciseName,
+            DateTime dateAchieved)
         {
             AthleteId = athleteId;
             ExerciseId = exerciseId;
