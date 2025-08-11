@@ -218,4 +218,5 @@ Known issues:
 - Grafana does not visualize HTTP Requests Rate
 - All images are saved as URLs at the database (except the static ones, they are saved as files at `/www.root`). This is not ideal. It will be better to keep them as files too.
 - There are a few unit tests and not integration tests at all.
-- The code itself is not commented at all (add XML comments, especially in the service interfaces and the extension methods for the web project)
+- The code itself is not commented at all (add XML comments, especially in the service interfaces and the extension methods for the web project).
+- The application does not have any logging, which makes troubleshooting a nightmare.

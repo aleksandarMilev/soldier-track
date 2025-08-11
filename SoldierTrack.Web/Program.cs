@@ -17,8 +17,9 @@ builder.Services
     
 
 var app = builder.Build();
+var envIsDevelopment = app.Environment.IsDevelopment();
 
-if (app.Environment.IsDevelopment())
+if (envIsDevelopment)
 {
     app.UseMigrationsEndPoint();
     app.UseDeveloperExceptionPage();
@@ -35,7 +36,7 @@ app
     .UseAuthentication()
     .UseAuthorization();
 
-if (app.Environment.IsDevelopment())
+if (envIsDevelopment)
 {
     await app.UseMigrationsAsync();
 }
@@ -45,5 +46,9 @@ app.MapDefaultControllerRoute();
 app.MapRazorPages();
 app.MapMetrics();
 
-await app.CreateAdminRoleAsync();
+if (envIsDevelopment)
+{
+    await app.CreateAdminRoleAsync();
+}
+
 await app.RunAsync();
