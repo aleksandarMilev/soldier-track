@@ -1,5 +1,36 @@
 # SoldierTrack
 
+## Table of Contents
+- [Overview](#overview)
+- [Feature Limits](#feature-limits)
+- [Technologies Used](#technologies-used)
+- [Deployment & Hosting](#deployment--hosting)
+- [Database Diagram](#database-diagram)
+- [Accounts](#accounts)
+  - [Administrator Account](#administrator-account)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [1. Clone the Repository](#1-clone-the-repository)
+  - [2. Set Up Environment Variables](#2-set-up-environment-variables)
+  - [3. Run the App](#3-run-the-app)
+  - [4. (Optional) Run the Tests](#4-optional-run-the-tests)
+- [Screenshots](#screenshots)
+  - [Guest Home Page](#guest-home-page)
+  - [Authenticated User Home Page](#authenticated-user-home-page)
+  - [Register](#register)
+  - [Request Membership](#request-membership)
+  - [Workouts List](#workouts-list)
+  - [Workout Details](#workout-details)
+  - [User Profile](#user-profile)
+  - [Exercises List](#exercises-list)
+  - [Achievements](#achievements)
+  - [Food List](#food-list)
+  - [Diary](#diary)
+  - [Diary Details](#diary-details)
+  - [Athlete List (Admin)](#athlete-list-admin)
+- [License](#license)
+- [Contributing](#contributing)
+
 ## Overview
 
 **SoldierTrack** is a fitness management platform tailored for athletes to track progress, optimize training, and manage nutrition. It offers:
@@ -131,10 +162,6 @@ Simply run `dotnet test` from the project root.
 
 ![Workout Details](https://github.com/aleksandarMilev/soldier-track/blob/master/screenshots/w-details.png)
 
-### Workouts List
-
-![Workout List](https://github.com/aleksandarMilev/soldier-track/blob/master/screenshots/workouts.png)
-
 ### User Profile
 
 ![User Profile](https://github.com/aleksandarMilev/soldier-track/blob/master/screenshots/profile.png)
@@ -178,16 +205,17 @@ If you find a bug, want to suggest a feature, or improve existing functionality,
 
 Steps to contribute:
 
-1. (_Optional_) Fork the repo
-2. Create a new branch (`git switch -c feature/foo`)
-3. Make your changes
-4. Commit them (`git commit -m "Add some cool feature"`)
-5. Push (`git push origin feature/foo`)
-6. Open a pull request
+1. Create a new branch from develop (`git switch -c feature/foo develop`)
+2. Make your changes
+3. Commit them (`git commit -m "Add some cool feature"`)
+4. Push (`git push origin feature/foo`)
+5. Open a pull request from `foo` to `develop`
 
 I'll be extremely happy to review and merge your PR!
 
 Known issues:
 
 - Grafana does not visualize HTTP Requests Rate
-- All images are saved as URLs at the db (except the static onesm, they are saved as files at `/www.root`). This is not ideal. It will be better to keep them as files too.
+- All images are saved as URLs at the database (except the static ones, they are saved as files at `/www.root`). This is not ideal. It will be better to keep them as files too.
+- There are a few unit tests and not integration tests at all.
+- The code itself is not commented at all (add XML comments, especially in the service interfaces and the extension methods for the web project)
