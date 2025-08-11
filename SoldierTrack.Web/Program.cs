@@ -5,18 +5,27 @@ using SoldierTrack.Web.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-    .AddApplicationServices(builder.Configuration)
-    .AddApplicationDbContext(builder.Configuration, builder.Environment)
-    .AddApplicationIdentity()
+    .AddConfigClasses(builder.Configuration)
+    .AddServices()
+    .AddDbContext(builder.Configuration, builder.Environment)
+    .AddIdentity()
     .AddAutoMapperProfiles()
     .AddMemoryCache()
+    .AddRazor()
     .AddControllersWithViews(options =>
     {
         options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
     });
-    
+
+builder.Logging.AddLogging();
 
 var app = builder.Build();
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
+logger.LogInformation(
+    "Starting SoldierTrack in {Environment} environment",
+    app.Environment.EnvironmentName);
+
 var envIsDevelopment = app.Environment.IsDevelopment();
 
 if (envIsDevelopment)
@@ -50,7 +59,5 @@ if (envIsDevelopment)
 {
     await app.CreateAdminRoleAsync();
 }
-
-await app.CreateTempAdmin();
 
 await app.RunAsync();
