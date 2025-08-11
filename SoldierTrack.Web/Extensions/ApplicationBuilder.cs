@@ -11,57 +11,15 @@
 
     public static class ApplicationBuilder
     {
-        public static async Task CreateTempAdmin(this IApplicationBuilder app)
-        {
-            using (var scope = app.ApplicationServices.CreateScope())
-            {
-                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Athlete>>();
-                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-                var adminEmail = Environment.GetEnvironmentVariable("TEMP_ADMIN_EMAIL");
-                var adminPassword = Environment.GetEnvironmentVariable("TEMP_ADMIN_PASSWORD");
-                const string adminRole = "Administrator";
-
-                if (string.IsNullOrWhiteSpace(adminEmail) || string.IsNullOrWhiteSpace(adminPassword))
-                {
-                    throw new Exception("TEMP_ADMIN_EMAIL or TEMP_ADMIN_PASSWORD not set in environment variables.");
-                }
-
-                if (!await roleManager.RoleExistsAsync(adminRole))
-                {
-                    await roleManager.CreateAsync(new IdentityRole(adminRole));
-                }
-
-                var adminUser = await userManager.FindByEmailAsync(adminEmail);
-                if (adminUser == null)
-                {
-                    adminUser = new Athlete
-                    {
-                        FirstName = adminRole,
-                        LastName = adminRole,
-                        UserName = adminEmail,
-                        Email = adminEmail,
-                        EmailConfirmed = true
-                    };
-
-                    var result = await userManager.CreateAsync(adminUser, adminPassword);
-                    if (!result.Succeeded)
-                    {
-                        throw new Exception("Failed to create admin: " + string.Join(", ", result.Errors.Select(e => e.Description)));
-                    }
-                }
-
-                if (!await userManager.IsInRoleAsync(adminUser, adminRole))
-                {
-                    await userManager.AddToRoleAsync(adminUser, adminRole);
-                }
-            }
-        }
-
-        public static async Task CreateAdminRoleAsync(this IApplicationBuilder app)
+        public static async Task CreateAdminRoleAsync(
+            this IApplicationBuilder app)
         {
             using var scope = app.ApplicationServices.CreateScope();
-            var adminSettings = scope.ServiceProvider.GetRequiredService<IOptions<AdminSettings>>().Value;
+
+            var adminSettings = scope
+                .ServiceProvider
+                .GetRequiredService<IOptions<AdminSettings>>()
+                .Value;
 
             var userManager = scope
                 .ServiceProvider
@@ -71,19 +29,35 @@
                 .ServiceProvider
                 .GetRequiredService<RoleManager<IdentityRole>>();
 
+            const string LoggerCategoryName = "Startup.CreateAdminRoleAsync";
+
+            var logger = scope.ServiceProvider
+                .GetRequiredService<ILoggerFactory>()
+                .CreateLogger(LoggerCategoryName);
+
+            logger.LogInformation(
+                "Checking if role {RoleName} exists...",
+                AdminRoleName);
+
             var roleAlreadyExists = await roleManager.RoleExistsAsync(AdminRoleName);
 
             if (userManager != null &&
                 roleManager != null &&
                !roleAlreadyExists)
             {
+                logger.LogInformation("Creating role {RoleName}", AdminRoleName);
+
                 var role = new IdentityRole(AdminRoleName);
                 await roleManager.CreateAsync(role);
 
                 var admin = await userManager.FindByEmailAsync(adminSettings.Email);
 
-                if (admin == null)
+                if (admin is null)
                 {
+                    logger.LogInformation(
+                        "Creating admin user {Email}",
+                        adminSettings.Email);
+
                     admin = new Athlete()
                     {
                         FirstName = AdminRoleName,
@@ -92,22 +66,56 @@
                         Email = adminSettings.Email
                     };
 
-                    await userManager.CreateAsync(admin, adminSettings.Password);
+                    var createUserResult = await userManager.CreateAsync(
+                        admin,
+                        adminSettings.Password);
+
+                    if (!createUserResult.Succeeded)
+                    {
+                        logger.LogError(
+                            "Failed to create admin user {Email}: {Errors}",
+                            adminSettings.Email,
+                            string.Join(
+                                ", ",
+                                createUserResult.Errors.Select(e => e.Description)));
+                    }
                 }
 
-                if (role.Name != null)
+                if (role.Name is not null)
                 {
+                    logger.LogInformation(
+                        "Assigning user {Email} to role {RoleName}",
+                        adminSettings.Email,
+                        role.Name);
+
                     await userManager.AddToRoleAsync(admin, role.Name);
                 }
             }
+            else
+            {
+                logger.LogInformation(
+                    "Role {RoleName} already exists. Skipping admin creation.",
+                    AdminRoleName);
+            }
         }
 
-        public static async Task<IApplicationBuilder> UseMigrationsAsync(this IApplicationBuilder app)
+        public static async Task<IApplicationBuilder> UseMigrationsAsync(
+            this IApplicationBuilder app)
         {
             using var services = app.ApplicationServices.CreateScope();
-            var data = services.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var logger = services.ServiceProvider
+                .GetRequiredService<ILoggerFactory>()
+                .CreateLogger("Startup.UseMigrationsAsync");
+
+            var data = services.ServiceProvider
+                .GetRequiredService<ApplicationDbContext>();
+
+            logger.LogInformation("Applying database migrations...");
 
             await data.Database.MigrateAsync();
+
+            logger.LogInformation("Database migrations completed successfully.");
 
             return app;
         }

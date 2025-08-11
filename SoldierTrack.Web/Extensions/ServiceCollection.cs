@@ -1,4 +1,6 @@
-﻿namespace SoldierTrack.Web.Extensions
+﻿using System.Runtime.CompilerServices;
+
+namespace SoldierTrack.Web.Extensions
 {
     using Data;
     using Data.Models;
@@ -25,11 +27,27 @@
 
     public static class ServiceCollection
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddRazor(
+            this IServiceCollection services)
         {
-            services
-                .Configure<SmtpSettings>(configuration.GetSection("SmtpSettings"))
-                .Configure<AdminSettings>(configuration.GetSection("AdminSettings"))
+            services.AddRazorPages();
+
+            return services;
+        }
+
+        public static IServiceCollection AddConfigClasses(
+            this IServiceCollection services,
+            IConfiguration config)
+        {
+            return services
+                .Configure<SmtpSettings>(config.GetSection("SmtpSettings"))
+                .Configure<AdminSettings>(config.GetSection("AdminSettings"));
+        }
+
+        public static IServiceCollection AddServices(
+            this IServiceCollection services)
+        {
+            return services
                 .AddTransient<IAthleteService, AthleteService>()
                 .AddTransient(provider =>
                 {
@@ -51,13 +69,11 @@
                 .AddTransient<IAchievementService, AchievementService>()
                 .AddTransient<IFoodService, FoodService>()
                 .AddTransient<IFoodDiaryService, FoodDiaryService>()
-                .AddTransient<IEmailService, EmailService>()
-                .AddRazorPages();
-
-            return services;
+                .AddTransient<IEmailService, EmailService>();
         }
 
-        public static IServiceCollection AddAutoMapperProfiles(this IServiceCollection services)
+        public static IServiceCollection AddAutoMapperProfiles(
+            this IServiceCollection services)
         {
             services.AddAutoMapper(cfg =>
             {
@@ -74,7 +90,7 @@
             return services;
         }
 
-        public static IServiceCollection AddApplicationDbContext(
+        public static IServiceCollection AddDbContext(
             this IServiceCollection services,
             IConfiguration configuration,
             IHostEnvironment environment)
@@ -96,7 +112,8 @@
             return services;
         }
 
-        public static IServiceCollection AddApplicationIdentity(this IServiceCollection services)
+        public static IServiceCollection AddIdentity(
+            this IServiceCollection services)
         {
             services
                 .AddIdentity<Athlete, IdentityRole>(options =>
@@ -115,7 +132,7 @@
                 {
                     options.LoginPath = "/Identity/Account/Login";
                 });
-            
+
             return services;
         }
     }
