@@ -12,7 +12,7 @@
 
     @{
         var userIsLogged = this.User?.Identity?.IsAuthenticated ?? false;
-        var name = userIsLogged ? await this.athleteService.GetNameByIdAsync(this.User!.GetId()!) : "Guest";
+        var name = userIsLogged ? await this.athleteService.GetNameById(this.User!.GetId()!) : "Guest";
     }
 
     <li class="nav-item">

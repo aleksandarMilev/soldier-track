@@ -6,6 +6,7 @@
 
         public const int MinPageSize = 1;
         public const int MaxPageSize = 100;
+        public const int MinPageIndex = 1;
 
         public const int DefaultPageIndex = 1;
         public const int DefaultPageSize = 10;

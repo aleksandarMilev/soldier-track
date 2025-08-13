@@ -9,21 +9,40 @@
     {
         public WorkoutProfile()
         {
-            this.CreateMap<WorkoutServiceModel, Workout>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.CurrentParticipants, opt => opt.Ignore())
+            this
+                .CreateMap<WorkoutServiceModel, Workout>()
+                .ForMember(
+                    dest => dest.Id,
+                    opt => opt.Ignore())
+                .ForMember(
+                    dest => dest.CurrentParticipants,
+                    opt => opt.Ignore())
                 .ReverseMap()
-                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.DateTime));
+                .ForMember(
+                    dest => dest.Date,
+                    opt => opt.MapFrom(src => src.DateTime));
 
-            this.CreateMap<Workout, WorkoutDetailsServiceModel>()
-                .ForMember(dest => dest.Athletes, opt => opt.MapFrom(src => src.AthletesWorkouts.Select(aw => aw.Athlete)))
-                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.DateTime));
+            this
+                .CreateMap<Workout, WorkoutDetailsServiceModel>()
+                .ForMember(
+                    dest => dest.Athletes,
+                    opt => opt.MapFrom(
+                        src => src.AthletesWorkouts.Select(aw => aw.Athlete)))
+                .ForMember(
+                    dest => dest.Date,
+                    opt => opt.MapFrom(src => src.DateTime));
 
-            this.CreateMap<Athlete, AthleteServiceModel>();
+            this
+                .CreateMap<Athlete, AthleteServiceModel>();
 
-            this.CreateMap<AthleteWorkout, WorkoutServiceModel>()
-                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Workout.Title))
-                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Workout.DateTime));
+            this
+                .CreateMap<AthleteWorkout, WorkoutServiceModel>()
+                .ForMember(
+                    dest => dest.Title,
+                    opt => opt.MapFrom(src => src.Workout.Title))
+                .ForMember(
+                    dest => dest.Date,
+                    opt => opt.MapFrom(src => src.Workout.DateTime));
         }
     }
 }

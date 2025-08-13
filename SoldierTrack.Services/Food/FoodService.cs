@@ -10,28 +10,34 @@
 
     using static Common.Constants;
 
-    public class FoodService : IFoodService
+    public class FoodService(
+        ApplicationDbContext data,
+        IMapper mapper) : IFoodService
     {
-        private readonly ApplicationDbContext data;
-        private readonly IMapper mapper;
+        private readonly ApplicationDbContext data = data;
+        private readonly IMapper mapper = mapper;
 
-        public FoodService(ApplicationDbContext data, IMapper mapper)
-        {
-            this.data = data;
-            this.mapper = mapper;
-        }
-
-        public async Task<FoodPageServiceModel> GetPageModels(FoodSearchParams searchParams, string athleteId, bool isAdmin)
+        public async Task<FoodPageServiceModel> GetPageModels(
+            FoodSearchParams searchParams,
+            string athleteId,
+            bool isAdmin)
         {
             var query = this.data
                .AllDeletableAsNoTracking<Food>()
                .ProjectTo<FoodServiceModel>(this.mapper.ConfigurationProvider);
 
-            if (isAdmin || (searchParams.IncludeMine && searchParams.IncludeCustom) || (!searchParams.IncludeMine && searchParams.IncludeCustom))
+            var includeAll =
+                isAdmin ||
+                (searchParams.IncludeMine && searchParams.IncludeCustom) ||
+                (!searchParams.IncludeMine && searchParams.IncludeCustom);
+
+            var doNotIncludeCustom = searchParams.IncludeMine && !searchParams.IncludeCustom;
+
+            if (includeAll)
             {
                 query = query.OrderBy(e => e.Name);
             }
-            else if (searchParams.IncludeMine && !searchParams.IncludeCustom)
+            else if (doNotIncludeCustom)
             {
                 query = query
                     .Where(e => e.AthleteId == athleteId || e.AthleteId == null)
@@ -47,7 +53,8 @@
 
             if (!string.IsNullOrEmpty(searchParams.SearchTerm))
             {
-                query = query.Where(e => e.Name.Contains(searchParams.SearchTerm.ToLower()));
+                query = query
+                    .Where(e => e.Name.Contains(searchParams.SearchTerm.ToLower()));
             }
 
             var totalCount = await query.CountAsync();
@@ -58,13 +65,18 @@
 
             var totalPages = (int)Math.Ceiling(totalCount / (double)searchParams.PageSize);
 
-            return new FoodPageServiceModel(foods, searchParams.PageIndex, totalPages, searchParams.PageSize);
+            return new FoodPageServiceModel(
+                foods,
+                searchParams.PageIndex,
+                totalPages,
+                searchParams.PageSize);
         }
 
         public async Task<FoodServiceModel?> GetById(int id) 
             => await this.data
                 .AllDeletableAsNoTracking<Food>()
-                .ProjectTo<FoodDetailsServiceModel>(this.mapper.ConfigurationProvider)
+                .ProjectTo<FoodDetailsServiceModel>(
+                    this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(f => f.Id == id);
 
         public async Task<bool> FoodLimitReached(string athleteId)
@@ -97,14 +109,21 @@
             await this.data.SaveChangesAsync();
         }
 
-        public async Task Delete(int foodId, string athleteId, bool userIsAdmin)
+        public async Task Delete(
+            int foodId,
+            string athleteId,
+            bool userIsAdmin)
         {
             var food = await this.data
                  .AllDeletable<Food>()
                  .FirstOrDefaultAsync(f => f.Id == foodId)
                  ?? throw new InvalidOperationException("Food not found!");
 
-            if (!userIsAdmin && (food.AthleteId == null || food.AthleteId != athleteId))
+            var userIsUnauthorized =
+                !userIsAdmin &&
+                (food.AthleteId == null || food.AthleteId != athleteId);
+
+            if (userIsUnauthorized)
             {
                 throw new InvalidOperationException("Unauthorized operation!");
             }

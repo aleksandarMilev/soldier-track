@@ -4,6 +4,6 @@
 
     public class FoodDiaryDetailsServiceModel : FoodDiaryServiceModel
     {
-        public ICollection<MealServiceModel> Meals { get; set; } = new List<MealServiceModel>();
+        public ICollection<MealServiceModel> Meals { get; set; } = [];
     }
 }

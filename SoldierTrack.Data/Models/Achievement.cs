@@ -15,13 +15,13 @@
         public double OneRepMax { get; set; }
 
         [ForeignKey(nameof(Athlete))]
-        public string AthleteId { get; set; } = null!;
+        public string AthleteId { get; set; } = default!;
 
-        public Athlete Athlete { get; set; } = null!;
+        public Athlete Athlete { get; set; } = default!;
 
         [ForeignKey(nameof(Exercise))]
         public int ExerciseId { get; set; }
 
-        public Exercise Exercise { get; set; } = null!;
+        public Exercise Exercise { get; set; } = default!;
     }
 }

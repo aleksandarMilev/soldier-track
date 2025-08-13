@@ -4,15 +4,18 @@
 
     public interface IMembershipService
     {
-        Task<MembershipPageServiceModel> GetArchiveByAthleteId(string athleteId, int pageIndex, int pageSize);
+        Task<MembershipPageServiceModel> GetArchiveByAthleteId(
+            string athleteId,
+            int pageIndex,
+            int pageSize);
 
-        Task<int> GetPendingCountAsync();
+        Task<int> GetPendingCount();
 
         Task<bool> MembershipExistsByAthleteId(string athleteId);
 
-        Task<bool> MembershipIsApprovedByAthleteIdAsync(string athleteId);
+        Task<bool> MembershipIsApprovedByAthleteId(string athleteId);
 
-        Task<bool> MembershipIsExpiredByAthleteIdAsync (string athleteId);
+        Task<bool> MembershipIsExpiredByAthleteId (string athleteId);
 
         Task Request(MembershipServiceModel model);
 
@@ -22,14 +25,14 @@
 
         Task DeleteById(int id);
 
-        Task DeleteByAthleteIdAsync(string athleteId);
+        Task DeleteByAthleteId(string athleteId);
 
         Task DeleteIfExpired(string athleteId);
 
-        Task UpdateMembershipOnWorkoutDeletionAsync(int? membershipId);
+        Task UpdateMembershipOnWorkoutDeletion(int? membershipId);
 
-        Task UpdateMembershipOnJoinByAthleteIdAsync(string athleteId);
+        Task UpdateMembershipOnJoinByAthleteId(string athleteId);
 
-        Task UpdateMembershipOnLeaveByAthleteIdAsync(string athleteId);
+        Task UpdateMembershipOnLeaveByAthleteId(string athleteId);
     }
 }

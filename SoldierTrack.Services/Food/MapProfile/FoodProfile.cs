@@ -8,7 +8,8 @@
     {
         public FoodProfile()
         {
-            this.CreateMap<Food, FoodServiceModel>()
+            this
+                .CreateMap<Food, FoodServiceModel>()
                 .ReverseMap();
         }
     }

@@ -7,25 +7,31 @@
 
     public static class Extensions
     {
-        public static IQueryable<T> AllDeletable<T>(this ApplicationDbContext data)
+        public static IQueryable<T> AllDeletable<T>(
+            this ApplicationDbContext data)
             where T : class, IDeletableEntity 
                 => data
                     .Set<T>()
                     .Where(e => !e.IsDeleted);
 
-        public static IQueryable<T> AllDeletableAsNoTracking<T>(this ApplicationDbContext data)
-           where T : class, IDeletableEntity 
+        public static IQueryable<T> AllDeletableAsNoTracking<T>(
+            this ApplicationDbContext data)
+            where T : class, IDeletableEntity 
                 => data
                     .Set<T>()
                     .AsNoTracking()
                     .Where(e => !e.IsDeleted);
 
-        public static IQueryable<Athlete> AllAthletes(this ApplicationDbContext data, string adminMail) 
+        public static IQueryable<Athlete> AllAthletes(
+            this ApplicationDbContext data,
+            string adminMail) 
             => data
                .Set<Athlete>()
                .Where(a => !a.IsDeleted && a.Email != adminMail);
 
-        public static IQueryable<Athlete> AllAthletesAsNoTracking(this ApplicationDbContext data, string adminMail) 
+        public static IQueryable<Athlete> AllAthletesAsNoTracking(
+            this ApplicationDbContext data,
+            string adminMail) 
             => data
                 .Set<Athlete>()
                 .AsNoTracking()

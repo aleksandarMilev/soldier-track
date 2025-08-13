@@ -11,33 +11,29 @@
     using Models;
     using SoldierTrack.Common.Settings;
 
-    public class MembershipService : IMembershipService
+    public class MembershipService(
+        ApplicationDbContext data,
+        Lazy<IAthleteService> athleteService,
+        IOptions<AdminSettings> adminSettings,
+        IMapper mapper) : IMembershipService
     {
-        private readonly ApplicationDbContext data;
-        private readonly Lazy<IAthleteService> athleteService;
-        private readonly AdminSettings adminSettings;
-        private readonly IMapper mapper;
+        private readonly ApplicationDbContext data = data;
+        private readonly Lazy<IAthleteService> athleteService = athleteService;
+        private readonly AdminSettings adminSettings = adminSettings.Value;
+        private readonly IMapper mapper = mapper;
 
-        public MembershipService(
-            ApplicationDbContext data, 
-            Lazy<IAthleteService> athleteService, 
-            IOptions<AdminSettings> adminSettings,
-            IMapper mapper)
-        {
-            this.data = data;
-            this.athleteService = athleteService;
-            this.adminSettings = adminSettings.Value;
-            this.mapper = mapper;
-        }
-
-        public async Task<MembershipPageServiceModel> GetArchiveByAthleteId(string athleteId, int pageIndex, int pageSize)
+        public async Task<MembershipPageServiceModel> GetArchiveByAthleteId(
+            string athleteId,
+            int pageIndex,
+            int pageSize)
         {
             var query = this.data
                 .MembershipArchives
                 .Include(m => m.Membership)
                 .Include(m => m.Athlete)
                 .Where(m => m.AthleteId == athleteId)
-                .ProjectTo<MembershipServiceModel>(this.mapper.ConfigurationProvider);
+                .ProjectTo<MembershipServiceModel>(
+                    this.mapper.ConfigurationProvider);
 
             var totalCount = await query.CountAsync();
             var memberships = await query
@@ -47,10 +43,14 @@
 
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
-            return new MembershipPageServiceModel(memberships, pageIndex, totalPages, pageSize);
+            return new MembershipPageServiceModel(
+                memberships,
+                pageIndex,
+                totalPages,
+                pageSize);
         }
 
-        public async Task<int> GetPendingCountAsync() 
+        public async Task<int> GetPendingCount() 
             => await this.data
                 .AllDeletableAsNoTracking<Membership>()
                 .CountAsync(m => m.IsPending);
@@ -61,30 +61,29 @@
                 .AllDeletableAsNoTracking<Membership>()
                 .FirstOrDefaultAsync(m => m.AthleteId == athleteId);
 
-            return membership != null;
+            return membership is not null;
         }
 
-        public async Task<bool> MembershipIsApprovedByAthleteIdAsync(string athleteId)
+        public async Task<bool> MembershipIsApprovedByAthleteId(string athleteId)
         {
             var membership = await this.data
                 .AllDeletableAsNoTracking<Membership>()
                 .FirstOrDefaultAsync(m => m.AthleteId == athleteId);
 
-            return membership != null && !membership.IsPending;
+            return membership is not null && !membership.IsPending;
         }
 
-        public async Task<bool> MembershipIsExpiredByAthleteIdAsync(string athleteId)
+        public async Task<bool> MembershipIsExpiredByAthleteId(string athleteId)
         {
             var membership = await this.data
                 .AllDeletableAsNoTracking<Membership>()
                 .FirstOrDefaultAsync(m => m.AthleteId == athleteId);
 
-            if ((membership == null) || (membership.IsMonthly && membership.EndDate < DateTime.UtcNow.Date))
-            {
-                return true;
-            }
+            var isMonthlyAndIsExpired =
+                (membership is null) ||
+                (membership.IsMonthly && membership.EndDate < DateTime.UtcNow.Date);
 
-            return false;
+            return isMonthlyAndIsExpired;
         }
 
         public async Task Request(MembershipServiceModel model)
@@ -114,10 +113,11 @@
             membership.IsPending = false;
             await this.data.SaveChangesAsync();
 
-            await this.athleteService.Value.SendMailForApproveMembershipAsync(membership.AthleteId);
+            await this.athleteService.Value.SendMailForApproveMembership(membership.AthleteId);
         }
 
-        public async Task Reject(int id) => await this.DeleteById(id);
+        public async Task Reject(int id)
+            => await this.DeleteById(id);
 
         public async Task DeleteById(int membershipId)
         {
@@ -127,10 +127,10 @@
               .FirstOrDefaultAsync(m => m.Id == membershipId)
               ?? throw new InvalidOperationException("Membership not found!");
 
-            await this.DeleteAsync(membership);
+            await this.Delete(membership);
         }
 
-        public async Task DeleteByAthleteIdAsync(string athleteId)
+        public async Task DeleteByAthleteId(string athleteId)
         {
             var membership = await this.data
                 .AllDeletable<Membership>()
@@ -138,7 +138,7 @@
                 .FirstOrDefaultAsync(m => m.AthleteId == athleteId)
                 ?? throw new InvalidOperationException("Membership not found!");
 
-            await this.DeleteAsync(membership);
+            await this.Delete(membership);
         }
 
         public async Task DeleteIfExpired(string athleteId)
@@ -147,19 +147,24 @@
                 .AllDeletableAsNoTracking<Membership>()
                 .FirstOrDefaultAsync(m => m.AthleteId == athleteId);
 
-            if ((membership != null) && (membership.IsMonthly && membership.EndDate < DateTime.UtcNow.Date))
+            var isMonthlyAndIsExpired =
+                (membership is not null) &&
+                membership.IsMonthly &&
+                membership.EndDate < DateTime.UtcNow.Date;
+
+            if (isMonthlyAndIsExpired)
             {
-                await this.DeleteById(membership.Id);
+                await this.DeleteById(membership!.Id);
             }
         }
 
-        public async Task UpdateMembershipOnWorkoutDeletionAsync(int? membershipId)
+        public async Task UpdateMembershipOnWorkoutDeletion(int? membershipId)
         {
             var membership = await this.data
                 .AllDeletable<Membership>()
                 .FirstOrDefaultAsync(m => m.Id == membershipId);
 
-            if (membership != null && !membership.IsMonthly)
+            if (membership is not null && !membership.IsMonthly)
             {
                 membership.WorkoutsLeft++;
                 if (membership.WorkoutsLeft > membership.TotalWorkoutsCount)
@@ -169,13 +174,13 @@
             }
         }
 
-        public async Task UpdateMembershipOnJoinByAthleteIdAsync(string athleteId) 
-            => await this.UpdateMembershipAsync(athleteId, x => --x);
+        public async Task UpdateMembershipOnJoinByAthleteId(string athleteId) 
+            => await this.UpdateMembership(athleteId, x => --x);
 
-        public async Task UpdateMembershipOnLeaveByAthleteIdAsync(string athleteId) 
-            => await this.UpdateMembershipAsync(athleteId, x => ++x);
+        public async Task UpdateMembershipOnLeaveByAthleteId(string athleteId) 
+            => await this.UpdateMembership(athleteId, x => ++x);
 
-        private async Task DeleteAsync(Membership membership)
+        private async Task Delete(Membership membership)
         {
             var archive = new MembershipArchive()
             {
@@ -191,15 +196,22 @@
             await this.data.SaveChangesAsync();
         }
 
-        private async Task UpdateMembershipAsync(string athleteId, Func<int, int> action)
+        private async Task UpdateMembership(
+            string athleteId,
+            Func<int, int> action)
         {
             var membership = await this.data
                .AllDeletable<Membership>()
                .FirstOrDefaultAsync(m => m.AthleteId == athleteId);
 
-            if (membership != null && !membership.IsMonthly && !membership.IsPending)
+            var isNotMonthlyAndIsNotPending =
+                membership is not null &&
+                !membership.IsMonthly &&
+                !membership.IsPending;
+
+            if (isNotMonthlyAndIsNotPending)
             {
-                membership.WorkoutsLeft = action(membership.WorkoutsLeft.GetValueOrDefault());
+                membership!.WorkoutsLeft = action(membership.WorkoutsLeft.GetValueOrDefault());
                 await this.data.SaveChangesAsync();
             }
         }

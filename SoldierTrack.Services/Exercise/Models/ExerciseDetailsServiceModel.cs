@@ -12,6 +12,6 @@
 
         public int? RelatedAchievementId { get; set; }
 
-        public IEnumerable<Ranking> Rankings { get; set; } = new List<Ranking>();
+        public IEnumerable<Ranking> Rankings { get; set; } = [];
     }
 }

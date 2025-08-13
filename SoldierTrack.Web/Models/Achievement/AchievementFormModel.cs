@@ -10,12 +10,10 @@
         public AchievementFormModel() { }
 
         public AchievementFormModel(
-            string athleteId,
             int exerciseId,
             string exerciseName,
             DateTime dateAchieved)
         {
-            AthleteId = athleteId;
             ExerciseId = exerciseId;
             ExerciseName = exerciseName;
             DateAchieved = dateAchieved;
@@ -36,8 +34,6 @@
            RepetitionsMaxValue,
            ErrorMessage = InvalidRepetitionsValue)]
         public int Repetitions { get; init; }
-
-        public string AthleteId { get; init; } = null!;
 
         public int ExerciseId { get; init; }
     }

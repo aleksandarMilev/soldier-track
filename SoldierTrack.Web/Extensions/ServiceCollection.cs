@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace SoldierTrack.Web.Extensions
+﻿namespace SoldierTrack.Web.Extensions
 {
     using Data;
     using Data.Models;
@@ -8,7 +6,6 @@ namespace SoldierTrack.Web.Extensions
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using Services.Achievement;
-    using Services.Achievement.MapperProfile;
     using Services.Athlete;
     using Services.Athlete.MapperProfile;
     using Services.Email;
@@ -24,6 +21,7 @@ namespace SoldierTrack.Web.Extensions
     using Services.Workout;
     using Services.Workout.MapperProfile;
     using SoldierTrack.Common.Settings;
+    using WebServices.CurrentUser;
 
     public static class ServiceCollection
     {
@@ -48,6 +46,7 @@ namespace SoldierTrack.Web.Extensions
             this IServiceCollection services)
         {
             return services
+                .AddScoped<ICurrentUserService, CurrentUserService>()
                 .AddTransient<IAthleteService, AthleteService>()
                 .AddTransient(provider =>
                 {
@@ -65,8 +64,22 @@ namespace SoldierTrack.Web.Extensions
                     });
                 })
                 .AddTransient<IExerciseService, ExerciseService>()
-                .AddTransient<IWorkoutService, WorkoutService>()
+                .AddTransient(provider =>
+                {
+                    return new Lazy<IExerciseService>(() =>
+                    {
+                        return provider.GetRequiredService<IExerciseService>();
+                    });
+                })
                 .AddTransient<IAchievementService, AchievementService>()
+                .AddTransient(provider =>
+                {
+                    return new Lazy<IAchievementService>(() =>
+                    {
+                        return provider.GetRequiredService<IAchievementService>();
+                    });
+                })
+                .AddTransient<IWorkoutService, WorkoutService>()
                 .AddTransient<IFoodService, FoodService>()
                 .AddTransient<IFoodDiaryService, FoodDiaryService>()
                 .AddTransient<IEmailService, EmailService>();
@@ -81,7 +94,6 @@ namespace SoldierTrack.Web.Extensions
                 cfg.AddProfile<WorkoutProfile>();
                 cfg.AddProfile<MembershipProfile>();
                 cfg.AddProfile<ExerciseProfile>();
-                cfg.AddProfile<AchievementProfile>();
                 cfg.AddProfile<FoodProfile>();
                 cfg.AddProfile<FoodDiaryProfile>();
             },
@@ -92,19 +104,20 @@ namespace SoldierTrack.Web.Extensions
 
         public static IServiceCollection AddDbContext(
             this IServiceCollection services,
-            IConfiguration configuration,
-            IHostEnvironment environment)
+            IConfiguration config,
+            IHostEnvironment env)
         {
-            var connectionString = configuration
+            var connectionString = config
                 .GetConnectionString("DefaultConnection")
-                ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+                ?? throw new InvalidOperationException(
+                    "Connection string 'DefaultConnection' not found!");
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(connectionString);
             });
 
-            if (environment.IsDevelopment())
+            if (env.IsDevelopment())
             {
                 services.AddDatabaseDeveloperPageExceptionFilter();
             }

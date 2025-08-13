@@ -57,7 +57,7 @@
             string mealType,
             int quantity)
         {
-            await this.service.AddFoodAsync(
+            await this.service.AddFood(
                 this.User.GetId()!,
                 foodId,
                 date.Date,

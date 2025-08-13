@@ -2,7 +2,6 @@
 
 @model AchievementFormModel
 
-<input asp-for="AthleteId" type="hidden" />
 <input asp-for="ExerciseId" type="hidden" />
 <div class="form-group">
     <input asp-for="ExerciseName" class="form-control" readonly />
@@ -16,7 +15,7 @@
 
 <div class="form-group">
     <label asp-for="Repetitions" class="control-label"></label>
-    <input asp-for="Repetitions" class="form-control" type="number" step="any" />
+    <input asp-for="Repetitions" class="form-control" type="number" step="1" />
     <span asp-validation-for="Repetitions" class="text-danger"></span>
 </div>
 

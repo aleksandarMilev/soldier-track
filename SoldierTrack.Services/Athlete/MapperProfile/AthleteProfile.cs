@@ -10,15 +10,25 @@
     {
         public AthleteProfile()
         {
-            this.CreateMap<Athlete, AthleteServiceModel>()
+            this
+                .CreateMap<Athlete, AthleteServiceModel>()
                 .ReverseMap();
 
-            this.CreateMap<Athlete, AthleteDetailsServiceModel>()
-              .ForMember(dest => dest.Membership, opt => opt.MapFrom(src => src.Membership))
-              .ForMember(dest => dest.Workouts, opt => opt.MapFrom(src => src.AthletesWorkouts.Select(aw => aw.Workout)));
+            this
+                .CreateMap<Athlete, AthleteDetailsServiceModel>()
+                .ForMember(
+                    dest => dest.Membership,
+                    opt => opt.MapFrom(src => src.Membership))
+                .ForMember(
+                    dest => dest.Workouts,
+                    opt => opt.MapFrom(
+                        src => src.AthletesWorkouts.Select(aw => aw.Workout)));
 
-            this.CreateMap<Membership, MembershipServiceModel>();
-            this.CreateMap<Workout, WorkoutServiceModel>();
+            this
+                .CreateMap<Membership, MembershipServiceModel>();
+
+            this
+                .CreateMap<Workout, WorkoutServiceModel>();
         }
     }
 }

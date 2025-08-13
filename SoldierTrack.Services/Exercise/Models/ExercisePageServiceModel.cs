@@ -23,6 +23,6 @@
 
         public int PageSize { get; init; }
 
-        public IEnumerable<ExerciseServiceModel> Exercises { get; init; } = new List<ExerciseServiceModel>();
+        public IEnumerable<ExerciseServiceModel> Exercises { get; init; } = [];
     }
 }

@@ -4,7 +4,10 @@
 
     public interface IFoodService
     {
-        Task<FoodPageServiceModel> GetPageModels(FoodSearchParams searchParams, string athleteId, bool userIsAdmin);
+        Task<FoodPageServiceModel> GetPageModels(
+            FoodSearchParams searchParams,
+            string athleteId,
+            bool userIsAdmin);
 
         Task<FoodServiceModel?> GetById(int id);
 
@@ -14,7 +17,9 @@
 
         Task Edit(FoodServiceModel model);
 
-        Task Delete(int foodId, string athleteId, bool userIsAdmin);
-
+        Task Delete(
+            int foodId,
+            string athleteId,
+            bool userIsAdmin);
     }
 }

@@ -13,18 +13,18 @@
     using static Constants.MessageConstants;
 
     public class AthleteController(
-        IAthleteService athleteService,
+        IAthleteService service,
         SignInManager<Athlete> signInManager,
         IMapper mapper) : BaseController
     {
-        private readonly IAthleteService athleteService = athleteService;
+        private readonly IAthleteService service = service;
         private readonly SignInManager<Athlete> signInManager = signInManager;
         private readonly IMapper mapper = mapper;
 
         [HttpGet]
         public async Task<IActionResult> Details()
         {
-            var model = await this.athleteService.GetDetailsModelById(
+            var model = await this.service.GetDetailsModelById(
                 this.User.GetId()!);
 
             if (model is null)
@@ -38,7 +38,7 @@
         [HttpGet]
         public async Task<IActionResult> Edit()
         {
-            var serviceModel = await this.athleteService.GetModelById(
+            var serviceModel = await this.service.GetModelById(
                 this.User.GetId()!);
 
             if (serviceModel is null)
@@ -59,7 +59,7 @@
                 return this.View(viewModel);
             }
 
-            if (await this.athleteService.AthleteWithSameNumberExists(
+            if (await this.service.AthleteWithSameNumberExists(
                 viewModel.PhoneNumber,
                 viewModel.Id))
             {
@@ -70,7 +70,7 @@
                 return this.View(viewModel);
             }
 
-            if (await this.athleteService.AthleteWithSameEmailExists(
+            if (await this.service.AthleteWithSameEmailExists(
                 viewModel.Email,
                 viewModel.Id))
             {
@@ -82,7 +82,7 @@
             }
 
             var serviceModel = this.mapper.Map<AthleteServiceModel>(viewModel);
-            await this.athleteService.EditAsync(serviceModel);
+            await this.service.Edit(serviceModel);
 
             this.TempData["SuccessMessage"] = AthleteEditHimself;
 
@@ -95,7 +95,7 @@
         public async Task<IActionResult> Delete()
         {
             await this.signInManager.SignOutAsync();
-            await this.athleteService.Delete(this.User.GetId()!);
+            await this.service.Delete(this.User.GetId()!);
 
             this.TempData["SuccessMessage"] = AthleteDeleteHimself;
 
@@ -108,7 +108,7 @@
         [HttpPost]
         public async Task<IActionResult> Join(int workoutId)
         {
-            await this.athleteService.Join(
+            await this.service.Join(
                 this.User.GetId()!,
                 workoutId);
 
@@ -123,7 +123,7 @@
         [HttpPost]
         public async Task<IActionResult> Leave(int workoutId)
         {
-            await this.athleteService.Leave(
+            await this.service.Leave(
                 this.User.GetId()!,
                 workoutId);
 

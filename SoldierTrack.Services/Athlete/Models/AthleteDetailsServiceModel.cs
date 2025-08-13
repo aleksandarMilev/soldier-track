@@ -9,6 +9,6 @@
 
         public MembershipServiceModel? Membership { get; init; }
 
-        public IEnumerable<WorkoutServiceModel> Workouts { get; set; } = new List<WorkoutServiceModel>();
+        public IEnumerable<WorkoutServiceModel> Workouts { get; set; } = [];
     }
 }

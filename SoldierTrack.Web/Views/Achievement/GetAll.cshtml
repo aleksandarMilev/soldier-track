@@ -1,16 +1,17 @@
 ﻿@using SoldierTrack.Services.Achievement.Models
+@using SoldierTrack.Services.Common
 
-@model AchievementPageServiceModel
+@model PaginatedModel<AchievementServiceModel>
 
 @{
     this.ViewData["Title"] = "My PRs";
-    var achievements = this.Model.Achievements;
+    var achievements = this.Model.Items;
     var pageSize = this.Model.PageSize;
     var totalPages = this.Model.TotalPages;
     var pageIndex = this.Model.PageIndex;
 }
 
-@if (this.TempData["SuccessMessage"] != null)
+@if (this.TempData["SuccessMessage"] is not null)
 {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         <p>@this.TempData["SuccessMessage"]</p>
@@ -18,7 +19,7 @@
     </div>
 }
 
-@if (this.TempData["FailureMessage"] != null)
+@if (this.TempData["FailureMessage"] is not null)
 {
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <p>@this.TempData["FailureMessage"]</p>

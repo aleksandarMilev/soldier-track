@@ -19,6 +19,6 @@
 
         public int FoodDiaryId { get; set; }
 
-        public ICollection<FoodDetailsServiceModel> MealsFoods { get; set; } = new List<FoodDetailsServiceModel>();
+        public ICollection<FoodDetailsServiceModel> MealsFoods { get; set; } = [];
     }
 }

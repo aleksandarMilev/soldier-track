@@ -22,6 +22,6 @@
 
         public int PageSize { get; init; }
 
-        public IEnumerable<WorkoutServiceModel> Workouts { get; init; } = new List<WorkoutServiceModel>();
+        public IEnumerable<WorkoutServiceModel> Workouts { get; init; } = [];
     }
 }

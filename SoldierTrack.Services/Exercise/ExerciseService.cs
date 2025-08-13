@@ -11,37 +11,41 @@
 
     using static Common.Constants;
 
-    public class ExerciseService : IExerciseService
+    public class ExerciseService(
+        ApplicationDbContext data,
+        Lazy<IAchievementService> achievementService,
+        IMapper mapper) : IExerciseService
     {
-        private readonly ApplicationDbContext data;
-        private readonly IAchievementService achievementService;
-        private readonly IMapper mapper;
+        private readonly ApplicationDbContext data = data;
+        private readonly Lazy<IAchievementService> achievementService = achievementService;
+        private readonly IMapper mapper = mapper;
 
-        public ExerciseService(
-            ApplicationDbContext data,
-            IAchievementService achievementService,
-            IMapper mapper)
-        {
-            this.data = data;
-            this.achievementService = achievementService;
-            this.mapper = mapper;
-        }
-
-        public async Task<ExercisePageServiceModel> GetPageModels(ExerciseSearchParams searchParams, string athleteId, bool isAdmin)
+        public async Task<ExercisePageServiceModel> GetPageModels(
+            ExerciseSearchParams searchParams,
+            string athleteId,
+            bool isAdmin)
         {
             var query = this.data
                 .AllDeletableAsNoTracking<Exercise>()
-                .ProjectTo<ExerciseServiceModel>(this.mapper.ConfigurationProvider);
+                .ProjectTo<ExerciseServiceModel>(
+                    this.mapper.ConfigurationProvider);
 
-            if (isAdmin || (searchParams.IncludeMine && searchParams.IncludeCustom) || (!searchParams.IncludeMine && searchParams.IncludeCustom))
+            var orderByName =
+                isAdmin ||
+                (searchParams.IncludeMine && searchParams.IncludeCustom) ||
+                (!searchParams.IncludeMine && searchParams.IncludeCustom);
+
+            var orderByNonCustom = searchParams.IncludeMine && !searchParams.IncludeCustom;
+            
+            if (orderByName)
             {
                 query = query.OrderBy(e => e.Name);
             }
-            else if (searchParams.IncludeMine && !searchParams.IncludeCustom)
+            else if (orderByNonCustom)
             {
                 query = query
                     .Where(e => e.AthleteId == athleteId || e.AthleteId == null)
-                    .OrderBy(e => e.AthleteId == null) 
+                    .OrderBy(e => e.AthleteId == null)
                     .ThenBy(e => e.Name);
             }
             else
@@ -53,7 +57,8 @@
 
             if (!string.IsNullOrEmpty(searchParams.SearchTerm))
             {
-                query = query.Where(e => e.Name.Contains(searchParams.SearchTerm.ToLower()));
+                query = query
+                    .Where(e => e.Name.Contains(searchParams.SearchTerm.ToLower()));
             }
 
             var totalCount = await query.CountAsync();
@@ -64,17 +69,25 @@
 
             var totalPages = (int)Math.Ceiling(totalCount / (double)searchParams.PageSize);
 
-            return new ExercisePageServiceModel(exercises, searchParams.PageIndex, totalPages, searchParams.PageSize);
+            return new ExercisePageServiceModel(
+                exercises,
+                searchParams.PageIndex,
+                totalPages,
+                searchParams.PageSize);
         }
 
-        public async Task<ExerciseDetailsServiceModel?> GetDetailsById(int exerciseId, string athleteId, bool userIsAdmin)
+        public async Task<ExerciseDetailsServiceModel?> GetDetailsById(
+            int exerciseId,
+            string athleteId,
+            bool userIsAdmin)
         {
             var model = await this.data
                 .AllDeletableAsNoTracking<Exercise>()
-                .ProjectTo<ExerciseDetailsServiceModel>(this.mapper.ConfigurationProvider)
+                .ProjectTo<ExerciseDetailsServiceModel>(
+                    this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(e => e.Id == exerciseId);
 
-            if (model == null)
+            if (model is null)
             {
                 return null;
             }
@@ -87,7 +100,10 @@
                 return model;
             }
 
-            var achievementId = await this.achievementService.GetAchievementIdAsync(athleteId!, exerciseId);
+            var achievementId = await this
+                .achievementService
+                .Value
+                .GetAchievementId(athleteId!, exerciseId);
 
             if (achievementId == null)
             {
@@ -107,11 +123,13 @@
                 model.ShowDeleteButton = true;
             }
 
-            model.Rankings = await this.achievementService.GetRankingsAsync(exerciseId);
+            model.Rankings = await this
+                .achievementService
+                .Value
+                .GetRankings(exerciseId);
 
             return model;
         }
-
 
         public async Task<ExerciseServiceModel?> GetById(int id) 
             => await this.data
@@ -120,7 +138,12 @@
                 .ProjectTo<ExerciseServiceModel>(this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
-        public async Task<string> GetNameByIdAsync(int id) 
+        public async Task<bool> ExistsById(int id)
+            => await this.data
+                .AllDeletableAsNoTracking<Exercise>()
+                .AnyAsync(e => e.Id == id);
+
+        public async Task<string> GetNameById(int id) 
             => await this.data
                 .AllDeletableAsNoTracking<Exercise>()
                 .Where(e => e.Id == id)
@@ -163,14 +186,21 @@
             await this.data.SaveChangesAsync();
         }
 
-        public async Task Delete(int exerciseId, string athleteId, bool userIsAdmin)
+        public async Task Delete(
+            int exerciseId,
+            string athleteId,
+            bool userIsAdmin)
         {
             var exercise = await this.data
               .AllDeletable<Exercise>()
               .FirstOrDefaultAsync(e => e.Id == exerciseId)
               ?? throw new InvalidOperationException("Exercise not found!");
 
-            if (!userIsAdmin && (exercise.AthleteId == null || exercise.AthleteId != athleteId))
+            var userIsUnauthorized =
+                !userIsAdmin &&
+                (exercise.AthleteId == null || exercise.AthleteId != athleteId);
+
+            if (userIsUnauthorized)
             {
                 throw new InvalidOperationException("Unauthorized operation!");
             }

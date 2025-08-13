@@ -8,9 +8,11 @@
 
         Task<ExerciseServiceModel?> GetById(int id);
 
+        Task<bool> ExistsById(int id);
+
         Task<ExerciseDetailsServiceModel?> GetDetailsById(int id, string athleteId, bool userIsAdmin);
 
-        Task<string> GetNameByIdAsync(int id);
+        Task<string> GetNameById(int id);
 
         Task<bool> ExerciseLimitReached(string athleteId);
 

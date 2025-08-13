@@ -22,6 +22,6 @@
 
         public int PageSize { get; init; }
 
-        public IEnumerable<MembershipServiceModel> Memberships { get; init; } = new List<MembershipServiceModel>();
+        public IEnumerable<MembershipServiceModel> Memberships { get; init; } = [];
     }
 }

@@ -24,6 +24,6 @@
 
         public int PageSize { get; init; }
 
-        public IEnumerable<FoodServiceModel> Foods { get; init; } = new List<FoodServiceModel>();
+        public IEnumerable<FoodServiceModel> Foods { get; init; } = [];
     }
 }

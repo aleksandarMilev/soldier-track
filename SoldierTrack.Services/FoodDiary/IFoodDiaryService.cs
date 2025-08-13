@@ -10,7 +10,7 @@
 
         Task<FoodDiaryServiceModel> CreateForDate(string athleteId, DateTime date);
 
-        Task AddFoodAsync(string athleteId, int foodId, DateTime date, string mealType, int quantity);
+        Task AddFood(string athleteId, int foodId, DateTime date, string mealType, int quantity);
 
         Task RemoveFoodAsync(int diaryId, int foodId, string mealType);
     }

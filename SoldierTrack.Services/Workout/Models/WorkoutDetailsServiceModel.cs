@@ -10,6 +10,6 @@
 
         public bool AthleteHasMembership { get; set; }
 
-        public IEnumerable<AthleteServiceModel> Athletes { get; set; } = new List<AthleteServiceModel>();
+        public IEnumerable<AthleteServiceModel> Athletes { get; set; } = [];
     }
 }

@@ -10,42 +10,39 @@
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Options;
     using Models;
-
     using SoldierTrack.Common.Settings;
+
     using static Common.Constants;
     using static Common.Messages;
 
-    public class AthleteService : IAthleteService
+    public class AthleteService(
+        ApplicationDbContext data,
+        Lazy<IMembershipService> membershipService,
+        IEmailService emailService,
+        IOptions<AdminSettings> adminSettings,
+        IMapper mapper) : IAthleteService
     {
-        private readonly ApplicationDbContext data;
-        private readonly Lazy<IMembershipService> membershipService;
-        private readonly IEmailService emailService;
-        private readonly AdminSettings adminSettings;
-        private readonly IMapper mapper;
+        private readonly ApplicationDbContext data = data;
+        private readonly Lazy<IMembershipService> membershipService = membershipService;
+        private readonly IEmailService emailService = emailService;
+        private readonly AdminSettings adminSettings = adminSettings.Value;
+        private readonly IMapper mapper = mapper;
 
-        public AthleteService(
-            ApplicationDbContext data,
-            Lazy<IMembershipService> membershipService,
-            IEmailService emailService,
-            IOptions<AdminSettings> adminSettings,
-            IMapper mapper)
-        {
-            this.data = data;
-            this.membershipService = membershipService;
-            this.emailService = emailService;
-            this.adminSettings = adminSettings.Value;
-            this.mapper = mapper;
-        }
-
-        public async Task<AthletePageServiceModel> GetPageModels(string? searchTerm, int pageIndex, int pageSize)
+        public async Task<AthletePageServiceModel> GetPageModels(
+            string? searchTerm,
+            int pageIndex,
+            int pageSize)
         {
             var query = this.data
                 .AllAthletesAsNoTracking(this.adminSettings.Email)
                 .Include(a => a.Membership)
-                .OrderByDescending(a => a.Membership != null && a.Membership.IsPending)
+                .OrderByDescending(a =>
+                    a.Membership != null &&
+                    a.Membership.IsPending)
                 .ThenBy(a => a.FirstName)
                 .ThenBy(a => a.LastName)
-                .ProjectTo<AthleteDetailsServiceModel>(this.mapper.ConfigurationProvider);
+                .ProjectTo<AthleteDetailsServiceModel>(
+                    this.mapper.ConfigurationProvider);
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
@@ -63,23 +60,28 @@
 
             foreach (var athlete in athletes)
             {
-                if (athlete.MembershipId != null && await this.membershipService.Value.MembershipIsExpiredByAthleteIdAsync(athlete.Id))
+                if (athlete.MembershipId is null &&
+                    await this.membershipService.Value.MembershipIsExpiredByAthleteId(athlete.Id))
                 {
-                    await this.membershipService.Value.DeleteByAthleteIdAsync(athlete.Id);
+                    await this.membershipService.Value.DeleteByAthleteId(athlete.Id);
                 }
             }
 
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-            return new AthletePageServiceModel(athletes, pageIndex, totalPages, pageSize);
+            return new AthletePageServiceModel(
+                athletes,
+                pageIndex,
+                totalPages,
+                pageSize);
         }
 
-        public async Task<string?> GetNameByIdAsync(string id)
+        public async Task<string?> GetNameById(string id)
         {
             var athlete = await this.data
                 .AllAthletesAsNoTracking(this.adminSettings.Email)
                 .FirstOrDefaultAsync(a => a.Id == id);
 
-            if (athlete == null)
+            if (athlete is null)
             {
                 return AdminRoleName;
             }
@@ -93,7 +95,7 @@
                 .AllAthletesAsNoTracking(this.adminSettings.Email)
                 .FirstOrDefaultAsync(a => a.Id == id);
 
-            if (athlete == null)
+            if (athlete is null)
             {
                 return null;
             }
@@ -110,24 +112,28 @@
                 .AllAthletesAsNoTracking(this.adminSettings.Email)
                 .Include(a => a.Membership)
                 .Include(a => a.AthletesWorkouts)
-                .ProjectTo<AthleteDetailsServiceModel>(this.mapper.ConfigurationProvider)
+                .ProjectTo<AthleteDetailsServiceModel>(
+                    this.mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(a => a.Id == id);
 
-            if (serviceModel == null)
+            if (serviceModel is null)
             {
                 return null;
             }
 
-            if (serviceModel.Workouts != null)
+            if (serviceModel.Workouts is not null)
             {
-                serviceModel.Workouts = serviceModel.Workouts
+                serviceModel.Workouts = serviceModel
+                    .Workouts
                     .Where(w => w.Date >= todayUtcDate);
             }
 
             return serviceModel;
         }
 
-        public async Task<bool> AthleteWithSameNumberExists(string phoneNumber, string id)
+        public async Task<bool> AthleteWithSameNumberExists(
+            string phoneNumber,
+            string id)
         {
             var athlete = await this.data
                 .AllAthletesAsNoTracking(this.adminSettings.Email)
@@ -142,7 +148,9 @@
             return false;
         }
 
-        public async Task<bool> AthleteWithSameEmailExists(string email, string id)
+        public async Task<bool> AthleteWithSameEmailExists(
+            string email,
+            string id)
         {
             var athlete = await this.data
                 .AllAthletesAsNoTracking(this.adminSettings.Email)
@@ -157,13 +165,17 @@
             return false;
         }
 
-        public async Task<bool> AthleteAlreadyJoinedById(string athleteId, int workoutId) 
+        public async Task<bool> AthleteAlreadyJoinedById(
+            string athleteId,
+            int workoutId) 
             => await this.data
                 .AthletesWorkouts
                 .AsNoTracking()
-                .AnyAsync(aw => aw.AthleteId == athleteId && aw.WorkoutId == workoutId);
+                .AnyAsync(aw =>
+                    aw.AthleteId == athleteId &&
+                    aw.WorkoutId == workoutId);
 
-        public async Task EditAsync(AthleteServiceModel model)
+        public async Task Edit(AthleteServiceModel model)
         {
             var athlete = await this.data
                 .AllAthletes(this.adminSettings.Email)
@@ -188,7 +200,7 @@
             athlete.UserName = null;
             this.data.SoftDelete(athlete);
 
-            if (membership != null)
+            if (membership is not null)
             {
                 await this.membershipService.Value.DeleteById(membership.Id);
             }
@@ -203,7 +215,7 @@
                 .FirstOrDefaultAsync(a => a.Id == workoutId)
                 ?? throw new InvalidOperationException("Workout not found!");
 
-            await this.membershipService.Value.UpdateMembershipOnJoinByAthleteIdAsync(athleteId);
+            await this.membershipService.Value.UpdateMembershipOnJoinByAthleteId(athleteId);
 
             workout.CurrentParticipants++;
             var mapEntity = new AthleteWorkout()
@@ -216,7 +228,9 @@
             await this.data.SaveChangesAsync();
         }
 
-        public async Task Leave(string athleteId, int workoutId)
+        public async Task Leave(
+            string athleteId,
+            int workoutId)
         {
             var workout = await this.data
                  .AllDeletable<Workout>()
@@ -225,27 +239,36 @@
 
              var mapEntity = await this.data
                 .AthletesWorkouts
-                .FirstOrDefaultAsync(aw => aw.AthleteId == athleteId && aw.WorkoutId == workoutId)
+                .FirstOrDefaultAsync(aw =>
+                    aw.AthleteId == athleteId &&
+                    aw.WorkoutId == workoutId)
                 ?? throw new InvalidOperationException("Map entity not found!");
 
             workout.CurrentParticipants--;
-            await this.membershipService.Value.UpdateMembershipOnLeaveByAthleteIdAsync(athleteId);
+            await this.membershipService.Value.UpdateMembershipOnLeaveByAthleteId(athleteId);
 
             this.data.Remove(mapEntity);
             await this.data.SaveChangesAsync();
         }
 
-        public async Task SendMailForApproveMembershipAsync(string athleteId)
+        public async Task SendMailForApproveMembership(string athleteId)
         {
             var athlete = await this.data
                .AllDeletableAsNoTracking<Athlete>()
                .FirstOrDefaultAsync(a => a.Id == athleteId)
                ?? throw new InvalidOperationException("Athlete not found!");
 
-            await this.emailService.SendEmailAsync(athlete.Email!, "Membership Approved", MembershipApproved);
+            await this.emailService.SendEmail(
+                athlete.Email!,
+                "Membership Approved",
+                MembershipApproved);
         }
 
-        public async Task SendMailOnWorkoutDeletionByAthleteIdAsync(string athleteId, string workoutTitle, string workoutDate, string workoutTime)
+        public async Task SendMailOnWorkoutDeletionByAthleteId(
+            string athleteId,
+            string workoutTitle,
+            string workoutDate,
+            string workoutTime)
         {
             var athlete = await this.data
                .AllDeletableAsNoTracking<Athlete>()
@@ -253,10 +276,14 @@
                ?? throw new InvalidOperationException("Athlete not found!");
 
             await this.emailService
-                .SendEmailAsync(
+                .SendEmail(
                     athlete.Email!,
                     "Cancelled Workout",
-                    string.Format(WorkoutDeleted, workoutTitle, workoutDate, workoutTime));
+                    string.Format(
+                        WorkoutDeleted,
+                        workoutTitle,
+                        workoutDate,
+                        workoutTime));
         }
     }
 }
