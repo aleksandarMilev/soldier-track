@@ -115,6 +115,21 @@ SoldierTrack/
 └── Dockerfile
 ```
 
+## Running Tests
+
+```bash
+dotnet test SoldierTrack.Tests
+```
+
+The test suite (`SoldierTrack.Tests`) uses xUnit with an EF Core in-memory provider and Moq to verify service-layer business logic in isolation. 60 tests across four suites:
+
+| Suite | Coverage |
+| --- | --- |
+| `AchievementServiceTests` | 1RM formula (both branches), CRUD, duplicate guard, ownership auth, pagination, rankings |
+| `MembershipServiceTests` | Pending/approved/expired states, workouts-left counter (join/leave/workout deleted), expiry cleanup, approval flow |
+| `WorkoutServiceTests` | Participant cap, date-slot conflict, UTC conversion on create/edit, cascade delete with email notifications |
+| `ExerciseServiceTests` | Soft-delete visibility, custom exercise limit (>50), global vs. custom ownership auth, CRUD |
+
 ## Roles
 
 | Role      | Access                                                   |
